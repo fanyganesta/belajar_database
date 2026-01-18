@@ -1,0 +1,81 @@
+:root{
+    --basis-font-size: 14px;
+    --basis-weigth: 500;
+    --sm-rad: 4px;
+    --md-rad: 7px;
+    --lg-rad: 11px;
+}
+
+html{
+    font-size: var(--basis-font-size);
+}
+
+h1{
+    font-size: 1.8rem;
+    font-weight: var(--basis-weigth);
+}
+
+h2{
+    font-size: 1.6rem;
+}
+
+h3{
+    font-size: 1.4rem;
+}
+
+h4{
+    font-size: 1.2rem;
+}
+
+h5{
+    font-size: 1rem;
+}
+
+h6{
+    font-size: 0.8rem;
+}
+
+aside h1{
+    align-self: center;
+    text-align: center;
+}
+
+aside hr{
+    width: 100%;
+    transform: translateY(-10px);
+    box-sizing: border-box;
+    border: 1px solid rgb(98, 98, 98);
+}
+
+aside h6{
+    color: rgb(121, 121, 121);
+    transform: translateY(-20px);
+}
+
+aside h5{
+    transform: translateY(-40px);
+    font-weight: var(--basis-weigth);
+    margin: 0;
+}
+
+aside a{
+    text-decoration: none;
+    color: white;
+    padding: 10px;
+    display: block; 
+}
+
+aside a:hover{
+    background-color: rgba(255, 255, 255, 0.175);
+    border-radius: var(--sm-rad);
+}
+
+aside .active{
+    background-color: rgba(255, 255, 255, 0.175);
+    border-radius: var(--sm-rad);
+}
+
+.aside-spacer{
+    margin-top: -25px;
+    border: 1px solid rgb(39, 39, 39);
+}
