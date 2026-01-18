@@ -19,7 +19,261 @@
             
 
             <div class="content">
+                <h2>FONDASI DATABASE (WAJIB KUAT)</h2>
+                <h3>Kenapa Bab Ini Penting?</h3>
+
+                <p>Database itu bukan cuma tempat nyimpan data, tapi:
+                <ul>
+                    <li>Penjaga kebenaran data</li>
+                    <li>Penentu kecepatan sistem</li>
+                    <li>Penyangga keputusan bisnis</li>
+                </ul>
                 
+                Banyak sistem gagal bukan karena kodenya, tapi karena fondasi databasenya salah sejak awal.</p>
+
+                <hr>
+
+                <h3>1.1 Konsep Dasar Database</h3>
+
+                <p>Sebelum masuk ke SQL, MySQL, query, dan lain-lain, kita harus menyamakan cara berpikir dulu.</p>
+
+                <hr>
+
+                <h4>a. Apa itu Database?</h4>
+                
+                <p><strong>Definisi Sederhana</strong></p>
+
+                <div class="quote"><p>Database adalah kumpulan data yang disimpan secara terstruktur agar bisa diakses, dikelola, dan dianalisis dengan efisien.</p></div>
+                
+
+                <p>Kata kunci penting:
+                    <ul>
+                        <li>Kumpulan data</li>
+                        <li>Terstruktur</li>
+                        <li>Bisa diolah</li>
+                    </ul>
+                
+                <strong>📌 Catatan penting</strong> <br>
+                Folder di komputer ❌ <br>
+                Excel ❌ (hanya setengah benar) <br>
+                JSON file ❌ <br> <br>
+
+                Kenapa? Karena:
+                    <ul>
+                        <li>Tidak ada aturan konsistensi</li>
+                        <li>Tidak ada relasi yang ketat</li>
+                        <li>Tidak aman untuk banyak user sekaligus</li>
+                    </ul>
+                
+                <hr> <br>
+
+                <strong>Analogi Dunia Nyata</strong> <br> <br>
+
+                Bayangkan gudang arsip perusahaan: <br> <br>
+
+                    <table>
+                        <tr>
+                            <th>Tanpa Database</th>
+                            <th>Dengan Database</th>
+                        </tr>
+                        <tr>
+                            <td>Dokumen ditumpuk</td>
+                            <td>Dokumen tersusun</td>
+                        </tr>
+                        <tr>
+                            <td>Nama bebas</td>
+                            <td>Ada format baku</td>
+                        </tr>
+                        <tr>
+                            <td>Bisa dobel</td>
+                            <td>Unik & terkontrol</td>
+                        </tr>
+                        <tr>
+                            <td>Sulit dicari</td>
+                            <td>Cepat & presisi</td>
+                        </tr>
+                    </table>
+                	
+                    <br>
+                    
+                👉 Database = Gudang arsip yang punya aturan ketat <br> <br>
+
+                <hr> <br>
+
+                <strong>Karakteristik Database yang Benar</strong> <br> <br>
+
+                Database yang sehat selalu punya:
+                    <ul>
+                        <li>Struktur (tidak asal simpan)</li>
+                        <li>Aturan (constraint)</li>
+                        <li>Konsistensi</li>
+                        <li>Keamanan</li>
+                    </ul>
+                
+                Bisa diakses banyak proses</p> <br>
+
+                <hr>
+
+                <h3>b. Apa itu DBMS?</h3>
+                <h4>Definisi</h4>
+
+                <div class="quote"><p>DBMS (Database Management System) adalah software yang mengelola database.</p></div>
+
+                <p>📌 Database = datanya <br>
+                📌 DBMS = mesin pengelolanya <br> <br>
+
+                Contoh DBMS:
+                    <ul>
+                        <li>MySQL</li>
+                        <li>PostgreSQL</li>
+                        <li>MariaDB</li>
+                        <li>SQL Server</li>
+                        <li>Oracle</li>
+                    </ul>
+                
+                </p>
+
+                <h4>Peran DBMS (Ini Penting)</h4>
+
+                <p>DBMS bukan cuma “penyimpan”, tapi bertanggung jawab atas:
+                    <ul>
+                        <li>Penyimpanan data</li>
+                        <li>Validasi data</li>
+                        <li>Keamanan (hak akses)</li>
+                        <li>Concurrency (banyak user)</li>
+                        <li>Backup & recovery</li>
+                        <li>Optimasi performa</li>
+                    </ul>
+
+                    <br>
+
+                    Tanpa DBMS, data itu:
+                    <ul>
+                        <li>Mudah rusak</li>
+                        <li>Tidak sinkron</li>
+                        <li>Sulit diskalakan</li>
+                    </ul>
+                </p>
+
+                <hr>
+                
+                <h4>Analogi Sederhana</h4>
+                <p>
+                    <ul>
+                        <li>Database = Buku besar akuntansi</li>
+                        <li>DBMS = Sistem akuntansi + aturan + penjaga</li>
+                    </ul>
+                    
+                    Kamu tidak pernah menyerahkan pembukuan ke buku kosong tanpa aturan → sama dengan database tanpa DBMS.
+                </p>
+
+                <hr>
+
+                <h4>Database vs DBMS (Banyak yang Keliru)</h4>
+                <table>
+                    <tr>
+                        <th>Database</th>
+                        <th>DBMS</th>
+                    </tr>
+                    <tr>
+                        <td>Data</td>
+                        <td>Software</td>
+                    </tr>
+                    <tr>
+                        <td>Pasif</td>
+                        <td>Aktif</td>
+                    </tr>
+                    <tr>
+                        <td>Disimpan</td>
+                        <td>Mengelola</td>
+                    </tr>
+                    <tr>
+                        <td>Tidak bisa berdiri sendiri</td>
+                        <td>Wajib ada</td>
+                    </tr>
+                </table>
+                	
+                <br>
+                	
+                <p>📌 Kesalahan umum developer pemula:
+
+                <div class="quote"><p>“Saya pakai MySQL database”</p></div>
+
+                <br>
+
+                ❌ Salah kaprah <br>
+                ✔️ Yang benar: “Saya pakai MySQL sebagai DBMS”</p>
+
+                <h4>Kenapa Kita Perlu DBMS (Bukan File Biasa)?</h4>
+                <p>Masalah jika pakai file:
+                    <ul>
+                        <li>Data dobel</li>
+                        <li>Data bentrok</li>
+                        <li>Tidak atomic (setengah masuk)</li>
+                        <li>Tidak aman</li>
+                    </ul> <br>
+                
+                DBMS Menyelesaikan Ini Dengan:
+                    <ul>
+                        <li>Transaction</li>
+                        <li>Constraint</li>
+                        <li>Locking</li>
+                        <li>Index</li>
+                        <li>Role & Permission</li>
+                    </ul>
+                </p>
+                
+                <hr>
+
+                <h4>Cara Berpikir yang Benar Sejak Awal</h4>
+                <p>
+                    Mulai sekarang, ubah mindset: <br>
+                    ❌ “Simpan data” <br>
+                    ✅ “Menjaga kebenaran data” <br> <br>
+
+                    Database bukan gudang sampah data, tapi single source of truth.
+                </p>
+
+                <hr>
+
+                <h4>Ringkasan Bab 1.1a</h4>
+                <p>
+                    <ul>
+                        <li>Database → tempat data tersimpan secara terstruktur</li>
+                        <li>DBMS → software pengelola database</li>
+                    </ul>
+                    
+                    <br>
+
+                    DBMS menjamin:
+                    <ul>
+                        <li>Konsistensi</li>
+                        <li>Keamanan</li>
+                        <li>Performa</li>
+                        <li>MySQL = DBMS, bukan sekadar “database”</li>
+                    </ul>
+                </p>
+                
+                <hr>
+
+                <h4>Latihan Refleksi (Bukan Coding Dulu)</h4>
+
+                <p>Coba jawab di kepala:
+                    <ul>
+                        <li>Kenapa Excel gagal jadi database untuk sistem besar?</li>
+                        <li>Kalau DBMS mati, apa yang terjadi ke data?</li>
+                        <li>Kenapa database harus punya aturan ketat?</li>
+                    </ul>
+                
+                Kalau kamu bisa menjawab ini dengan yakin, fondasimu sudah mulai kuat.</p>
+
+                    <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+
             </div>
         </main>
     </div>

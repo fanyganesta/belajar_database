@@ -4,6 +4,9 @@
     --sm-rad: 4px;
     --md-rad: 7px;
     --lg-rad: 11px;
+    --sm-padd: 10px;
+    --md-padd: 15px;
+    --lg-padd: 20px;
 }
 
 html{
@@ -61,7 +64,7 @@ aside h5{
 aside a{
     text-decoration: none;
     color: white;
-    padding: 10px;
+    padding: var(--sm-padd);
     display: block; 
 }
 
@@ -78,4 +81,21 @@ aside .active{
 .aside-spacer{
     margin-top: -25px;
     border: 1px solid rgb(39, 39, 39);
+}
+
+.quote{
+    padding: var(--sm-padd);
+    background-color: rgb(193, 255, 255);
+    border-left: 7px solid rgb(0, 174, 255);
+    font-style: italic;
+}
+
+table{
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th{
+    border: 1px solid black;
+    padding: var(--sm-padd);
 }
