@@ -19,6 +19,10 @@
             
 
             <div class="content">
+                <div class="image">
+                    <img class="mindmap" src="img/mindmap.png" alt="mindmap belajar database">
+                </div>
+
                 <h2>FONDASI DATABASE (WAJIB KUAT)</h2>
                 <h3>Kenapa Bab Ini Penting?</h3>
 
@@ -29,9 +33,11 @@
                     <li>Penyangga keputusan bisnis</li>
                 </ul>
                 
-                Banyak sistem gagal bukan karena kodenya, tapi karena fondasi databasenya salah sejak awal.</p>
+                Banyak sistem gagal bukan karena kodenya, tapi karena fondasi databasenya salah sejak awal.</p> <br> <br>
 
                 <hr>
+
+                <br> <br>
 
                 <h3>1.1 Konsep Dasar Database</h3>
 
@@ -273,7 +279,1050 @@
 
                 <br> <br>
 
+                <h3>1.1b — Relational Database (RDBMS)</h3>
+                <h4>Kenapa Bagian Ini Krusial?</h4>
 
+                <p>Banyak orang:
+                    <ul>
+                        <li>Bisa SELECT, JOIN</li>
+                        <li>Bisa bikin tabel</li>
+                    </ul>
+                
+                Tapi tidak paham kenapa data harus dipisah <br> <br>
+
+                👉 Akibatnya:
+                    <ul>
+                        <li>Tabel gemuk</li>
+                        <li>Data duplikat</li>
+                        <li>Laporan ribet</li>
+                        <li>Bug yang “tidak kelihatan”</li>
+                    </ul>
+
+                Relational Database hadir bukan untuk mempersulit, tapi menjaga kebenaran data dalam jangka panjang.</p>
+
+                <hr>
+
+                <h4>Apa itu Relational Database?</h4>
+                <strong>Definisi Sederhana</strong> <br> <br>
+
+                <p>Relational Database adalah database yang menyimpan data dalam bentuk tabel-tabel yang saling berhubungan (relasi). <br> <br>
+
+                Kata kuncinya:
+                    <ul>
+                        <li>Tabel</li>
+                        <li>Relasi</li>
+                        <li>Keterkaitan antar data</li>
+                    </ul>
+
+                📌 MySQL, PostgreSQL → Relational DBMS</p>
+
+                <hr>
+
+                <h4>Kenapa Disebut “Relational”?</h4>
+
+                <p>Karena:
+                    <ul>
+                        <li>Data tidak berdiri sendiri</li>
+                        <li>Setiap data punya hubungan logis dengan data lain</li>
+                    </ul>
+
+                Contoh sederhana:
+                    <ul>
+                        <li>User punya Order</li>
+                        <li>Order punya Item</li>
+                        <li>Item punya Produk</li>
+                    </ul>
+                
+                Relasi ini tidak boleh cuma di kepala developer, tapi harus tercermin di database.</p>
+
+                <hr>
+
+                <h4>Contoh Masalah Tanpa Relasi</h4>
+
+                <p>Bayangkan satu tabel seperti ini:</p>
+<pre>
+    orders <br>
+    ------------------------------------------------- <br>
+    order_id | user_name | user_email | product_name | price <br>
+</pre>
+
+                <p>Masalahnya:
+                    <ul>
+                        <li>Nama user dobel</li>
+                        <li>Email user dobel</li>
+                        <li>Harga produk bisa beda</li>
+                        <li>Sulit update data</li>
+                    </ul>
+                
+                📌 Satu kesalahan → menyebar ke banyak baris</p>
+
+                <hr>
+
+                <h4>Pendekatan Relational (Yang Benar)</h4>
+
+                <p>Pisahkan berdasarkan entitas nyata:</p>
+<pre>
+    users <br>
+    orders <br>
+    products <br>
+    order_items
+</pre>
+
+                <p>Lalu hubungkan dengan relasi. <br> <br>
+
+                👉 Data disimpan sekali, dipakai banyak kali.</p>
+
+                <hr>
+
+                <h4>Konsep “Table = Entitas”</h4>
+
+                <p>Ini mindset penting:</p>
+                    <table>
+                        <tr>
+                            <th>Dunia Nyata</th>
+                            <th>Database</th>
+                        </tr>
+                        <tr>
+                            <td>Orang</td>
+                            <td>users</td>
+                        </tr>
+                        <tr>
+                            <td>Barang</td>
+                            <td>products</td>
+                        </tr>
+                        <tr>
+                            <td>Transaksi</td>
+                            <td>orders</td>
+                        </tr>
+                        <tr>
+                            <td>Detail transaksi</td>
+                            <td>order_items</td>
+                        </tr>
+                    </table>
+                	
+                <p>❌ Jangan berpikir:</p>
+
+                <div class="quote"><p>“Tabel ini untuk halaman ini”</p></div>
+
+                <p>✅ Pikir:</p>
+
+                <div class="quote"><p>“Tabel ini merepresentasikan objek nyata di dunia bisnis”</p></div>
+
+                <hr>
+
+                <h4>Relasi Antar Tabel (High Level)</h4>
+
+                <p>Relational DB mengenal relasi:
+                    <ul>
+                        <li>One-to-One</li>
+                        <li>One-to-Many</li>
+                        <li>Many-to-Many</li>
+                    </ul>
+                
+                (Detail teknisnya kita bahas di bab selanjutnya, sekarang fokus konsep.)</p>
+
+                <hr>
+
+                <h4>Kenapa Data Harus Dipisah?</h4>
+                <p>1️⃣ Menghindari Duplikasi
+                    <ul>
+                        <li>Satu user → satu record</li>
+                        <li>Tidak ada data ganda</li>
+                    </ul>
+
+                2️⃣ Konsistensi Data
+                    <ul>
+                        <li>Update nama user → otomatis konsisten</li>
+                        <li>Tidak perlu update banyak baris</li>
+                    </ul>
+
+                3️⃣ Integritas Data
+                    <ul>
+                        <li>Order tidak bisa ada tanpa user</li>
+                        <li>Item tidak bisa ada tanpa produk</li>
+                    </ul>
+
+                📌 Ini yang disebut data integrity.</p>
+
+                <hr>
+
+                <h4>Peran Relasi dalam RDBMS</h4>
+
+                <p>Relasi membuat database bisa:
+                    <ul>
+                        <li>Menolak data tidak valid</li>
+                        <li>Menjaga keterkaitan data</li>
+                        <li>Membantu query kompleks</li>
+                    </ul>
+                
+                Contoh:<br><br>
+
+                Order tanpa user ❌<br>
+                Order item tanpa produk ❌</p>
+
+                <hr>
+
+                <h4>SQL sebagai Bahasa Relasi</h4>
+
+                <p>SQL bukan cuma bahasa ambil data, tapi:
+                    <ul>
+                        <li>Bahasa untuk menyatukan data dari berbagai tabel</li>
+                        <li>Bahasa untuk menceritakan hubungan data</li>
+                    </ul>
+
+                    <br>
+
+                Contoh (konsep saja, bukan teknis dulu):</p>
+<pre>
+    SELECT users.name, orders.total <br>
+    FROM users <br>
+    JOIN orders ON users.id = orders.user_id;
+</pre>
+
+                <p>👉 Kita menggabungkan relasi, bukan data acak.
+
+                <hr>
+
+                <h4>RDBMS vs Non-Relational (High Level)</h4>
+                <table>
+                    <tr>
+                        <th>RDBMS</th>
+                        <th>Non-Relational</th>
+                    </tr>
+                    <tr>
+                        <td>Tabel</td>
+                        <td>Dokumen / Key-Value</td>
+                    </tr>
+                    <tr>
+                        <td>Relasi jelas</td>
+                        <td>Relasi fleksibel</td>
+                    </tr>
+                    <tr>
+                        <td>Struktur ketat</td>
+                        <td>Struktur bebas</td>
+                    </tr>
+                    <tr>
+                        <td>Cocok untuk finance</td>
+                        <td>Cocok untuk log/event</td>
+                    </tr>
+                </table>
+
+                <br>
+
+                📌 MySQL cocok banget untuk:
+                    <ul>
+                        <li>Sistem keuangan</li>
+                        <li>Inventory</li>
+                        <li>ERP</li>
+                        <li>Reporting</li>
+                    </ul></p>
+
+                <hr>
+
+                <h4>Kesalahan Pola Pikir yang Harus Dihindari</h4>
+
+                <p>❌ “Biar gampang, satukan aja di satu tabel” <br>
+                ❌ “Foreign key bikin ribet” <br>
+                ❌ “Relasi nanti diatur di aplikasi saja” <br> <br> 
+
+                👉 Ini utang teknis yang mahal di belakang.</p>
+
+                <hr>
+
+                <h4>Cara Berpikir Relational (Ini Penting)</h4>
+
+                <p>Setiap kali desain database, tanyakan:
+                    <ul>
+                        <li>Apakah ini entitas berbeda?</li>
+                        <li>Apakah data ini berulang?</li>
+                        <li>Apakah perubahan data ini berdampak luas?</li>
+                    </ul>
+
+                Kalau iya → pisahkan tabelnya.</p>
+
+                <hr>
+
+                <h4>Ringkasan 1.1b</h4>
+                    <ul>
+                        <li>Relational Database menyimpan data dalam tabel yang saling terhubung</li>
+                        <li>Relasi = cara menjaga kebenaran data</li>
+                        <li>Data dipisah berdasarkan entitas, bukan halaman</li>
+                        <li>RDBMS unggul untuk data terstruktur & kritikal</li>
+                    </ul>
+                
+                <hr>
+
+                <h4>Refleksi Kecil (Wajib Dipikirkan)</h4>
+
+                <p>Bayangkan sistem:
+                    <ul>
+                        <li>User</li>
+                        <li>Produk</li>
+                        <li>Order</li>
+                        <li>Pembayaran</li>
+                    </ul>
+
+                ❓ Jika semua disimpan dalam satu tabel, masalah apa yang akan muncul dalam 1 tahun? <br> <br>
+
+                Kalau kamu bisa menjawab itu, kamu sudah mulai berpikir seperti database engineer.</p>
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h3>1.1c — Table, Row, Column</h3>
+
+                <p>(Cara berpikir yang benar, bukan definisi buku)</p>
+
+                <h4>Kenapa Bagian Ini Penting?</h4>
+
+                <p>Hampir semua masalah database bermula dari:
+                    <ul>
+                        <li>Salah bikin tabel</li>
+                        <li>Salah makna row</li>
+                        <li>Salah desain column</li>
+                    </ul>
+                
+
+                Dan yang paling sering:</p>
+
+                <div class="quote"><p>“Kelihatannya jalan, tapi 6 bulan lagi hancur.”</p></div>
+
+                <hr>
+
+                <h4>1️⃣ Table — Representasi Entitas, BUKAN Fitur</h4>
+                <p>Definisi Sederhana <br> <br>
+
+                Table adalah representasi dari satu jenis entitas nyata di sistem. <br> <br>
+
+                📌 Bukan:
+                    <ul>
+                        <li>Halaman</li>
+                        <li>Form</li>
+                        <li>Feature</li>
+                        <li>API endpoint</li>
+                    </ul>
+                </p>
+                <hr>
+
+                <h4>Contoh Salah (Sering Terjadi)</h4>
+<pre>   
+    table: dashboard_data <br> 
+    table: laporan_keuangan <br>
+    table: halaman_produk
+</pre>
+
+                <p>❌ Ini bukan entitas <br>
+                ❌ Ini sudut pandang UI</p>
+
+                <hr>
+
+                <h4>Contoh Benar</h4>
+<pre>
+    users
+    products
+    orders
+    payments
+</pre>
+
+                <p>✔️ Ini benda nyata <br> 
+                ✔️ Bisa berdiri sendiri <br>
+                ✔️ Bisa direlasikan</p>
+
+                <hr>
+
+                <h4>Mindset Penting</h4>
+
+                <p>Sebelum bikin tabel, tanyakan:</p>
+                
+                <div class="quote"><p>“Kalau saya jelaskan ke orang non-teknis, apakah ini benda nyata?”</p></div>
+
+                <p>Kalau jawabannya “iya” → layak jadi tabel.</p>
+
+                <hr>
+
+                <h4>2️⃣ Row — Satu Kejadian / Satu Identitas</h4>
+                <p>Definisi Sederhana <br> <br>
+
+                Row (record) adalah satu instance unik dari sebuah entitas. <br> <br>
+
+                Contoh:</p>
+                    <ul>
+                        <li>1 user = 1 row di users</li>
+                        <li>1 order = 1 row di orders</li>
+                    </ul>
+                
+                📌 Row selalu punya identitas unik (Primary Key).</p>
+
+                <hr>
+
+                <h4>Kesalahan Fatal yang Sering Terjadi</h4>
+                <p><strong>❌ Row Dipakai untuk “Status Berkala”</strong> <br> <br>
+
+                Contoh:
+<pre>
+    users <br>
+    id | name | status <br> 
+    1  | Andi | aktif <br>
+    2  | Andi | nonaktif
+</pre>
+
+                <p>❌ Ini bukan dua user <br>
+                ❌ Ini riwayat, bukan entitas <br> <br>
+
+                ✔️ Yang benar: 
+                    <ul>
+                        <li>1 row user</li>
+                        <li>Status history di tabel terpisah</li>
+                    </ul></p>
+
+                <hr>
+
+                <h4>Rule of Thumb</h4>
+
+                <div class="quote"><p>Kalau satu objek bisa muncul berkali-kali, kemungkinan kamu butuh tabel baru.</p></div>
+
+                <hr>
+
+                <h4>3️⃣ Column — Properti yang Stabil</h4>
+                <p><strong>Definisi Sederhana</strong> <br> <br>
+
+                Column adalah atribut/properti dari sebuah entitas. <br> <br>
+
+                Contoh:
+                    <ul>
+                        <li>User → name, email, password</li>
+                        <li>Product → name, price, stock</li>
+                    </ul>
+                
+                <strong>Syarat Column yang Sehat</strong> <br> <br>
+
+                Column harus:
+                    <ul>
+                        <li>Atomic (tidak bisa dipecah lagi)</li>
+                        <li>Konsisten</li>
+                        <li>Stabil</li>
+                    </ul></p>
+                
+                <hr>
+
+                <h4>Contoh Column Salah</h4>
+                <p>❌ Tidak Atomic <br>
+<pre>
+    full_address = "Jl. Sudirman No. 10, Jakarta"
+</pre>
+
+                Masalah:
+                    <ul>
+                        <li>Tidak bisa filter kota</li>
+                        <li>Tidak bisa analisis</li>
+                    </ul>
+                
+                ✔️ Lebih sehat:</p>
+<pre>
+    street <br>
+    city <br>
+    province <br>
+    postal_code
+</pre>
+                <hr>
+
+                <h4>❌ Column Dinamis</h4>
+<pre>
+    product_price_january <br>
+    product_price_february
+</pre>
+
+                <p>🚨 Ini alarm besar <br>
+                ✔️ Harga itu data, bukan struktur → buat tabel baru</p>
+
+                <hr>
+
+                <h4>Hubungan Table–Row–Column (Cara Berpikir)</h4>
+
+                <p>Bayangkan seperti ini:
+                    <table>
+                        <tr>
+                            <th>Konsep</th>
+                            <th>Analogi</th>
+                        </tr>
+                        <tr>
+                            <td>Table</td>
+                            <td>Lemari arsip</td>
+                        </tr>
+                        <tr>
+                            <td>Row</td>
+                            <td>Satu map</td>
+                        </tr>
+                        <tr>
+                            <td>Column</td>
+                            <td>Label isi map</td>
+                        </tr>
+                    </table>
+                	
+                📌 Jangan:
+                    <ul>
+                        <li>Campur banyak jenis map di satu lemari</li>
+                        <li>Tambah label baru setiap bulan</li>
+                    </ul>
+                <hr></p>
+
+                <h4>Pola Kesalahan Klasik Developer</h4>
+                <p>❌ “Biar cepat, tambahin kolom aja”
+                → Struktur bengkak <br> <br>
+
+                ❌ “Nanti aja dipisah”
+                → Tidak pernah kejadian <br> <br>
+
+                ❌ “Kan bisa pakai JSON”
+                → Reporting hancur</p>
+
+                <hr>
+
+                <h4>Cara Berpikir yang Benar Saat Mendesain</h4>
+
+                <p>Setiap kali mau nambah kolom, tanyakan:
+                    <ul>
+                        <li>Apakah ini selalu ada untuk semua row?</li>
+                        <li>Apakah ini tidak berulang?</li>
+                        <li>Apakah ini bukan data riwayat?</li>
+                    </ul>
+                
+                Kalau salah satu jawabannya “tidak” → jangan jadi kolom.</p>
+
+                <hr>
+
+                <h4>Contoh Mini Case (Realistis)</h4>
+
+                <p>Kasus: Order <br> <br>
+
+                ❌ Salah:</p>
+<pre>
+    orders <br>
+    id | user_name | product_1 | product_2 | product_3
+</pre>
+
+                <p>✔️ Benar:</p>
+<pre>
+    orders <br> 
+    order_items <br>
+    products
+</pre>
+
+                <p>Karena:
+                    <ul>
+                        <li>Jumlah item tidak tetap</li>
+                        <li>Item adalah entitas sendiri</li>
+                    </ul></p>
+                
+                <hr>
+
+                <h4>Ringkasan 1.1c</h4>
+                    <ul>
+                        <li>Table = entitas nyata</li>
+                        <li>Row = satu instance unik</li>
+                        <li>Column = properti stabil</li>
+                        <li>Jangan pakai kolom untuk data dinamis</li>
+                        <li>Jangan pakai row untuk riwayat</li>
+                    </ul>
+
+                <hr>
+
+                <h4>Refleksi (PENTING)</h4>
+
+                <p>Coba pikirkan tabel yang pernah kamu buat:
+                    <ul>
+                        <li>Apakah ada kolom yang “aneh tapi kepake”?</li>
+                        <li>Apakah ada tabel yang sebenarnya “laporan”?</li>
+                        <li>Kalau ada → itu utang desain.</li>
+                    </ul></p>
+
+                    <br> <br>
+
+                    <hr>
+
+                    <br> <br>
+
+                    <h3>1.1d — Primary Key vs Foreign Key</h3>
+
+                    <p>(Identitas & Relasi yang Tidak Boleh Salah)</p>
+
+                    <h4>Kenapa Ini Sangat Penting?</h4>
+
+                    <p>Di dunia nyata:
+                    <ul>
+                        <li>Orang punya KTP</li>
+                        <li>Barang punya SKU</li>
+                        <li>Transaksi punya nomor invoice</li>
+                    </ul>
+                    
+                    Di database: <br>
+                    👉 Primary Key adalah identitas resmi <br>
+                    👉 Foreign Key adalah bukti hubungan <br> <br>
+
+                    Tanpa ini, database tidak tahu siapa siapa.</p>
+
+                    <h4>1️⃣ Primary Key (PK)</h4>
+                    <p><strong>Definisi Sederhana</strong> <br> <br>
+
+                    <div class="quote"><p>Primary Key adalah kolom (atau kombinasi kolom) yang mengidentifikasi satu row secara unik.</p></div>
+
+                    📌 Satu tabel HARUS punya PK <br>
+                    📌 PK tidak boleh duplikat <br>
+                    📌 PK tidak boleh NULL</p>
+
+                    <hr>
+
+                    <p><strong>Contoh</strong> </p>
+<pre>
+    users <br>
+    id | name | email <br>
+    1  | Andi | andi@mail.com
+</pre>
+
+                    <p>id → Primary Key</p>
+
+                    <hr>
+
+                    <h4>Kenapa Primary Key Itu Sakral?</h4>
+
+                    <p>Primary Key:
+                    <ul>
+                        <li>Menjadi identitas resmi row</li>
+                        <li>Digunakan oleh tabel lain</li>
+                        <li>Menjadi tulang punggung relasi</li>
+                        <li></li>
+                    </ul>
+
+                    Kalau PK berubah-ubah → relasi ikut rusak</p>
+
+                    <hr>
+
+                    <h4>Kesalahan Umum PK</h4>
+                    <p>❌ PK dari data bisnis</p>
+<pre>
+    email sebagai primary key
+</pre>
+                    <p>Masalah:
+                    <ul>
+                        <li>Email bisa berubah</li>
+                        <li>Format bisa berubah</li>
+                        <li>Migrasi ribet</li>
+                    </ul>
+
+                    ✔️ Best practice:
+                    <ul>
+                        <li>PK bersifat surrogate</li>
+                        <li>Biasanya id (INT / BIGINT)</li>
+                    </ul></p>
+                    
+                    <hr>
+
+                    <h4>Natural Key vs Surrogate Key</h4>
+                    <table>
+                        <tr>
+                            <th>Jenis</th>
+                            <th>Contoh</th>
+                            <th>Aman?</th>
+                        </tr>
+                        <tr>
+                            <td>Natural Key</td>
+                            <td>email, NIK</td>
+                            <td>❌</td>
+                        </tr>
+                        <tr>
+                            <td>Surrogate Key</td>
+                            <td>id auto increment</td>
+                            <td>✔️</td>
+                        </tr>
+                    </table>
+                    
+                    <br>
+
+                    <p>📌 Natural key boleh UNIQUE, tapi bukan PK utama.</p>
+
+                    <hr>
+
+                    <h4>2️⃣ Foreign Key (FK)</h4>
+                    <p><strong>Definisi Sederhana</strong> <br> <br>
+
+                    <div class="quote"><p>Foreign Key adalah kolom yang menunjuk ke Primary Key di tabel lain.</p></div>
+
+                    Foreign Key = penghubung antar entitas</p>
+
+                    <hr>
+
+                    <strong>Contoh</strong>
+<pre>
+    orders <br> 
+    id | user_id | total <br>
+</pre>
+
+                    <p>user_id → Foreign Key ke users.id</p>
+
+                    <hr>
+
+                    <h4>Makna Filosofis Foreign Key 😄</h4>
+
+                    <p>Foreign Key berkata:
+
+                    <div class="quote"><p>“Data ini tidak boleh ada sendirian.”</p></div>
+
+                    Order tanpa user ❌ <br>
+                    Payment tanpa order ❌  </p>
+
+                    <hr>
+
+                    <h4>Apa yang Dijaga oleh Foreign Key?</h4>
+
+                    <p>Foreign Key menjaga:
+                    <ul>
+                        <li>Referential Integrity</li>
+                        <li>Konsistensi data</li>
+                        <li>Relasi yang valid</li>
+                    </ul>
+                    
+                    <br>
+
+                    Contoh yang dicegah FK:
+                    <ul>
+                        <li>Order dengan user_id yang tidak ada</li>
+                        <li>Order item ke produk yang sudah dihapus</li>
+                    </ul></p>
+                    
+                    <hr>
+
+                    <h4>ON DELETE & ON UPDATE (Konsep)</h4>
+
+                    <p>FK juga mengatur apa yang terjadi saat data induk berubah. <br> <br>
+
+                    Contoh:
+                    <ul>
+                        <li>ON DELETE RESTRICT</li>
+                        <li>ON DELETE CASCADE</li>
+                        <li>ON DELETE SET NULL</li>
+                    </ul>
+                    
+                    📌 Ini keputusan bisnis, bukan teknis.</p>
+
+                    <hr>
+
+                    <h4>Kesalahan Fatal yang Sering Terjadi</h4>
+                    <p>❌ “FK bikin ribet, matiin aja” <br>
+                    → Data yatim piatu <br> <br>
+
+                    ❌ Relasi cuma di kode <br>
+                    → Database tidak bisa melindungi data <br> <br>
+
+                    ❌ FK tanpa index <br>
+                    → Query lambat <br> <br></p>
+
+                    <hr>
+
+                    <h4>PK & FK dalam Cara Berpikir Desain</h4>
+
+                    <p>Setiap tabel, tanyakan:
+                    <ul>
+                        <li>Apa identitas resminya? → PK</li>
+                        <li>Dia bergantung ke siapa? → FK</li>
+                    </ul>
+                    
+                    Jika tabel bergantung, maka:
+                    
+                    <div class="quote"><p>FK itu wajib, bukan opsional</p></div>
+
+                    <hr></p>
+
+                    <h4>Mini Case (Realistis)</h4>
+
+                    <p>Kasus: Order & Item</p>
+<pre>
+    orders <br>
+    - id (PK) <br> <br>
+
+    order_items <br>
+    - id (PK) <br>
+    - order_id (FK → orders.id)
+</pre>
+
+                    <p>Makna:
+                    <ul>
+                        <li>Item tidak boleh hidup tanpa order</li>
+                        <li>Hapus order → item ikut (biasanya)</li>
+                    </ul></p>
+                    
+                    <hr>
+
+                    <h4>FK vs Tanpa FK (Perbandingan)</h4>
+                    <table>
+                        <tr>
+                            <th>Dengan FK</th>
+                            <th>Tanpa FK</th>
+                        </tr>
+                        <tr>
+                            <td>Aman</td>
+                            <td>Rapuh</td>
+                        </tr>
+                        <tr>
+                            <td>Konsisten</td>
+                            <td>Mudah rusak</td>
+                        </tr>
+                        <tr>
+                            <td>Error ketahuan awal</td>
+                            <td>Error muncul belakangan</td>
+                        </tr>
+                        <tr>
+                            <td>Cocok sistem besar</td>
+                            <td>Neraka maintenance</td>
+                        </tr>
+                    </table>
+                    	
+                    <hr>
+                    	
+                    <h4>Ringkasan 1.1d</h4>
+                    <ul>
+                        <li>Primary Key = identitas unik</li>
+                        <li>Foreign Key = penghubung antar tabel</li>
+                        <li>PK tidak boleh berubah</li>
+                        <li>FK menjaga kebenaran data</li>
+                        <li>Relasi di DB ≠ relasi di kode</li>
+                    </ul>
+                    
+                    <hr>
+
+                    <h4>Refleksi Penting</h4>
+
+                    <p>Pikirkan sistem yang pernah kamu buat:
+                    <ul>
+                        <li>Apakah ada tabel tanpa FK?</li>
+                        <li>Apakah ada data yatim?</li>
+                    </ul>
+                    
+                    Kalau iya → database kamu bergantung pada keberuntungan, bukan sistem.</p>
+
+                    <br> <br>
+
+                    <hr>
+
+                    <br> <br>
+
+                    <h3>1.1e — Schema / Database</h3>
+
+                    <p>(Cara berpikir pengelompokan data yang benar)</p>
+
+                    <h4>Kenapa Ini Penting?</h4>
+
+                    <p>Pertanyaan seperti:
+
+                    <div class="quote"><p>
+                        “Ini tabel taruh di mana?” <br> <br>
+
+                        “Pisah database atau cukup tabel?” <br> <br>
+
+                        “Multi tenant enaknya gimana?”
+                    </p></div>
+
+                        👉 Semua berakar dari pemahaman schema & database.</p>
+                    <hr>
+
+                    <h4>1️⃣ Apa itu Database?</h4>
+
+                    <p>Dalam konteks MySQL:
+
+                    <div class="quote"><p>Database adalah wadah/logical container yang menampung kumpulan tabel, view, dan constraint.</p></div>
+
+                    📌 Database = ruang besar <br>
+                    📌 Isinya: tabel, index, view, dll <br> <br>
+
+                    Contoh:</p>
+<pre>
+    company_app
+    ├── users
+    ├── products
+    ├── orders
+    └── payments
+</pre>
+                    <hr>
+
+                    <h4>2️⃣ Apa itu Schema?</h4>
+                    <p>Konsep Umum <br> <br>
+
+                    Secara teori:
+
+                    <div class="quote"><p>Schema adalah namespace atau pengelompokan struktur database.</p></div>
+
+                    📌 Di beberapa DBMS (PostgreSQL, SQL Server):
+                    <ul>
+                        <li>Database → punya banyak schema</li>
+                    </ul>
+                    
+
+                    📌 Di MySQL:
+                    <ul>
+                        <li>Database = Schema (istilahnya interchangeable)</li>
+                    </ul>
+                    
+
+                    Ini sering bikin bingung, tapi penting dipahami.</p>
+
+                    <hr>
+
+                    <h4>MySQL: Database == Schema</h4>
+
+                    <p>Contoh:</p>
+<pre>
+    CREATE DATABASE finance;
+</pre>
+
+                    <p>Secara teknis:
+                    <ul>
+                        <li>Kamu membuat database</li>
+                        <li>Sekaligus schema</li>
+                    </ul>
+                    
+                    Itu sebabnya:</p>
+<pre>
+    USE finance;
+</pre>
+
+                    <p>Artinya:</p>
+
+                    <div class="quote"><p>“Pakai schema/database ini”</p></div>
+
+                    <hr>
+
+                    <h4>Cara Berpikir yang Benar (PENTING)</h4>
+                    
+                    <p>Database / Schema BUKAN:
+                    <ul>
+                        <li>Modul aplikasi</li>
+                        <li>Feature</li>
+                        <li>Halaman</li>
+                    </ul>
+                    
+                    Database / Schema ADALAH:
+                    <ul>
+                        <li>Boundary sistem</li>
+                        <li>Batas kepemilikan data</li>
+                        <li>Isolasi data</li>
+                    </ul></p>
+                    
+                    <hr>
+
+                    <h4>Contoh Salah (Sering Terjadi)</h4>
+<pre>
+    database: <br>
+    - user_db <br>
+    - product_db <br>
+    - order_db
+</pre>
+
+                    <p>❌ Ini pemisahan berdasarkan fitur <br>
+                    ❌ Sulit JOIN <br>
+                    ❌ Ribet transaksi</p>
+
+                    <hr>
+
+                    <h4>Contoh Benar (Umum & Sehat)</h4>
+<pre>
+    database: ecommerce <br>
+    - users <br>
+    - products <br>
+    - orders <br>
+    - order_items <br>
+    - payments
+</pre>
+
+                    <p>✔️ Satu domain <br>
+                    ✔️ Relasi kuat <br>
+                    ✔️ Transaksi aman</p>
+
+                    <hr>
+
+                    <h4>Kapan Perlu Lebih dari Satu Database?</h4>
+
+                    <p>Gunakan lebih dari satu database jika:
+                    <ul>
+                        <li>Isolasi data wajib</li>
+                        <li>Hak akses berbeda</li>
+                        <li>Skala besar</li>
+                        <li>Multi-tenant (opsional)</li>
+                    </ul></p>
+                    
+                    <hr>
+
+                    <h4>Contoh Kasus Nyata</h4>
+                    <p>1️⃣ Production vs Testing</p>
+<pre>
+    app_production <br>
+    app_staging <br>
+    app_testing
+</pre>
+                    <p>2️⃣ Multi Tenant (Database per Company)</p>
+<pre>
+    tenant_company_a <br>
+    tenant_company_b <br>
+    tenant_company_c
+</pre>
+
+                    <p>📌 Kamu pernah menyentuh ini di proyek multi-tenant — jadi ini bukan teori kosong.</p>
+
+                    <hr>
+
+                    <h4>Schema sebagai Boundary Mental</h4>
+
+                    <p>Anggap database seperti:
+                    <ul>
+                        <li>Satu lemari arsip untuk satu organisasi</li>
+                        <li>Jangan campur arsip dua perusahaan kecuali memang perlu</li>
+                    </ul></p>
+                    
+                    <hr>
+
+                    <h4>Kesalahan Pola Pikir yang Mahal</h4>
+
+                    <p>❌ “Biar rapi, pisah database per tabel” <br>
+                    ❌ “Nanti gampang scaling” <br>
+                    ❌ “Join kan bisa di aplikasi” <br> <br>
+
+                    👉 Ini memperbesar kompleksitas tanpa manfaat nyata.</p>
+
+                    <hr>
+
+                    <h4>Hubungan Schema dengan Security</h4>
+
+                    <p>Database juga menentukan:
+                    <ul>
+                        <li>User DB</li>
+                        <li>Privilege</li>
+                        <li>Akses baca/tulis</li>
+                    </ul>
+                    
+                    Contoh:</p>
+<pre>
+    user_app_readonly <br>
+    user_app_admin
+</pre>
+
+                    <p>📌 Ini tidak bisa ditangani di level tabel saja.</p>
+
+                    <hr>
+
+                    <h4>Ringkasan 1.1e</h4>
+                    <ul>
+                        <li>Database = wadah utama data</li>
+                        <li>Di MySQL: Database == Schema</li>
+                        <li>Schema adalah boundary data</li>
+                        <li>Jangan pisah database berdasarkan fitur</li>
+                        <li>Pisah database jika butuh isolasi & keamanan</li>
+                    </ul>
+                    
+                    <br>
+                    <br>
+
+                    <a href="1b-data-type.html" class="btn-next">1b. Data Type</a>
             </div>
         </main>
     </div>

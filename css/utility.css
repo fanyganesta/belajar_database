@@ -99,3 +99,20 @@ td, th{
     border: 1px solid black;
     padding: var(--sm-padd);
 }
+
+pre{
+    padding: var(--lg-padd) var(--sm-padd) ;
+    background-color: rgb(22, 22, 22);
+    color: rgb(0, 195, 255);
+    border-radius: var(--sm-rad);
+}
+
+.mindmap{
+    max-width: 100%;
+    border-radius: var(--sm-padd);
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.199);
+}
+
+.content hr{
+    width: 100%;
+}

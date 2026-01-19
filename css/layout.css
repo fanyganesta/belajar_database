@@ -42,5 +42,7 @@ header{
 
 .content{
     grid-row: 2 / 3;
-    padding: 10px
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
 }
