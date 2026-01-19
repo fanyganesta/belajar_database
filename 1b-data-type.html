@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Type</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+
+        <main>
+            <header>
+                
+            </header>
+            
+            <div class="content">
+                <h2>.2 — Data Type (MySQL Spesifik)</h2>
+                <h3>Apa itu Data Type? (Bukan Definisi Buku)</h3>
+
+                Data type adalah kontrak antara data, database, dan logika bisnis.
+
+                Saat kamu memilih data type, kamu sedang berkata ke database:
+
+                Data ini boleh seperti apa
+
+                Batasannya sampai mana
+
+                Cara menyimpannya bagaimana
+
+                Cara menghitung & membandingkannya bagaimana
+
+                📌 Data type = penjaga kualitas data
+
+                <h3>Kenapa Data Type Sangat Penting?</h3>
+
+                Kesalahan data type:
+
+                Tidak kelihatan hari ini
+
+                Tapi meledak 6–12 bulan kemudian
+
+                Contoh klasik:
+
+                Harga pakai INT
+
+                Uang pakai FLOAT
+
+                Tanggal pakai VARCHAR
+
+                👉 Ini bom waktu.
+
+                <h3>Cara Berpikir yang Benar Saat Memilih Data Type</h3>
+
+                Setiap kolom, tanyakan:
+
+                Data ini apa maknanya?
+
+                Apakah akan dihitung?
+
+                Apakah akan dibandingkan?
+
+                Apakah akan diurutkan?
+
+                Apakah akan membesar?
+
+                Kalau kamu jawab ini dengan benar → data type otomatis tepat.
+
+                <h3>1️⃣ NUMERIC DATA TYPE</h3>
+
+                (INT, BIGINT, DECIMAL)
+
+                Numeric bukan cuma “angka”, tapi makna angka.
+
+                <h4>A. INT — Angka Bulat Umum</h4>
+                Apa itu INT?
+
+                INT adalah tipe data untuk angka bulat dalam rentang tertentu.
+
+                Range (signed):
+
+                -2,147,483,648 sampai 2,147,483,647
+
+                Kapan Pakai INT?
+
+                Gunakan INT untuk:
+
+                Primary Key
+
+                Counter
+
+                Quantity
+
+                Status numerik
+
+                ID relasi
+
+                Contoh:
+
+                id
+                user_id
+                stock
+                quantity
+
+                INT BUKAN untuk:
+
+                ❌ Uang
+                ❌ Berat presisi
+                ❌ Nilai pecahan
+
+                Kesalahan Umum
+                price INT
+
+
+                ❌ Harga bukan sekadar angka
+                ❌ Harga butuh presisi
+
+                <h4>B. BIGINT — Angka Besar (Future Proof)</h4>
+                Apa itu BIGINT?
+
+                BIGINT adalah versi besar dari INT.
+
+                Range:
+
+                ±9 quintillion (sangat besar)
+
+                Kapan Pakai BIGINT?
+
+                Gunakan BIGINT jika:
+
+                Data akan sangat banyak
+
+                Sistem jangka panjang
+
+                ID publik / distributed system
+
+                Contoh:
+
+                orders.id
+                transactions.id
+                logs.id
+
+
+                📌 Untuk sistem bisnis serius → BIGINT lebih aman
+
+                INT vs BIGINT (Mindset)
+                Kriteria	INT	BIGINT
+                Aman jangka panjang	❌	✔️
+                Lebih hemat storage	✔️	❌
+                Umum dipakai	✔️	✔️
+
+                👉 Di MySQL modern, selisih storage jarang jadi masalah.
+
+                <h4>C. DECIMAL — Angka Presisi (WAJIB untuk Uang)</h4>
+                Apa itu DECIMAL?
+
+                DECIMAL menyimpan angka dengan presisi tetap.
+
+                Format:
+
+                DECIMAL(total_digit, decimal_digit)
+
+
+                Contoh:
+
+                DECIMAL(15,2)
+
+
+                Artinya:
+
+                Total 15 digit
+
+                2 digit di belakang koma
+
+                Kapan Wajib Pakai DECIMAL?
+
+                Harga
+
+                Uang
+
+                Pajak
+
+                Diskon
+
+                Financial calculation
+
+                📌 Tidak ada kompromi untuk ini.
+
+                Kenapa BUKAN FLOAT / DOUBLE?
+
+                Karena:
+
+                Floating point error
+
+                Pembulatan tidak konsisten
+
+                Fatal untuk finance
+
+                Contoh error klasik:
+
+                0.1 + 0.2 ≠ 0.3
+
+                Contoh Penggunaan yang Benar
+                price DECIMAL(12,2)
+                tax DECIMAL(5,2)
+                discount DECIMAL(5,2)
+
+                Kesalahan Fatal di Dunia Nyata
+
+                ❌ Pakai INT untuk rupiah
+                ❌ Pakai FLOAT untuk pajak
+                ❌ DECIMAL terlalu kecil
+
+                Contoh salah:
+
+                DECIMAL(5,2) → maksimal 999.99
+
+
+                🚨 Gaji direktur lewat.
+
+                <h3>Pola Pikir Penting (Expert Level)</h3>
+                <h4>1️⃣ ID ≠ Data Bisnis</h4>
+
+                ID → INT / BIGINT
+
+                Nilai bisnis → DECIMAL
+
+                <h4>2️⃣ Lebih Besar Lebih Aman (dalam batas wajar)</h4>
+
+                BIGINT lebih aman dari INT
+
+                DECIMAL(15,2) lebih aman dari (8,2)
+
+                <h4>3️⃣ Storage Murah, Data Rusak Mahal</h4>
+
+                Jangan pelit di data type.
+
+                <h3>Mini Case (Refleksi)</h3>
+
+                Bayangkan:
+
+                Sistem finance
+
+                5 tahun
+
+                1 juta transaksi / bulan
+
+                ❓ Apa yang terjadi kalau:
+
+                PK pakai INT?
+
+                Harga pakai FLOAT?
+
+                👉 Jawabannya: migrasi menyakitkan.
+
+                <h3>Ringkasan 1.2 + Numeric</h3>
+
+                Data type = kontrak data
+
+                INT → angka bulat umum
+
+                BIGINT → future-proof ID
+
+                DECIMAL → WAJIB untuk uang
+
+                Salah pilih = utang teknis
+            </div>
+        </main>
+    </div>
+
+    <script>
+        fetch('layout/aside.html').then(response => response.text()).then(data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop();
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
