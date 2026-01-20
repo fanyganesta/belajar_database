@@ -410,231 +410,384 @@
                 <br>
 
 
-                1.2.2 — String Data Type
+                <h2>1.2.2 — String Data Type</h2>
 
-                VARCHAR vs TEXT (MySQL Spesifik)        
+                <div class="quote"><p>VARCHAR vs TEXT (MySQL Spesifik)</p></div>     
 
-                Kenapa String Itu Tidak “Sekadar Teks”?
+                
+                <br>
 
-                Banyak developer berpikir:
+                <hr>
 
-                “Ah teks doang, pakai TEXT aja”
+                <br>
+
+                <h3>Kenapa String Itu Tidak “Sekadar Teks”?</h3>
+
+                <p>Banyak developer berpikir:
+
+                <div class="quote"><p>“Ah teks doang, pakai TEXT aja”</p></div>
 
                 Padahal di database:
+                <ul>
+                    <li>String mempengaruhi index</li>
+                    <li>String mempengaruhi query speed</li>
+                    <li>String mempengaruhi desain tabel</li>
+                    <li>String mempengaruhi skalabilitas</li>
+                </ul>
+                
+                👉 Salah pilih = query makin lambat seiring waktu.</p>
 
-                String mempengaruhi index
+                
+                <br>
 
-                String mempengaruhi query speed
+                <hr>
 
-                String mempengaruhi desain tabel
+                <br>
 
-                String mempengaruhi skalabilitas
+                <h3>Cara Berpikir Awal (Mindset Penting)</h3>
 
-                👉 Salah pilih = query makin lambat seiring waktu.
+                <p>Sebelum memilih VARCHAR atau TEXT, tanyakan:
+                <ul>
+                    <li>Apakah ini punya batas panjang yang jelas?</li>
+                    <li>Apakah akan sering di-search / filter / join?</li>
+                    <li>Apakah ini data utama atau data pelengkap?</li>
+                </ul> <br>
+                
+                Jawaban ini menentukan data type, bukan kebiasaan.</p>
 
-                Cara Berpikir Awal (Mindset Penting)
+                
+                <br>
 
-                Sebelum memilih VARCHAR atau TEXT, tanyakan:
+                <hr>
 
-                Apakah ini punya batas panjang yang jelas?
+                <br>
 
-                Apakah akan sering di-search / filter / join?
+                <h3>A. VARCHAR — String yang Punya Batas & Tujuan</h3>
+                
+                <p>Apa itu VARCHAR?
 
-                Apakah ini data utama atau data pelengkap?
+                <div class="quote"><p>VARCHAR adalah string dengan panjang maksimal yang ditentukan.</p></div>
 
-                Jawaban ini menentukan data type, bukan kebiasaan.
+                <br> 
 
-                A. VARCHAR — String yang Punya Batas & Tujuan
-                Apa itu VARCHAR?
+                Contoh:</p>
+<pre>
+    name VARCHAR(100) <br>
+    email VARCHAR(150)
+</pre>
 
-                VARCHAR adalah string dengan panjang maksimal yang ditentukan.
-
-                Contoh:
-
-                name VARCHAR(100)
-                email VARCHAR(150)
-
-
-                📌 Panjang fleksibel
-                📌 Tidak selalu pakai full size
+                📌 Panjang fleksibel <br>
+                📌 Tidak selalu pakai full size <br>
                 📌 Bisa di-index penuh
 
-                Kapan Wajib Pakai VARCHAR?
+                
+                <br>
 
-                Gunakan VARCHAR untuk:
+                <hr>
 
-                Nama
+                <br>
 
-                Email
+                <h3>Kapan Wajib Pakai VARCHAR?</h3>
 
-                Username
+                <p>Gunakan VARCHAR untuk:
+                <ul>
+                    <li>Nama</li>
+                    <li>Email</li>
+                    <li>Username</li>
+                    <li>Kode</li>
+                    <li>Status teks pendek</li>
+                </ul>
+                <br>
 
-                Kode
+                Contoh:</p>
+<pre>
+    name VARCHAR(100) <br>
+    email VARCHAR(150) <br>
+    sku VARCHAR(50) <br>
+    status VARCHAR(20)
+</pre>
+                
+                <br>
 
-                Status teks pendek
+                <hr>
 
-                Contoh:
+                <br>
 
-                name VARCHAR(100)
-                email VARCHAR(150)
-                sku VARCHAR(50)
-                status VARCHAR(20)
+                <h3>Kenapa VARCHAR Itu Sehat?</h3>
+                <ul>
+                    <li>Ada batasan jelas</li>
+                    <li>Database bisa optimasi</li>
+                    <li>Index bekerja optimal</li>
+                    <li>Struktur tabel tetap ramping</li>
+                </ul>
+                
+                <br>
 
-                Kenapa VARCHAR Itu Sehat?
+                <hr>
 
-                Ada batasan jelas
+                <br>
 
-                Database bisa optimasi
+                <h3>Kesalahan Umum VARCHAR</h3>
 
-                Index bekerja optimal
+                <p>❌ VARCHAR Terlalu Panjang</p>
+<pre>
+    name VARCHAR(1000)
+</pre>
 
-                Struktur tabel tetap ramping
+                <p>Masalah:
+                <ul>
+                    <li>Tidak realistis</li>
+                    <li>Index jadi berat</li>
+                    <li>Menandakan desain tidak dipikirkan</li>
+                </ul>
+                
 
-                Kesalahan Umum VARCHAR
-                ❌ VARCHAR Terlalu Panjang
-                name VARCHAR(1000)
+                ✔️ Lebih sehat:</p>
+<pre>
+    name VARCHAR(100)
+</pre>
+                
+                <br>
 
+                <hr>
 
-                Masalah:
+                <br>
 
-                Tidak realistis
+                <h3>B. TEXT — Konten Panjang (Bukan Default)</h3>
+                
+                <p>Apa itu TEXT?
 
-                Index jadi berat
-
-                Menandakan desain tidak dipikirkan
-
-                ✔️ Lebih sehat:
-
-                name VARCHAR(100)
-
-                B. TEXT — Konten Panjang (Bukan Default)
-                Apa itu TEXT?
-
-                TEXT adalah string panjang tanpa batas kecil yang jelas.
+                <div class="quote"><p>TEXT adalah string panjang tanpa batas kecil yang jelas.</p></div>
 
                 Varian:
-
-                TINYTEXT
-
-                TEXT
-
-                MEDIUMTEXT
-
-                LONGTEXT
-
-                📌 Disimpan terpisah secara internal
-                📌 Tidak cocok untuk filter berat
-
-                Kapan TEXT Tepat Digunakan?
-
-                Gunakan TEXT untuk:
-
-                Deskripsi panjang
-
-                Catatan
-
-                Konten artikel
-
-                HTML content
-
-                JSON besar (kalau terpaksa)
-
-                Contoh:
-
-                description TEXT
-                notes TEXT
-                content LONGTEXT
-
-                TEXT BUKAN untuk:
-
-                ❌ Email
-                ❌ Status
-                ❌ Kode
-                ❌ Data yang sering di-join
-
-                VARCHAR vs TEXT (Perbandingan Kritis)
-                Aspek	VARCHAR	TEXT
-                Batas panjang	Ada	Besar
-                Bisa di-index penuh	✔️	❌ (terbatas)
-                Performa filter	Cepat	Lebih lambat
-                Cocok untuk	Data inti	Konten
-                Index & Dampak Besar (Sering Tidak Disadari)
-                email VARCHAR(150) → index cepat
-                email TEXT → index terbatas & berat
-
-
-                📌 Banyak query lambat bukan karena JOIN, tapi karena TEXT.
-
-                Pola Kesalahan Dunia Nyata
-                ❌ Semua string = TEXT
-
-                → Query lambat
-                → Index tidak optimal
-
-                ❌ Semua string = VARCHAR(255)
-
-                → Desain asal
-                → Tidak mencerminkan bisnis
-
-                Panjang VARCHAR: Cara Menentukan
-                Data	Saran
-                Name	100
-                Email	150
-                Phone	20
-                Code	20–50
-                Slug	150
-
-                📌 Ini bukan dogma, tapi praktik sehat.
-
-                Tentang UTF-8 & Panjang
-
-                Ingat:
-
-                MySQL pakai utf8mb4
-
-                1 karakter ≠ 1 byte
-
-                👉 Tapi jangan mikir terlalu teknis dulu, fokus makna data.
-
-                Best Practice String (Expert Level)
-
-                1️⃣ VARCHAR default, TEXT jika perlu
-                2️⃣ Tentukan panjang berdasarkan makna bisnis
-                3️⃣ TEXT = data pelengkap, bukan data inti
-                4️⃣ Jangan jadikan TEXT sebagai FK / join key
-
-                Mini Case (Refleksi)
-
-                Kasus: Produk
-
-                ❓ Mana yang TEXT?
-                ❓ Mana yang VARCHAR?
-
-                name ?
-                sku ?
-                description ?
-                category ?
-
-
-                Jawaban sehat:
-
-                name VARCHAR(150)
-                sku VARCHAR(50)
-                category VARCHAR(100)
-                description TEXT
-
-                Ringkasan 1.2.2
-
-                VARCHAR = string terkontrol
-
-                TEXT = konten panjang
-
-                TEXT bukan default
-
-                String mempengaruhi performa
-
-                Desain string = desain sistem
+                <ul>
+                    <li>TINYTEXT</li>
+                    <li>TEXT</li>
+                    <li>MEDIUMTEXT</li>
+                    <li>LONGTEXT</li>
+                </ul> <br>
                 
+                📌 Disimpan terpisah secara internal <br>
+                📌 Tidak cocok untuk filter berat</p>
+
+                
+                <br>
+
+                <hr>
+
+                <br>
+
+                <h3>Kapan TEXT Tepat Digunakan?</h3>
+
+                <p>Gunakan TEXT untuk:
+                <ul>
+                    <li>Deskripsi panjang</li>
+                    <li>Catatan</li>
+                    <li>Konten artikel</li>
+                    <li>HTML content</li>
+                    <li>JSON besar (kalau terpaksa)</li>
+                </ul> <br> <br>
+                
+
+                Contoh:</p>
+<pre>
+    description TEXT <br>
+    notes TEXT <br>
+    content LONGTEXT
+</pre>
+                
+                <br>
+
+                <hr>
+
+                <br>
+
+                <h3>TEXT BUKAN untuk:</h3>
+
+                <p>❌ Email <br>
+                ❌ Status <br>
+                ❌ Kode <br>
+                ❌ Data yang sering di-join</p>
+
+                
+                <br>
+
+                <hr>
+
+                <br>
+
+                <h3>VARCHAR vs TEXT (Perbandingan Kritis)</h3>
+                <table>
+                    <tr>
+                        <th>Aspek</th>
+                        <th>VARCHAR</th>
+                        <th>TEXT</th>
+                    </tr>
+                    <tr>
+                        <td>Batas panjang</td>
+                        <td>Ada</td>
+                        <td>Besar</td>
+                    </tr>
+                    <tr>
+                        <td>Bisa di-index penuh</td>
+                        <td>✔️</td>
+                        <td>❌(terbatas)</td>
+                    </tr>
+                    <tr>
+                        <td>Performa filter</td>
+                        <td>Cepat</td>
+                        <td>Lebih lambat</td>
+                    </tr>
+                    <tr>
+                        <td>Cocok untuk</td>
+                        <td>Data inti</td>
+                        <td>Konten</td>
+                    </tr>
+                </table>
+                		
+                <br>
+
+                <hr>
+
+                <br>
+                
+                <h3>Index & Dampak Besar (Sering Tidak Disadari)</h3>
+<pre>
+    email VARCHAR(150) → index cepat <br>
+    email TEXT → index terbatas & berat
+</pre>
+
+                <p>📌 Banyak query lambat bukan karena JOIN, tapi karena TEXT.</p>
+
+                
+                <br>
+
+                <hr>
+
+                <br>
+
+                <h3>Pola Kesalahan Dunia Nyata</h3>
+                <p>❌ Semua string = TEXT <br> <br>
+
+                → Query lambat <br>
+                → Index tidak optimal <br> <br>
+
+                ❌ Semua string = VARCHAR(255) <br> <br>
+
+                → Desain asal <br>
+                → Tidak mencerminkan bisnis</p>
+
+                
+                <br>
+
+                <hr>
+
+                <br>
+
+                <h3>Panjang VARCHAR: Cara Menentukan</h3>
+                <table>
+                    <tr>
+                        <th>Data</th>
+                        <th>Saran</th>
+                    </tr>
+                    <tr>
+                        <td>Name</td>
+                        <td>100</td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td>150</td>
+                    </tr>
+                    <tr>
+                        <td>Phone</td>
+                        <td>20</td>
+                    </tr>
+                    <tr>
+                        <td>Code</td>
+                        <td>20-50</td>
+                    </tr>
+                    <tr>
+                        <td>Slug</td>
+                        <td>150</td>
+                    </tr>
+                </table>
+
+                <br>
+
+                <p>📌 Ini bukan dogma, tapi praktik sehat.</p>
+
+                
+                <br>
+
+                <hr>
+
+                <br>
+
+                <h3>Tentang UTF-8 & Panjang</h3>
+
+                <p>Ingat:
+                <ul>
+                    <li>MySQL pakai utf8mb4</li>
+                    <li>1 karakter ≠ 1 byte</li>
+                </ul> <br>
+
+                👉 Tapi jangan mikir terlalu teknis dulu, fokus makna data.</p>
+
+                
+                <br>
+
+                <hr>
+
+                <br>
+
+                <h3>Best Practice String (Expert Level)</h3>
+
+                <p>1️⃣ VARCHAR default, TEXT jika perlu <br>
+                2️⃣ Tentukan panjang berdasarkan makna bisnis <br>
+                3️⃣ TEXT = data pelengkap, bukan data inti <br>
+                4️⃣ Jangan jadikan TEXT sebagai FK / join key <br></p>
+
+                <br>
+
+                <hr>
+
+                <br>
+
+                <h3>Mini Case (Refleksi)</h3>
+
+                <p>Kasus: Produk <br> <br>
+
+                ❓ Mana yang TEXT? <br>
+                ❓ Mana yang VARCHAR?</p>
+<pre>
+    name ? <br>
+    sku ? <br>
+    description ? <br>
+    category ?
+</pre>
+
+                <p>Jawaban sehat:</p>
+<pre>
+    name VARCHAR(150) <br>
+    sku VARCHAR(50) <br>
+    category VARCHAR(100) <br>
+    description TEXT
+</pre>
+                <br>
+
+                <hr>
+
+                <br>
+
+                <h3>Ringkasan 1.2.2</h3>
+                <ul>
+                    <li>VARCHAR = string terkontrol</li>
+                    <li>TEXT = konten panjang</li>
+                    <li>TEXT bukan default</li>
+                    <li>String mempengaruhi performa</li>
+                    <li>Desain string = desain sistem</li>
+                </ul>
+
             </div>
         </main>
     </div>
