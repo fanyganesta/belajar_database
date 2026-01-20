@@ -18,255 +18,623 @@
             </header>
             
             <div class="content">
-                <h2>.2 — Data Type (MySQL Spesifik)</h2>
+                <h2>1.2 — Data Type (MySQL Spesifik)</h2>
                 <h3>Apa itu Data Type? (Bukan Definisi Buku)</h3>
 
-                Data type adalah kontrak antara data, database, dan logika bisnis.
+                <p>Data type adalah kontrak antara data, database, dan logika bisnis. <br> <br>
 
                 Saat kamu memilih data type, kamu sedang berkata ke database:
+                <ul>
+                    <li>Data ini boleh seperti apa</li>
+                    <li>Batasannya sampai mana</li>
+                    <li>Cara menyimpannya bagaimana</li>
+                    <li>Cara menghitung & membandingkannya bagaimana</li>
+                </ul>
 
-                Data ini boleh seperti apa
+                📌 Data type = penjaga kualitas data</p>
 
-                Batasannya sampai mana
+                <br>
 
-                Cara menyimpannya bagaimana
+                <hr>
 
-                Cara menghitung & membandingkannya bagaimana
-
-                📌 Data type = penjaga kualitas data
+                <br>
 
                 <h3>Kenapa Data Type Sangat Penting?</h3>
 
-                Kesalahan data type:
-
-                Tidak kelihatan hari ini
-
-                Tapi meledak 6–12 bulan kemudian
+                <p>Kesalahan data type:
+                <ul>
+                    <li>Tidak kelihatan hari ini</li>
+                    <li>Tapi meledak 6–12 bulan kemudian</li>
+                </ul> <br>
 
                 Contoh klasik:
+                <ul>
+                    <li>Harga pakai INT</li>
+                    <li>Uang pakai FLOAT</li>
+                    <li>Tanggal pakai VARCHAR</li>
+                </ul> <br>
 
-                Harga pakai INT
+                👉 Ini bom waktu.</p>
 
-                Uang pakai FLOAT
+                <br>
 
-                Tanggal pakai VARCHAR
+                <hr>
 
-                👉 Ini bom waktu.
+                <br>
 
                 <h3>Cara Berpikir yang Benar Saat Memilih Data Type</h3>
 
-                Setiap kolom, tanyakan:
+                <p>Setiap kolom, tanyakan:
+                <ul>
+                    <li>Data ini apa maknanya?</li>
+                    <li>Apakah akan dihitung?</li>
+                    <li>Apakah akan dibandingkan?</li>
+                    <li>Apakah akan diurutkan?</li>
+                    <li>Apakah akan membesar?</li>
+                </ul> <br>
 
-                Data ini apa maknanya?
+                Kalau kamu jawab ini dengan benar → data type otomatis tepat.</p>
 
-                Apakah akan dihitung?
+                <br>
 
-                Apakah akan dibandingkan?
+                <hr>
 
-                Apakah akan diurutkan?
-
-                Apakah akan membesar?
-
-                Kalau kamu jawab ini dengan benar → data type otomatis tepat.
+                <br>
 
                 <h3>1️⃣ NUMERIC DATA TYPE</h3>
 
-                (INT, BIGINT, DECIMAL)
+                <p><strong>(INT, BIGINT, DECIMAL)</strong></p>
 
-                Numeric bukan cuma “angka”, tapi makna angka.
+                <div class="quote"><p>Numeric bukan cuma “angka”, tapi makna angka.</p></div>
+
+                <br>
+
+                <hr>
+
+                <br>
 
                 <h4>A. INT — Angka Bulat Umum</h4>
-                Apa itu INT?
+                <p><strong>Apa itu INT?</strong></p>
 
-                INT adalah tipe data untuk angka bulat dalam rentang tertentu.
+                <div class="quote"><p>INT adalah tipe data untuk angka bulat dalam rentang tertentu.</p></div>
 
-                Range (signed):
+                <p>Range (signed):
+                <ul>
+                    <li>-2,147,483,648 sampai 2,147,483,647</li>
+                </ul></p>
 
-                -2,147,483,648 sampai 2,147,483,647
+                <br>
 
-                Kapan Pakai INT?
+                <hr>
 
-                Gunakan INT untuk:
+                <br>
+                
 
-                Primary Key
+                <p><strong>Kapan Pakai INT?</strong></p>
 
-                Counter
+                <p>Gunakan INT untuk:
+                <ul>
+                    <li>Primary Key</li>
+                    <li>Counter</li>
+                    <li>Quantity</li>
+                    <li>Status numerik</li>
+                    <li>ID relasi</li>
+                </ul>
 
-                Quantity
+                <br>
 
-                Status numerik
+                <hr>
 
-                ID relasi
+                <br>
 
-                Contoh:
+                Contoh:</p>
+<pre>
+    id <br>
+    user_id <br>
+    stock <br>
+    quantity
+</pre>
+                <p>INT BUKAN untuk: <br> <br>
 
-                id
-                user_id
-                stock
-                quantity
+                ❌ Uang <br>
+                ❌ Berat presisi <br>
+                ❌ Nilai pecahan <br> <br></p>
 
-                INT BUKAN untuk:
+                <p><strong>Kesalahan Umum</strong></p>
+<pre>
+    price INT
+</pre>
+                <p>❌ Harga bukan sekadar angka <br>
+                ❌ Harga butuh presisi</p>
 
-                ❌ Uang
-                ❌ Berat presisi
-                ❌ Nilai pecahan
+                <br>
 
-                Kesalahan Umum
-                price INT
+                <hr>
 
-
-                ❌ Harga bukan sekadar angka
-                ❌ Harga butuh presisi
+                <br>
 
                 <h4>B. BIGINT — Angka Besar (Future Proof)</h4>
-                Apa itu BIGINT?
+                <p><strong>Apa itu BIGINT?</strong></p>
 
-                BIGINT adalah versi besar dari INT.
+                <div class="quote"><p>BIGINT adalah versi besar dari INT.</p></div>
 
-                Range:
+                <p>Range:
+                <ul>
+                    <li>±9 quintillion (sangat besar)</li>
+                </ul></p>
 
-                ±9 quintillion (sangat besar)
+                <br>
 
-                Kapan Pakai BIGINT?
+                <hr>
 
-                Gunakan BIGINT jika:
+                <br>
+                
 
-                Data akan sangat banyak
+                <p><strong>Kapan Pakai BIGINT?</strong></p>
 
-                Sistem jangka panjang
+                <p>Gunakan BIGINT jika:
+                <ul>
+                    <li>Data akan sangat banyak</li>
+                    <li>Sistem jangka panjang</li>
+                    <li>ID publik / distributed system</li>
+                </ul>
+                <br> <br>
 
-                ID publik / distributed system
+                <br>
 
-                Contoh:
+                <hr>
 
-                orders.id
-                transactions.id
-                logs.id
+                <br>
+                Contoh:</p>
+<pre>
+    orders.id <br>
+    transactions.id <br>
+    logs.id
+</pre>
 
+                <p>📌 Untuk sistem bisnis serius → BIGINT lebih aman</p>
 
-                📌 Untuk sistem bisnis serius → BIGINT lebih aman
+                <br>
 
-                INT vs BIGINT (Mindset)
-                Kriteria	INT	BIGINT
-                Aman jangka panjang	❌	✔️
-                Lebih hemat storage	✔️	❌
-                Umum dipakai	✔️	✔️
+                <hr>
 
-                👉 Di MySQL modern, selisih storage jarang jadi masalah.
+                <br>
+
+                <p><strong>INT vs BIGINT (Mindset)</strong></p>
+                <table>
+                    <tr>
+                        <th>Kriteria</th>
+                        <th>INT</th>
+                        <th>BIGINT</th>
+                    </tr>
+                    <tr>
+                        <td>Aman jangka panjang</td>
+                        <td>❌</td>
+                        <td>✔️</td>
+                    </tr>
+                    <tr>
+                        <td>Lebih hemat storage</td>
+                        <td>✔️</td>
+                        <td>❌</td>
+                    </tr>
+                    <tr>
+                        <td>Umum dipakai</td>
+                        <td>✔️</td>
+                        <td>✔️</td>
+                    </tr>
+                </table>
+                <br> <br>
+                
+                <p>👉 Di MySQL modern, selisih storage jarang jadi masalah.</p>
+
+                <br>
+
+                <hr>
+
+                <br>
 
                 <h4>C. DECIMAL — Angka Presisi (WAJIB untuk Uang)</h4>
-                Apa itu DECIMAL?
+                <p><strong>Apa itu DECIMAL?</strong></p>
 
-                DECIMAL menyimpan angka dengan presisi tetap.
+                <div class="quote"><p>DECIMAL menyimpan angka dengan presisi tetap.</p></div>
 
-                Format:
+                <p>Format:</p>
+<pre>
+    DECIMAL(total_digit, decimal_digit)
+</pre>
 
-                DECIMAL(total_digit, decimal_digit)
+                <p>Contoh:</p>
+<pre>
+    DECIMAL(15,2)
+</pre>
 
+                <p>Artinya:
+                <ul>
+                    <li>Total 15 digit</li>
+                    <li>2 digit di belakang koma</li>
+                </ul></p>
 
-                Contoh:
+                <br>
 
-                DECIMAL(15,2)
+                <hr>
 
+                <br>
 
-                Artinya:
+                <p><strong>Kapan Wajib Pakai DECIMAL?</strong></p>
+                <ul>
+                    <li>Harga</li>
+                    <li>Uang</li>
+                    <li>Pajak</li>
+                    <li>Diskon</li>
+                    <li>Financial calculation</li>
+                </ul>
 
-                Total 15 digit
+                <p>📌 Tidak ada kompromi untuk ini.</p>
 
-                2 digit di belakang koma
+                <br>
 
-                Kapan Wajib Pakai DECIMAL?
+                <hr>
 
-                Harga
+                <br>
 
-                Uang
+                <p><strong>Kenapa BUKAN FLOAT / DOUBLE?</strong></p>
 
-                Pajak
+                <p>Karena:
+                <ul>
+                    <li>Floating point error</li>
+                    <li>Pembulatan tidak konsisten</li>
+                    <li>Fatal untuk finance</li>
+                </ul>
 
-                Diskon
+                <br> <br>
 
-                Financial calculation
+                <br>
 
-                📌 Tidak ada kompromi untuk ini.
+                <hr>
 
-                Kenapa BUKAN FLOAT / DOUBLE?
+                <br>
 
-                Karena:
+                Contoh error klasik:</p>
+<pre>
+    0.1 + 0.2 ≠ 0.3
+</pre>
+                <p>Contoh Penggunaan yang Benar</p>
+<pre>
+    price DECIMAL(12,2)
+    tax DECIMAL(5,2)
+    discount DECIMAL(5,2)
+</pre>
 
-                Floating point error
+<br>
 
-                Pembulatan tidak konsisten
+<hr>
 
-                Fatal untuk finance
+<br>
 
-                Contoh error klasik:
+                <p><strong>Kesalahan Fatal di Dunia Nyata</strong></p>
 
-                0.1 + 0.2 ≠ 0.3
+                <p>❌ Pakai INT untuk rupiah <br>
+                ❌ Pakai FLOAT untuk pajak <br>
+                ❌ DECIMAL terlalu kecil <br> <br>
 
-                Contoh Penggunaan yang Benar
-                price DECIMAL(12,2)
-                tax DECIMAL(5,2)
-                discount DECIMAL(5,2)
+                Contoh salah:</p>
+<pre>
+    DECIMAL(5,2) → maksimal 999.99
+</pre>
 
-                Kesalahan Fatal di Dunia Nyata
+                <p>🚨 Gaji direktur lewat.</p>
 
-                ❌ Pakai INT untuk rupiah
-                ❌ Pakai FLOAT untuk pajak
-                ❌ DECIMAL terlalu kecil
+                <br>
 
-                Contoh salah:
+                <hr>
 
-                DECIMAL(5,2) → maksimal 999.99
-
-
-                🚨 Gaji direktur lewat.
+                <br>
 
                 <h3>Pola Pikir Penting (Expert Level)</h3>
                 <h4>1️⃣ ID ≠ Data Bisnis</h4>
 
-                ID → INT / BIGINT
+                <ul>
+                    <li>ID → INT / BIGINT</li>
+                    <li>Nilai bisnis → DECIMAL</li>
+                </ul>
 
-                Nilai bisnis → DECIMAL
+                <br>
+
+                <hr>
+
+                <br>
 
                 <h4>2️⃣ Lebih Besar Lebih Aman (dalam batas wajar)</h4>
 
-                BIGINT lebih aman dari INT
+                <ul>
+                    <li>BIGINT lebih aman dari INT</li>
+                    <li>DECIMAL(15,2) lebih aman dari (8,2)</li>
+                </ul>
 
-                DECIMAL(15,2) lebih aman dari (8,2)
+                <br>
+
+                <hr>
+
+                <br>
 
                 <h4>3️⃣ Storage Murah, Data Rusak Mahal</h4>
 
-                Jangan pelit di data type.
+                <div class="quote"><p>Jangan pelit di data type.</p></div>
+
+                <br>
+
+                <hr>
+
+                <br>
 
                 <h3>Mini Case (Refleksi)</h3>
 
-                Bayangkan:
-
-                Sistem finance
-
-                5 tahun
-
-                1 juta transaksi / bulan
+                <p>Bayangkan:
+                <ul>
+                    <li>Sistem finance</li>
+                    <li>5 tahun</li>
+                    <li>1 juta transaksi / bulan</li>
+                </ul> <br> <br>
 
                 ❓ Apa yang terjadi kalau:
+                <ul>
+                    <li>PK pakai INT?</li>
+                    <li>Harga pakai FLOAT?</li>
+                </ul> <br> <br>
 
-                PK pakai INT?
+                👉 Jawabannya: migrasi menyakitkan.</p>
 
-                Harga pakai FLOAT?
+                <br>
 
-                👉 Jawabannya: migrasi menyakitkan.
+                <hr>
+
+                <br>
 
                 <h3>Ringkasan 1.2 + Numeric</h3>
+                <ul>
+                    <li>Data type = kontrak data</li>
+                    <li>INT → angka bulat umum</li>
+                    <li>BIGINT → future-proof ID</li>
+                    <li>DECIMAL → WAJIB untuk uang</li>
+                    <li>Salah pilih = utang teknis</li>
+                </ul>
 
-                Data type = kontrak data
+                <br>
 
-                INT → angka bulat umum
+                <br>
 
-                BIGINT → future-proof ID
+                <hr>
 
-                DECIMAL → WAJIB untuk uang
+                <br>
 
-                Salah pilih = utang teknis
+                <br>
+
+
+                1.2.2 — String Data Type
+
+                VARCHAR vs TEXT (MySQL Spesifik)        
+
+                Kenapa String Itu Tidak “Sekadar Teks”?
+
+                Banyak developer berpikir:
+
+                “Ah teks doang, pakai TEXT aja”
+
+                Padahal di database:
+
+                String mempengaruhi index
+
+                String mempengaruhi query speed
+
+                String mempengaruhi desain tabel
+
+                String mempengaruhi skalabilitas
+
+                👉 Salah pilih = query makin lambat seiring waktu.
+
+                Cara Berpikir Awal (Mindset Penting)
+
+                Sebelum memilih VARCHAR atau TEXT, tanyakan:
+
+                Apakah ini punya batas panjang yang jelas?
+
+                Apakah akan sering di-search / filter / join?
+
+                Apakah ini data utama atau data pelengkap?
+
+                Jawaban ini menentukan data type, bukan kebiasaan.
+
+                A. VARCHAR — String yang Punya Batas & Tujuan
+                Apa itu VARCHAR?
+
+                VARCHAR adalah string dengan panjang maksimal yang ditentukan.
+
+                Contoh:
+
+                name VARCHAR(100)
+                email VARCHAR(150)
+
+
+                📌 Panjang fleksibel
+                📌 Tidak selalu pakai full size
+                📌 Bisa di-index penuh
+
+                Kapan Wajib Pakai VARCHAR?
+
+                Gunakan VARCHAR untuk:
+
+                Nama
+
+                Email
+
+                Username
+
+                Kode
+
+                Status teks pendek
+
+                Contoh:
+
+                name VARCHAR(100)
+                email VARCHAR(150)
+                sku VARCHAR(50)
+                status VARCHAR(20)
+
+                Kenapa VARCHAR Itu Sehat?
+
+                Ada batasan jelas
+
+                Database bisa optimasi
+
+                Index bekerja optimal
+
+                Struktur tabel tetap ramping
+
+                Kesalahan Umum VARCHAR
+                ❌ VARCHAR Terlalu Panjang
+                name VARCHAR(1000)
+
+
+                Masalah:
+
+                Tidak realistis
+
+                Index jadi berat
+
+                Menandakan desain tidak dipikirkan
+
+                ✔️ Lebih sehat:
+
+                name VARCHAR(100)
+
+                B. TEXT — Konten Panjang (Bukan Default)
+                Apa itu TEXT?
+
+                TEXT adalah string panjang tanpa batas kecil yang jelas.
+
+                Varian:
+
+                TINYTEXT
+
+                TEXT
+
+                MEDIUMTEXT
+
+                LONGTEXT
+
+                📌 Disimpan terpisah secara internal
+                📌 Tidak cocok untuk filter berat
+
+                Kapan TEXT Tepat Digunakan?
+
+                Gunakan TEXT untuk:
+
+                Deskripsi panjang
+
+                Catatan
+
+                Konten artikel
+
+                HTML content
+
+                JSON besar (kalau terpaksa)
+
+                Contoh:
+
+                description TEXT
+                notes TEXT
+                content LONGTEXT
+
+                TEXT BUKAN untuk:
+
+                ❌ Email
+                ❌ Status
+                ❌ Kode
+                ❌ Data yang sering di-join
+
+                VARCHAR vs TEXT (Perbandingan Kritis)
+                Aspek	VARCHAR	TEXT
+                Batas panjang	Ada	Besar
+                Bisa di-index penuh	✔️	❌ (terbatas)
+                Performa filter	Cepat	Lebih lambat
+                Cocok untuk	Data inti	Konten
+                Index & Dampak Besar (Sering Tidak Disadari)
+                email VARCHAR(150) → index cepat
+                email TEXT → index terbatas & berat
+
+
+                📌 Banyak query lambat bukan karena JOIN, tapi karena TEXT.
+
+                Pola Kesalahan Dunia Nyata
+                ❌ Semua string = TEXT
+
+                → Query lambat
+                → Index tidak optimal
+
+                ❌ Semua string = VARCHAR(255)
+
+                → Desain asal
+                → Tidak mencerminkan bisnis
+
+                Panjang VARCHAR: Cara Menentukan
+                Data	Saran
+                Name	100
+                Email	150
+                Phone	20
+                Code	20–50
+                Slug	150
+
+                📌 Ini bukan dogma, tapi praktik sehat.
+
+                Tentang UTF-8 & Panjang
+
+                Ingat:
+
+                MySQL pakai utf8mb4
+
+                1 karakter ≠ 1 byte
+
+                👉 Tapi jangan mikir terlalu teknis dulu, fokus makna data.
+
+                Best Practice String (Expert Level)
+
+                1️⃣ VARCHAR default, TEXT jika perlu
+                2️⃣ Tentukan panjang berdasarkan makna bisnis
+                3️⃣ TEXT = data pelengkap, bukan data inti
+                4️⃣ Jangan jadikan TEXT sebagai FK / join key
+
+                Mini Case (Refleksi)
+
+                Kasus: Produk
+
+                ❓ Mana yang TEXT?
+                ❓ Mana yang VARCHAR?
+
+                name ?
+                sku ?
+                description ?
+                category ?
+
+
+                Jawaban sehat:
+
+                name VARCHAR(150)
+                sku VARCHAR(50)
+                category VARCHAR(100)
+                description TEXT
+
+                Ringkasan 1.2.2
+
+                VARCHAR = string terkontrol
+
+                TEXT = konten panjang
+
+                TEXT bukan default
+
+                String mempengaruhi performa
+
+                Desain string = desain sistem
+                
             </div>
         </main>
     </div>
