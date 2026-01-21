@@ -1060,6 +1060,299 @@
                     <li>Salah pilih = laporan salah</li>
                     <li>Timezone itu musuh tersembunyi</li>
                 </ul>
+
+                <br> <br>
+
+                <hr>
+                 
+                <br> <br>
+
+                <h2>1.2.4 — Boolean</h2>
+
+                <div class="quote"><p>(TINYINT(1) di MySQL)</p></div>
+
+                <br>
+
+                <hr>
+
+                <br>
+
+                <h3>Kenapa Boolean Perlu Dibahas Serius?</h3>
+
+                <div class="quote"><p>Karena banyak sistem rusak bukan oleh angka besar… <br>
+                tapi oleh status kecil yang maknanya tidak jelas 😄</p></div>
+
+                Contoh klasik:
+                <ul>
+                    <li>is_active</li>
+                    <li>is_paid</li>
+                    <li>is_deleted</li>
+                </ul> <br>
+                
+                Kelihatannya simpel, tapi:
+                <ul>
+                    <li>Nilainya apa?</li>
+                    <li>0 artinya apa?</li>
+                    <li>Bisa lebih dari dua kondisi?</li>
+                </ul>
+
+                <br>
+
+                <hr>
+
+                <br>
+
+                <h3>Fakta Penting: MySQL Tidak Punya BOOLEAN Sejati</h3>
+
+                Di MySQL:
+<pre>
+    BOOLEAN = TINYINT(1)
+</pre>
+
+                Artinya:
+                <ul>
+                    <li>Disimpan sebagai angka</li>
+                    <li>Nilai valid secara teknis: -128 sampai 127</li>
+                    <li>Tapi secara logika: 0 atau 1</li>
+                </ul>
+
+                📌 BOOLEAN di MySQL itu alias, bukan tipe khusus.
+
+                <br>
+
+                <hr>
+
+                <br>
+
+                <h3>Cara Berpikir yang Benar tentang Boolean</h3>
+
+                Boolean hanya boleh dipakai untuk kondisi yang benar-benar dua keadaan. <br> <br>
+
+                Jika suatu kondisi:
+                <ul>
+                    <li>Bisa berkembang</li>
+                    <li>Bisa punya lebih dari dua status</li>
+                </ul> <br>
+                
+                👉 JANGAN pakai boolean
+
+                <br>
+
+                <hr>
+
+                <br>
+
+                <h3>A. Kapan Boolean Tepat Digunakan?</h3>
+
+                Gunakan TINYINT(1) untuk:
+                <ul>
+                    <li>Flag sederhana</li>
+                    <li>Kondisi ya / tidak</li>
+                    <li>Status biner permanen</li>
+                </ul> <br> <br>
+
+                Contoh:
+<pre>
+    is_active TINYINT(1) <br> 
+    is_verified TINYINT(1) <br>
+    is_deleted TINYINT(1) <br>
+</pre> <br>
+
+                Makna:
+<pre>
+    0 = tidak <br> <br>
+
+    1 = ya
+</pre> <br>
+                📌 Simpel, jelas, aman.
+
+                <br>
+
+                <hr>
+
+                <br>
+
+                <h3>B. Kapan Boolean TIDAK Tepat?</h3> <br>
+                ❌ Status Bertahap
+<pre>
+    is_paid
+</pre> <br> <br>
+
+
+                Masalah:
+                <ul>
+                    <li>unpaid</li>
+                    <li>pending</li>
+                    <li>paid</li>
+                    <li>failed</li>
+                </ul> <br>
+                
+
+                👉 Ini bukan boolean, tapi status. <br> <br>
+
+                ❌ Status Bisnis
+<pre>
+    is_shipped
+</pre>
+
+                Karena:
+                <ul>
+                    <li>belum diproses</li>
+                    <li>diproses</li>
+                    <li>dikirim</li>
+                    <li>diterima</li>
+                    <li>retur</li>
+                </ul> <br>
+                
+                👉 Boolean tidak cukup.
+
+                <br>
+
+                <hr>
+
+                <br>
+
+                <h3>Pola Salah yang Sering Terjadi</h3>
+                ❌ Boolean Bertumpuk
+<pre>
+    is_paid <br> 
+    is_shipped <br>
+    is_completed
+</pre> <br> <br>
+
+                Masalah:
+                <ul>
+                    <li>Kombinasi tidak valid</li>
+                    <li>Sulit validasi</li>
+                    <li>Sulit laporan</li>
+                </ul>
+
+                <br>
+
+                <hr>
+
+                <br>
+
+                <h3>Pola Benar untuk Status Kompleks</h3>
+
+                Gunakan:
+                <ul>
+                    <li>ENUM (sementara)</li>
+                    <li>Lookup Table (lebih sehat)</li>
+                </ul> <br> <br>
+
+                Contoh:
+<pre>
+    status ENUM('pending','paid','failed')
+</pre> <br> <br>
+
+                Atau:
+<pre>
+    status_id → statuses.id
+</pre>
+ <br>
+                📌 Kita akan bahas ini di submateri berikutnya.
+
+                <br>
+
+                <hr>
+
+                <br>
+
+                <h3>NULL pada Boolean? (Hati-hati)</h3>
+<pre>
+    is_active TINYINT(1) NULL
+</pre> <br> <br>
+
+                Artinya:
+<pre>
+    0 → false <br> <br>
+
+    1 → true <br> <br>
+
+    NULL → ???
+</pre> <br> <br>
+                🚨 Ini sering bikin bug logika. <br> <br>
+
+                ✔️ Best practice:
+<pre>
+    is_active TINYINT(1) NOT NULL DEFAULT 1
+</pre>
+                <br>
+
+                <hr>
+
+                <br>
+
+                <h3>Boolean & Soft Delete</h3>
+
+                Pola lama:
+<pre>
+    is_deleted TINYINT(1)
+</pre> <br> <br>
+
+                Pola modern:
+<pre>
+    deleted_at DATETIME NULL
+</pre> <br> <br>
+
+                📌 Lebih informatif <br>
+                📌 Bisa tahu kapan dihapus <br>
+                📌 Lebih aman audit
+
+                <br>
+
+                <hr>
+
+                <br>
+
+                <h3>Boolean & Index</h3>
+
+                Boolean:
+                <ul>
+                    <li>Nilainya sedikit</li>
+                    <li>Index sering tidak efektif</li>
+                </ul> <br>
+                
+                👉 Jangan berharap performa dari index boolean saja.
+
+                <br>
+
+                <hr>
+
+                <br>
+
+                <h3>Mini Case (Refleksi)</h3>
+
+                Kasus:  <br> <br>
+
+                ❓ Mana boolean? <br>
+                ❓ Mana bukan?
+<pre>
+    is_paid ? <br>
+    payment_status ? <br>
+    is_active ?
+</pre> <br> <br>
+
+                Jawaban sehat:
+<pre>
+    is_active TINYINT(1) <br>
+    payment_status → ENUM / lookup table
+</pre>
+                <br>
+
+                <hr>
+
+                <br>
+
+                <h3>Ringkasan 1.2.4</h3>
+                <ul>
+                    <li>MySQL boolean = TINYINT(1)</li>
+                    <li>Hanya untuk dua kondisi</li>
+                    <li>Jangan pakai boolean untuk status kompleks</li>
+                    <li>Hindari NULL pada boolean</li>
+                    <li>Status ≠ boolean</li>
+                </ul>
                 
             </div>
         </main>
