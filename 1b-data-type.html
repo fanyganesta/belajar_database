@@ -788,6 +788,279 @@
                     <li>Desain string = desain sistem</li>
                 </ul>
 
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>1.2.3 — Date & Time</h2>
+
+                <p>DATE, DATETIME, TIMESTAMP (MySQL Spesifik)</p>
+
+                <h3>Kenapa Date & Time Itu Rawan?</h3>
+
+                <p>Karena:
+                <ul>
+                    <li>Waktu punya zona</li>
+                    <li>Waktu bisa berubah konteks</li>
+                    <li>Waktu sering dipakai untuk laporan & analisis</li>
+                </ul>
+                
+                <br>
+
+                Dan kesalahan kecil:
+
+                <div class="quote"><p></div>“Ah sama aja tanggal”</p>
+
+                👉 Bisa bikin laporan keuangan meleset.</p>
+
+                <br> <hr> <br>
+
+                <h3>Cara Berpikir Awal (Mindset Penting)</h3>
+
+                <p>Sebelum pilih tipe waktu, tanyakan:
+                <ul>
+                    <li>Apakah saya butuh tanggal saja?</li>
+                    <li>Apakah saya butuh tanggal + jam?</li>
+                    <li>Apakah data ini terikat zona waktu?</li>
+                    <li>Apakah data ini log / event?</li>
+                </ul>
+                
+                Jawaban ini menentukan tipe data.</p>
+
+                <br> <hr> <br>
+
+                <h3>A. DATE — Tanggal Tanpa Waktu</h3>
+                Apa itu DATE?
+
+                <div class="quote"><p>DATE menyimpan tanggal saja (YYYY-MM-DD).</p></div>
+
+                <p>📌 Tidak ada jam <br>
+                📌 Tidak ada menit <br>
+                📌 Tidak ada zona waktu</p>
+
+                <br> <hr> <br>
+
+                <h4>Kapan Pakai DATE?</h4>
+
+                <p>Gunakan DATE untuk:
+                <ul>
+                    <li>Tanggal lahir</li>
+                    <li>Tanggal invoice</li>
+                    <li>Tanggal jatuh tempo</li>
+                    <li>Periode bisnis</li>
+                </ul>
+                
+                Contoh:</p>
+<pre>
+    birth_date DATE <br>
+    invoice_date DATE <br>
+    due_date DATE
+</pre>
+
+                <br> <hr> <br>
+
+                <h4>DATE BUKAN untuk:</h4>
+
+                <p>❌ Log aktivitas <br>
+                ❌ Timestamp transaksi <br>
+                ❌ Data real-time</p>
+
+                <br> <hr> <br>
+
+                <h3>B. DATETIME — Tanggal + Jam (Netral Zona)</h3>
+                Apa itu DATETIME?
+
+                <div class="quote"><p>DATETIME menyimpan tanggal dan waktu, tanpa peduli zona waktu.</p></div>
+
+                <p>Format:</p>
+<pre>
+    YYYY-MM-DD HH:MM:SS
+</pre>
+
+                <p>📌 Tidak otomatis konversi zona <br>
+                📌 Disimpan apa adanya</p>
+
+                <br> <hr> <br>
+
+                <h4>Kapan Pakai DATETIME?</h4>
+
+                <p>Gunakan DATETIME untuk:
+                <ul>
+                    <li>Waktu transaksi</li>
+                    <li>Jadwal</li>
+                    <li>Event bisnis</li>
+                    <li>Data historis</li>
+                </ul>
+
+                <br> <hr> <br>
+                
+                Contoh:</p>
+<pre>
+    created_at DATETIME <br>
+    paid_at DATETIME <br>
+    scheduled_at DATETIME
+</pre>
+
+                <br> <hr> <br>
+
+                <h4>Kelebihan DATETIME</h4>
+                <ul>
+                    <li>Stabil</li>
+                    <li>Tidak tergantung timezone server</li>
+                    <li>Aman untuk laporan historis</li>
+                </ul>
+
+                <br> <hr> <br>
+
+                <h3>C. TIMESTAMP — Waktu Absolut (Zona Waktu Aktif)</h3>
+                Apa itu TIMESTAMP? <br>
+
+                <div class="quote"><p>TIMESTAMP menyimpan waktu absolut (UTC) dan otomatis dikonversi ke timezone server.</p></div>
+
+                <p>📌 Disimpan sebagai UTC <br>
+                📌 Ditampilkan sesuai timezone</p>
+
+                <br> <hr> <br>
+
+                <h4>Kapan Pakai TIMESTAMP?</h4>
+
+                <p>Gunakan TIMESTAMP untuk:
+                <ul>
+                    <li>Log sistem</li>
+                    <li>Audit trail</li>
+                    <li>Event real-time</li>
+                    <li>Tracking aktivitas user</li>
+                </ul>
+
+                <br> <hr> <br>
+                
+                Contoh:</p>
+<pre>
+    last_login TIMESTAMP <br>
+    updated_at TIMESTAMP <br>
+    activity_at TIMESTAMP
+</pre>
+
+                <br> <hr> <br>
+
+                <h4>Bahaya TIMESTAMP (Kalau Tidak Paham)</h4>s
+
+                <p>❌ Server timezone berubah → waktu ikut berubah <br>
+                ❌ Data lama bisa tampak bergeser <br>
+                ❌ Laporan bisa kacau <br> <br>
+
+                👉 TIMESTAMP powerful tapi berbahaya.</p>
+
+                <br> <hr> <br>
+
+                <h3>DATE vs DATETIME vs TIMESTAMP (Perbandingan)</h3>
+                <table>
+                    <tr>
+                        <th>Aspek</th>
+                        <th>DATE</th>
+                        <th>DATETIME</th>
+                        <th>TIMESTAMP</th>
+                    </tr>
+                    <tr>
+                        <td>Simpan jam</td>
+                        <td>❌</td>
+                        <td>✔️</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Zona waktu</td>
+                        <td❌></td>
+                        <td>❌</td>
+                        <td>✔️</td>
+                    </tr>
+                    <tr>
+                        <td>Cocok laporan</td>
+                        <td>✔️</td>
+                        <td>✔️</td>
+                        <td>⚠️</td>
+                    </tr>
+                    <tr>
+                        <td>Cocok log</td>
+                        <td>❌</td>
+                        <td>⚠️</td>
+                        <td>✔️</td>
+                    </tr>
+                </table>
+
+                <br> <hr> <br>
+                
+                <h3>Kesalahan Paling Sering Terjadi</h3>
+                <p>❌ Semua pakai DATETIME <br>
+                → Padahal tanggal saja cukup <br> <br>
+
+                ❌ Semua pakai TIMESTAMP <br>
+                → Zona waktu jadi masalah <br> <br>
+
+                ❌ Tanggal disimpan sebagai VARCHAR <br>
+                → Filter & sorting rusak</p>
+
+                <br> <hr> <br>
+
+                <h3>Tentang created_at & updated_at</h3>
+
+                <p>Best practice:</p>
+<pre>
+    created_at DATETIME <br>
+    updated_at DATETIME
+</pre>
+ <br>
+                <p>📌 Banyak framework default ke TIMESTAMP <br>
+                📌 Tapi untuk sistem bisnis & finance → DATETIME lebih aman</p>
+
+                <br> <hr> <br>
+
+                <h3>Date & Time untuk Laporan (Penting!)</h3>
+                <ul>
+                    <li>Filter bulanan <br>
+                        Lebih mudah dengan DATE atau DATETIME</li>
+                    <li>Filter jam <br>
+                        Butuh DATETIME / TIMESTAMP</li>
+                    <li>Rekap historis <br>
+                        Hindari TIMESTAMP jika zona berubah</li>
+                </ul>
+
+                <br> <hr> <br>                
+
+                <h3>Mini Case (Refleksi)</h3>
+
+                <p>Kasus: Transaksi <br> <br>
+
+                Pertanyaan:</p>
+                <ul>
+                    <li>Apakah saya perlu jam? → Ya</li>
+                    <li>Apakah timezone penting? → Tidak</li>
+                    <li>Apakah untuk laporan? → Ya</li>
+                </ul>
+                
+                <p>👉 DATETIME adalah pilihan sehat</p>
+
+                <br> <hr> <br>
+
+                <h3>Pola Pikir Expert (Ringkas)</h3>
+
+                <p>1️⃣ Tanggal saja → DATE <br>
+                2️⃣ Tanggal + jam (stabil) → DATETIME <br>
+                3️⃣ Log & audit → TIMESTAMP <br>
+                4️⃣ Jangan simpan waktu sebagai string</p>
+
+                <br> <hr> <br>
+
+                <h3>Ringkasan 1.2.3</h3>
+                <ul>
+                    <li>DATE = tanggal</li>
+                    <li>DATETIME = waktu netral</li>
+                    <li>TIMESTAMP = waktu absolut</li>
+                    <li>Salah pilih = laporan salah</li>
+                    <li>Timezone itu musuh tersembunyi</li>
+                </ul>
+                
             </div>
         </main>
     </div>
