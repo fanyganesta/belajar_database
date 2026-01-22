@@ -1354,6 +1354,207 @@
                     <li>Status ≠ boolean</li>
                 </ul>
                 
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                1.2.5 ENUM vs Lookup Table (⚠️ PENTING BANGET)
+
+                Ini salah satu keputusan desain database paling sering salah kaprah.
+
+                A. Apa itu ENUM?
+
+                ENUM adalah tipe data khusus MySQL yang isinya sudah ditentukan di level kolom.
+
+                Contoh ENUM
+                CREATE TABLE orders (
+                    id INT PRIMARY KEY,
+                    status ENUM('pending', 'paid', 'shipped', 'cancelled')
+                );
+
+
+                Artinya:
+
+                Kolom status HANYA boleh berisi salah satu dari nilai tersebut
+
+                Tidak bisa insert nilai lain
+
+                Insert valid
+                INSERT INTO orders (id, status)
+                VALUES (1, 'paid');
+
+                Insert invalid ❌
+                INSERT INTO orders (id, status)
+                VALUES (2, 'refund'); -- ERROR
+
+                B. Kelebihan ENUM
+
+                ✅ Simple & cepat
+
+                Tidak perlu tabel tambahan
+
+                Cocok untuk data kecil & jarang berubah
+
+                ✅ Data terkontrol
+
+                Tidak bisa input nilai di luar pilihan
+
+                ✅ Hemat storage
+
+                MySQL menyimpan ENUM sebagai angka internal
+
+                C. Kekurangan ENUM (INI YANG SERING DIABAIKAN)
+
+                ❌ Sulit dikembangkan
+
+                Mau tambah value → harus ALTER TABLE
+
+                ALTER TABLE orders
+                MODIFY status ENUM('pending','paid','shipped','cancelled','refund');
+
+
+                ❌ Tightly coupled dengan schema
+
+                Logika bisnis “tertanam” di struktur DB
+
+                Kurang fleksibel untuk sistem besar
+
+                ❌ Kurang portable
+
+                ENUM MySQL-specific
+
+                Pindah ke PostgreSQL? Ribet
+
+                ❌ Tidak bisa attach metadata
+
+                Tidak bisa kasih:
+
+                label display
+
+                urutan
+
+                warna status
+
+                deskripsi
+
+                D. Apa itu Lookup Table?
+
+                Lookup table adalah tabel referensi terpisah untuk nilai yang berulang.
+
+                Contoh Lookup Table
+                CREATE TABLE order_statuses (
+                    id INT PRIMARY KEY,
+                    code VARCHAR(20),
+                    label VARCHAR(50)
+                );
+
+                INSERT INTO order_statuses VALUES
+                (1, 'pending', 'Menunggu Pembayaran'),
+                (2, 'paid', 'Sudah Dibayar'),
+                (3, 'shipped', 'Dikirim'),
+                (4, 'cancelled', 'Dibatalkan');
+
+                Tabel utama
+                CREATE TABLE orders (
+                    id INT PRIMARY KEY,
+                    status_id INT,
+                    FOREIGN KEY (status_id) REFERENCES order_statuses(id)
+                );
+
+                E. Kelebihan Lookup Table
+
+                ✅ Fleksibel
+
+                Tambah status → cukup INSERT
+
+                Tidak perlu alter struktur tabel besar
+
+                ✅ Relasi jelas & scalable
+
+                Cocok untuk aplikasi berkembang
+
+                ✅ Bisa tambah metadata
+
+                ALTER TABLE order_statuses
+                ADD color VARCHAR(20),
+                ADD is_active BOOLEAN;
+
+
+                ✅ Clean secara arsitektur
+
+                Logic bisnis di data, bukan di schema
+
+                F. Kekurangan Lookup Table
+
+                ❌ Lebih kompleks
+
+                Harus JOIN
+
+                SELECT o.id, s.label
+                FROM orders o
+                JOIN order_statuses s ON o.status_id = s.id;
+
+
+                ❌ Sedikit overhead
+
+                Tapi ini tidak signifikan di sistem modern
+
+                G. ENUM vs Lookup — Perbandingan Cepat
+                Aspek	ENUM	Lookup Table
+                Mudah dibuat	✅	❌
+                Mudah dikembangkan	❌	✅
+                Cocok skala besar	❌	✅
+                Bisa metadata	❌	✅
+                Portable DB	❌	✅
+                Best practice profesional	❌	✅
+                H. Kapan Pakai ENUM?
+
+                ENUM BOLEH dipakai jika:
+
+                ✅ Nilai sangat terbatas
+                ✅ Tidak akan berubah
+                ✅ Tidak butuh metadata
+                ✅ Sistem kecil / internal
+
+                Contoh ENUM yang aman
+                gender ENUM('male','female')
+
+                day ENUM('mon','tue','wed','thu','fri')
+
+                I. Kapan HARUS Lookup Table?
+
+                Lookup Table WAJIB jika:
+
+                🚨 Nilai bisa bertambah
+                🚨 Ada label tampilan
+                🚨 Ada urutan / warna / status aktif
+                🚨 Dipakai di banyak modul
+                🚨 Aplikasi bisnis nyata
+
+                Contoh wajib lookup
+
+                Status order
+
+                Role user
+
+                Payment method
+
+                Kategori produk
+
+                Level prioritas
+
+                J. Mindset Penting (ingat ini)
+
+                ENUM = cepat sekarang, mahal nanti
+                Lookup = sedikit ribet sekarang, aman selamanya
+
+                Kalau kamu bangun sistem:
+
+                UMKM → ENUM masih oke
+
+                SaaS / ERP / bisnis berkembang → lookup table
             </div>
         </main>
     </div>
