@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Type</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+
+        <main>
+            <header>
+                
+            </header>
+            
+            <div class="content">
+                BAB 2 — SQL Dasar (Operasional Harian)
+                A. Kenapa BAB 2 ini krusial?
+
+                Kalau BAB 1 = arsitektur & fondasi,
+                maka BAB 2 = alat kerja harian.
+
+                Di dunia nyata:
+
+                70% kerja backend = SELECT
+
+                20% = INSERT / UPDATE
+
+                10% = mikir kenapa query lambat 😄
+
+                BAB ini ngajarin:
+
+                Cara membentuk struktur data
+
+                Cara memasukkan & mengambil data
+
+                Cara memfilter data sesuai kebutuhan bisnis
+
+                B. Pembagian Besar SQL
+
+                SQL dibagi berdasarkan tujuan, bukan sekadar sintaks:
+
+                Kategori	Fokus	Contoh
+                DDL	Struktur database	CREATE, ALTER
+                DML	Isi data	INSERT, UPDATE
+                DQL	Query data	SELECT
+                DCL	Hak akses	GRANT, REVOKE
+
+                👉 Di MySQL, SELECT sering dimasukkan ke DML/DQL, tapi mindset-nya tetap beda.
+
+                2.1 DDL — Data Definition Language (Structure)
+                A. Apa itu DDL?
+
+                DDL = perintah untuk mendefinisikan & mengubah struktur database
+
+                Artinya:
+
+                Bukan isi data
+
+                Tapi kerangka / wadahnya
+
+                Analoginya:
+
+                DDL = arsitek & tukang bangunan
+
+                DML = pengisi barang
+
+                B. Apa saja yang diatur oleh DDL?
+
+                Dengan DDL kamu mengatur:
+
+                Tabel
+
+                Kolom
+
+                Tipe data
+
+                Primary key
+
+                Foreign key
+
+                Index
+
+                Constraint (UNIQUE, NOT NULL)
+
+                📌 Sekali salah desain di DDL → efeknya panjang
+
+                C. Karakteristik DDL (PENTING)
+                1. Mengubah struktur permanen
+                CREATE TABLE users (...);
+
+
+                Begitu dijalankan:
+
+                Struktur berubah
+
+                Tidak bisa “undo” tanpa drop/alter lagi
+
+                2. Biasanya jarang dijalankan di production
+
+                Local / development: sering
+
+                Production: sangat hati-hati
+
+                Karena:
+
+                ALTER TABLE besar → bisa lock table
+
+                DROP TABLE = goodbye data 👋
+
+                3. DDL = keputusan arsitektur
+
+                Contoh keputusan DDL:
+
+                Pakai INT atau BIGINT
+
+                Pakai ENUM atau lookup
+
+                Pakai index atau tidak
+
+                Ini bukan sekadar teknis, tapi keputusan jangka panjang
+
+                D. Komponen utama DDL (yang akan kita dalami)
+
+                Di BAB 2.1, kita fokus ke:
+
+                1️⃣ CREATE TABLE
+
+                → membuat struktur awal
+
+                2️⃣ ALTER TABLE
+
+                → mengubah struktur yang sudah ada
+
+                3️⃣ DROP
+
+                → menghapus struktur
+
+                4️⃣ INDEX & UNIQUE
+
+                → optimasi & constraint data
+
+                🔥 Profesional backend dinilai dari seberapa aman dan rapi DDL-nya
+
+                E. Mindset penting sebelum nulis DDL
+
+                Sebelum ngetik SQL, tanyakan:
+
+                Data ini bakal tumbuh seberapa besar?
+
+                Kolom ini wajib atau boleh kosong?
+
+                Apakah akan sering dipakai di WHERE / JOIN?
+
+                Apakah kemungkinan berubah di masa depan?
+
+                DDL yang baik:
+
+                Minim ALTER di kemudian hari
+
+                Struktur jelas
+
+                Tidak over-engineering
+
+                F. Contoh mental model DDL
+                Buruk ❌
+                CREATE TABLE users (
+                    id INT,
+                    name TEXT,
+                    age VARCHAR(10)
+                );
+
+
+                Masalah:
+
+                Tidak ada PK
+
+                Tipe data asal
+
+                Tidak scalable
+
+                Lebih benar ✅
+                CREATE TABLE users (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    name VARCHAR(100) NOT NULL,
+                    age TINYINT UNSIGNED
+                );
+
+
+                Struktur:
+
+                Jelas
+
+                Aman
+
+                Masuk akal
+
+                G. Ringkasan 2.1 DDL
+
+                DDL = fondasi rumah
+                DML = isi rumah
+                SELECT = cara cari barang di rumah
+
+                Kalau fondasi salah:
+
+                Query ribet
+
+                Data tidak konsisten
+
+                Performa buruk
+            </div>
+        </main>
+    </div>
+
+    <script>
+        fetch('layout/aside.html').then(response => response.text()).then(data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop();
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
