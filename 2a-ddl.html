@@ -212,6 +212,228 @@
                 Data tidak konsisten
 
                 Performa buruk
+
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+
+                2.1.1 CREATE TABLE — Fondasi Semua Query
+                A. Apa itu CREATE TABLE?
+
+                CREATE TABLE digunakan untuk membuat struktur tabel baru di database.
+
+                ⚠️ Ingat: ini bukan isi data, tapi wadah data
+
+                Kalau tabel sudah salah dari awal:
+
+                INSERT ribet
+
+                UPDATE rawan bug
+
+                SELECT berat
+
+                B. Struktur Dasar CREATE TABLE
+
+                Bentuk paling umum:
+
+                CREATE TABLE nama_tabel (
+                    nama_kolom tipe_data constraint,
+                    nama_kolom tipe_data constraint,
+                    ...
+                );
+
+
+                Contoh sederhana:
+
+                CREATE TABLE users (
+                    id INT,
+                    name VARCHAR(100)
+                );
+
+
+                👉 Ini valid, tapi belum profesional.
+
+                C. Komponen Penting CREATE TABLE (WAJIB PAHAM)
+                1️⃣ Nama Tabel
+
+                Best practice:
+
+                plural
+
+                snake_case
+
+                jelas secara bisnis
+
+                ✅ users, orders, order_items
+                ❌ User, tblUser, data1
+
+                2️⃣ Kolom
+
+                Setiap kolom harus menjawab:
+
+                Menyimpan data apa?
+
+                Tipe datanya apa?
+
+                Wajib atau tidak?
+
+                Contoh:
+
+                name VARCHAR(100) NOT NULL
+
+                3️⃣ Tipe Data
+
+                Sudah kamu pelajari di BAB 1.2, contoh:
+
+                INT
+
+                VARCHAR(255)
+
+                DECIMAL(10,2)
+
+                DATETIME
+
+                DDL bagus = tipe data pas, tidak berlebihan
+
+                4️⃣ Constraint (aturan)
+
+                Constraint paling sering dipakai:
+
+                PRIMARY KEY
+
+                NOT NULL
+
+                UNIQUE
+
+                DEFAULT
+
+                AUTO_INCREMENT
+
+                Contoh:
+
+                id INT AUTO_INCREMENT PRIMARY KEY
+
+                D. CREATE TABLE Versi Profesional (Contoh Nyata)
+                CREATE TABLE users (
+                    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                    email VARCHAR(150) NOT NULL UNIQUE,
+                    name VARCHAR(100) NOT NULL,
+                    password VARCHAR(255) NOT NULL,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                );
+
+
+                Kenapa ini bagus:
+
+                PK jelas
+
+                Email unik
+
+                Password aman
+
+                Timestamp otomatis
+
+                E. Primary Key di CREATE TABLE
+                Cara 1: Inline (paling sering)
+                id INT AUTO_INCREMENT PRIMARY KEY
+
+                Cara 2: Di bawah (composite key)
+                CREATE TABLE order_items (
+                    order_id INT,
+                    product_id INT,
+                    quantity INT,
+                    PRIMARY KEY (order_id, product_id)
+                );
+
+
+                Dipakai saat:
+
+                Many-to-many
+
+                Tidak perlu id auto increment
+
+                F. DEFAULT Value
+
+                Dipakai untuk:
+
+                Nilai awal
+
+                Data sistem
+
+                status VARCHAR(20) DEFAULT 'pending'
+
+                is_active BOOLEAN DEFAULT 1
+
+                G. AUTO_INCREMENT (catatan penting)
+
+                Hanya boleh satu per tabel
+
+                Biasanya di Primary Key
+
+                Jangan dipakai untuk data bisnis
+
+                ❌ invoice_number AUTO_INCREMENT
+                ✅ id AUTO_INCREMENT
+
+                H. ENGINE & CHARSET (LEVEL PRO)
+
+                Kalau mau rapi:
+
+                CREATE TABLE users (
+                    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                    email VARCHAR(150) NOT NULL UNIQUE
+                ) ENGINE=InnoDB
+                CHARSET=utf8mb4;
+
+
+                Kenapa?
+
+                InnoDB → support transaction & FK
+
+                utf8mb4 → emoji & karakter internasional
+
+                I. Kesalahan Umum Pemula (hindari ini)
+
+                ❌ Pakai TEXT untuk semua string
+                ❌ Tidak pakai PK
+                ❌ Semua kolom boleh NULL
+                ❌ Nama kolom ambigu (data, value)
+
+                J. Checklist CREATE TABLE (ingat ini)
+
+                Sebelum execute, cek:
+
+                Ada Primary Key?
+
+                Tipe data pas?
+
+                Kolom wajib pakai NOT NULL?
+
+                Default value masuk akal?
+
+                Nama konsisten?
+
+                K. Mini Latihan 🔥
+
+                Coba desain tabel products dengan kebutuhan:
+
+                id
+
+                name
+
+                price
+
+                stock
+
+                is_active
+
+                created_at
+
+                Tulis SQL-nya (versi kamu).
             </div>
         </main>
     </div>
