@@ -42,176 +42,187 @@
                 <h3>B. Pembagian Besar SQL</h3>
 
                 SQL dibagi berdasarkan tujuan, bukan sekadar sintaks:
-
-                Kategori	Fokus	Contoh
-                DDL	Struktur database	CREATE, ALTER
-                DML	Isi data	INSERT, UPDATE
-                DQL	Query data	SELECT
-                DCL	Hak akses	GRANT, REVOKE
-
+                <table>
+                    <tr>
+                        <th>Kategori</th>
+                        <th>Fokus</th>
+                        <th>Contoh</th>
+                    </tr>
+                    <tr>
+                        <td>DDL</td>
+                        <td>Struktur database</td>
+                        <td><code>CREATE</code>, <code>ALTER</code></td>
+                    </tr>
+                    <tr>
+                        <td>DML</td>
+                        <td>Isi data</td>
+                        <td><code>INSERT</code>, <code>UPDATE</code></td>
+                    </tr>
+                    <tr>
+                        <td>DQL</td>
+                        <td>Query data</td>
+                        <td><code>SELECT</code></td>
+                    </tr>
+                    <tr>
+                        <td>DCL</td>
+                        <td>Hak akses</td>
+                        <td><code>GRANT</code>REVOKE</td>
+                    </tr>
+                </table>
+                <br>
                 👉 Di MySQL, SELECT sering dimasukkan ke DML/DQL, tapi mindset-nya tetap beda.
 
                 <h2>2.1 DDL — Data Definition Language (Structure)</h2>
                 <h3>A. Apa itu DDL?</h3>
 
-                DDL = perintah untuk mendefinisikan & mengubah struktur database
+                <div class="quote"><p>DDL = perintah untuk mendefinisikan & mengubah struktur database</p></div>
+                <br>
 
                 Artinya:
-
-                Bukan isi data
-
-                Tapi kerangka / wadahnya
-
+                <ul>
+                    <li>Bukan isi data</li>
+                    <li>Tapi kerangka / wadahnya</li>
+                </ul> <br>
+                
                 Analoginya:
+                <ul>
+                    <li>DDL = arsitek & tukang bangunan</li>
+                    <li>DML = pengisi barang</li>
+                </ul> <br>
+                
 
-                DDL = arsitek & tukang bangunan
-
-                DML = pengisi barang
+                
 
                 <h3>B. Apa saja yang diatur oleh DDL?</h3>
 
                 Dengan DDL kamu mengatur:
-
-                Tabel
-
-                Kolom
-
-                Tipe data
-
-                Primary key
-
-                Foreign key
-
-                Index
-
-                Constraint (UNIQUE, NOT NULL)
-
+                <ul>
+                    <li>Tabel</li>
+                    <li>Kolom</li>
+                    <li>Tipe data</li>
+                    <li>Primary key</li>
+                    <li>Foreign key</li>
+                    <li>Index</li>
+                    <li>Constraint (<code>UNIQUE</code>, <code>NOT NULL</code>)</li>
+                </ul> <br>
+                
                 📌 Sekali salah desain di DDL → efeknya panjang
 
                 <h3>C. Karakteristik DDL (PENTING)</h3>
                 <h4>1. Mengubah struktur permanen</h4>
-                CREATE TABLE users (...);
-
+<pre>
+    CREATE TABLE users (...);
+</pre>
 
                 Begitu dijalankan:
-
-                Struktur berubah
-
-                Tidak bisa “undo” tanpa drop/alter lagi
+                <ul>
+                    <li>Struktur berubah</li>
+                    <li>Tidak bisa “undo” tanpa drop/alter lagi</li>
+                </ul>
 
                 <h4>2. Biasanya jarang dijalankan di production</h4>
-
-                Local / development: sering
-
-                Production: sangat hati-hati
-
-                Karena:
-
-                ALTER TABLE besar → bisa lock table
-
-                DROP TABLE = goodbye data 👋
+                <ul>
+                    <li>Local / development: sering</li>
+                    <li>Production: sangat hati-hati, karena:</li>
+                    <ul>
+                        <li><code>ALTER TABLE</code> besar → bisa lock table</li>
+                        <li><code>DROP TABLE</code> = goodbye data 👋</li>
+                    </ul>
+                </ul>
 
                 <h4>3. DDL = keputusan arsitektur</h4>
 
                 Contoh keputusan DDL:
-
-                Pakai INT atau BIGINT
-
-                Pakai ENUM atau lookup
-
-                Pakai index atau tidak
-
+                <ul>
+                    <li>Pakai <code>INT</code> atau <code>BIGINT</code></li>
+                    <li>Pakai <code>ENUM</code> atau <code>lookup</code></li>
+                    <li>Pakai index atau tidak</li>
+                </ul> <br>
+                
                 Ini bukan sekadar teknis, tapi keputusan jangka panjang
 
                 <h3>D. Komponen utama DDL (yang akan kita dalami)</h3>
 
-                Di BAB 2.1, kita fokus ke:
+                Di BAB 2.1, kita fokus ke: <br> <br>
 
-                1️⃣ CREATE TABLE
+                1️⃣ CREATE TABLE <br>
+                → membuat struktur awal <br> <br>
 
-                → membuat struktur awal
+                2️⃣ ALTER TABLE <br>
+                → mengubah struktur yang sudah ada <br> <br>
 
-                2️⃣ ALTER TABLE
+                3️⃣ DROP <br>
+                → menghapus struktur <br> <br>
 
-                → mengubah struktur yang sudah ada
-
-                3️⃣ DROP
-
-                → menghapus struktur
-
-                4️⃣ INDEX & UNIQUE
-
-                → optimasi & constraint data
+                4️⃣ INDEX & UNIQUE <br>
+                → optimasi & constraint data <br> <br>
 
                 🔥 Profesional backend dinilai dari seberapa aman dan rapi DDL-nya
 
                 <h3>E. Mindset penting sebelum nulis DDL</h3>
 
                 Sebelum ngetik SQL, tanyakan:
-
-                Data ini bakal tumbuh seberapa besar?
-
-                Kolom ini wajib atau boleh kosong?
-
-                Apakah akan sering dipakai di WHERE / JOIN?
-
-                Apakah kemungkinan berubah di masa depan?
-
+                <ul>
+                    <li>Data ini bakal tumbuh seberapa besar?</li>
+                    <li>Kolom ini wajib atau boleh kosong?</li>
+                    <li>Apakah akan sering dipakai di WHERE / JOIN?</li>
+                    <li>Apakah kemungkinan berubah di masa depan?</li>
+                </ul> <br>
+                
                 DDL yang baik:
-
-                Minim ALTER di kemudian hari
-
-                Struktur jelas
-
-                Tidak over-engineering
-
+                <ul>
+                    <li>Minim ALTER di kemudian hari</li>
+                    <li>Struktur jelas</li>
+                    <li>Tidak over-engineering</li>
+                </ul>
+                
                 <h3>F. Contoh mental model DDL</h3>
                 Buruk ❌
-                CREATE TABLE users (
-                    id INT,
-                    name TEXT,
-                    age VARCHAR(10)
-                );
-
+<pre>
+    CREATE TABLE users ( <br>
+        id INT, <br>
+        name TEXT, <br>
+        age VARCHAR(10) <br>
+    );
+</pre>
 
                 Masalah:
-
-                Tidak ada PK
-
-                Tipe data asal
-
-                Tidak scalable
-
+                <ul>
+                    <li>Tidak ada PK</li>
+                    <li>Tipe data asal</li>
+                    <li>Tidak scalable</li>
+                </ul> <br>
+                
                 Lebih benar ✅
-                CREATE TABLE users (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
-                    name VARCHAR(100) NOT NULL,
-                    age TINYINT UNSIGNED
-                );
-
+<pre>
+    CREATE TABLE users ( <br>
+        id INT AUTO_INCREMENT PRIMARY KEY, <br>
+        name VARCHAR(100) NOT NULL, <br>
+        age TINYINT UNSIGNED <br>
+    );
+</pre>
 
                 Struktur:
-
-                Jelas
-
-                Aman
-
-                Masuk akal
+                <ul>
+                    <li>Jelas</li>
+                    <li>Aman</li>
+                    <li>Masuk akal</li>
+                </ul>
 
                 <h3>G. Ringkasan 2.1 DDL</h3>
-
-                DDL = fondasi rumah
-                DML = isi rumah
-                SELECT = cara cari barang di rumah
-
+                <ul>
+                    <li>DDL = fondasi rumah</li>
+                    <li>DML = isi rumah</li>
+                    <li>SELECT = cara cari barang di rumah</li>
+                </ul> <br>
+                
                 Kalau fondasi salah:
-
-                Query ribet
-
-                Data tidak konsisten
-
-                Performa buruk
-
+                <ul>
+                    <li>Query ribet</li>
+                    <li>Data tidak konsisten</li>
+                    <li>Performa buruk</li>
+                </ul>
+                
 
                 <br> <br>
 
@@ -223,169 +234,161 @@
                 <h2>2.1.1 CREATE TABLE — Fondasi Semua Query</h2>
                 <h3>A. Apa itu CREATE TABLE?</h3>
 
-                CREATE TABLE digunakan untuk membuat struktur tabel baru di database.
+                <div class="quote"><p>CREATE TABLE digunakan untuk membuat struktur tabel baru di database.</p></div> <br>
 
-                ⚠️ Ingat: ini bukan isi data, tapi wadah data
+                ⚠️ Ingat: ini bukan isi data, tapi wadah data <br> <br>
 
                 Kalau tabel sudah salah dari awal:
-
-                INSERT ribet
-
-                UPDATE rawan bug
-
-                SELECT berat
-
+                <ul>
+                    <li><code>INSERT</code> ribet</li>
+                    <li><code>UPDATE</code> rawan bug</li>
+                    <li><code>SELECT</code> berat</li>
+                </ul>
+                
                 <br> <hr> <br>
 
                 <h3>B. Struktur Dasar CREATE TABLE</h3>
 
                 Bentuk paling umum:
-
-                CREATE TABLE nama_tabel (
-                    nama_kolom tipe_data constraint,
-                    nama_kolom tipe_data constraint,
-                    ...
-                );
-
+<pre>
+    CREATE TABLE nama_tabel ( <br>
+        nama_kolom tipe_data constraint, <br>
+        nama_kolom tipe_data constraint, <br>
+        ... <br>
+    );
+</pre>
 
                 Contoh sederhana:
-
-                CREATE TABLE users (
-                    id INT,
-                    name VARCHAR(100)
-                );
-
+<pre>
+    CREATE TABLE users ( <br>
+        id INT, <br>
+        name VARCHAR(100) <br>
+    );
+</pre>
 
                 👉 Ini valid, tapi belum profesional.
 
                 <h3>C. Komponen Penting CREATE TABLE (WAJIB PAHAM)</h3>
-                1️⃣ Nama Tabel
+                1️⃣ Nama Tabel <br> <br>
 
                 Best practice:
-
-                plural
-
-                snake_case
-
-                jelas secara bisnis
-
-                ✅ users, orders, order_items
-                ❌ User, tblUser, data1
+                <ul>
+                    <li>plural</li>
+                    <li>snake_case</li>
+                    <li>jelas secara bisnis</li>
+                </ul>
+                
+                ✅ <code>users</code>, <code>orders</code>, <code>order_items</code> <br>
+                ❌ <code>User</code>, <code>tblUser</code>, <code>data1</code>
 
                 2️⃣ Kolom
 
                 Setiap kolom harus menjawab:
-
-                Menyimpan data apa?
-
-                Tipe datanya apa?
-
-                Wajib atau tidak?
-
+                <ul>
+                    <li>Menyimpan data apa?</li>
+                    <li>Tipe datanya apa?</li>
+                    <li>Wajib atau tidak?</li>
+                </ul> <br>
+                 
                 Contoh:
+<pre>
+    name VARCHAR(100) NOT NULL
+</pre>
 
-                name VARCHAR(100) NOT NULL
 
-                3️⃣ Tipe Data
+                3️⃣ Tipe Data <br> <br>
 
                 Sudah kamu pelajari di BAB 1.2, contoh:
+                <ul>
+                    <li><code>INT</code></li>
+                    <li><code>VARCHAR(255)</code></li>
+                    <li><code>DECIMAL(10,2)</code></li>
+                    <li><code>DATETIME</code></li>
+                </ul> <br>
+                
+                DDL bagus = tipe data pas, tidak berlebihan <br> <br> <br>
 
-                INT
-
-                VARCHAR(255)
-
-                DECIMAL(10,2)
-
-                DATETIME
-
-                DDL bagus = tipe data pas, tidak berlebihan
-
-                4️⃣ Constraint (aturan)
-
+                4️⃣ Constraint (aturan) <br>
                 Constraint paling sering dipakai:
-
-                PRIMARY KEY
-
-                NOT NULL
-
-                UNIQUE
-
-                DEFAULT
-
-                AUTO_INCREMENT
+                <ul>
+                    <li><code>PRIMARY KEY</code></li>
+                    <li><code>NOT NULL</code></li>
+                    <li><code>UNIQUE</code></li>
+                    <li><code>DEFAULT</code></li>
+                    <li><code>AUTO_INCREMENT</code></li>
+                </ul> <br>
 
                 Contoh:
-
-                id INT AUTO_INCREMENT PRIMARY KEY
-
+<pre>
+    id INT AUTO_INCREMENT PRIMARY KEY
+</pre>
                 <br> <hr> <br>
 
                 <h3>D. CREATE TABLE Versi Profesional (Contoh Nyata)</h3>
-                CREATE TABLE users (
-                    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                    email VARCHAR(150) NOT NULL UNIQUE,
-                    name VARCHAR(100) NOT NULL,
-                    password VARCHAR(255) NOT NULL,
-                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-                );
-
+<pre>
+    CREATE TABLE users ( <br>
+        id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, <br>
+        email VARCHAR(150) NOT NULL UNIQUE, <br>
+        name VARCHAR(100) NOT NULL, <br>
+        password VARCHAR(255) NOT NULL, <br>
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP <br>
+    );
+</pre>
 
                 Kenapa ini bagus:
-
-                PK jelas
-
-                Email unik
-
-                Password aman
-
-                Timestamp otomatis
-
+                <ul>
+                    <li>PK jelas</li>
+                    <li>Email unik</li>
+                    <li>Password aman</li>
+                    <li>Timestamp otomatis</li>
+                </ul>
+                
                 <br> <hr> <br>
 
                 <h3>E. Primary Key di CREATE TABLE</h3>
                 Cara 1: Inline (paling sering)
-                id INT AUTO_INCREMENT PRIMARY KEY
-
+<pre>
+    id INT AUTO_INCREMENT PRIMARY KEY
+</pre>
+<br>
                 Cara 2: Di bawah (composite key)
-                CREATE TABLE order_items (
-                    order_id INT,
-                    product_id INT,
-                    quantity INT,
-                    PRIMARY KEY (order_id, product_id)
-                );
-
+<pre>
+    CREATE TABLE order_items ( <br>
+        order_id INT, <br>
+        product_id INT, <br>
+        quantity INT, <br>
+        PRIMARY KEY (order_id, product_id) <br>
+    );
+</pre>
 
                 Dipakai saat:
-
-                Many-to-many
-
-                Tidak perlu id auto increment
-
+                <ul>
+                    <li>Many-to-many</li>
+                    <li>Tidak perlu id auto increment</li>
+                </ul>
+                
                 <br> <hr> <br>
 
                 <h3>F. DEFAULT Value</h3>
 
                 Dipakai untuk:
-
-                Nilai awal
-
-                Data sistem
-
-                status VARCHAR(20) DEFAULT 'pending'
-
-                is_active BOOLEAN DEFAULT 1
-
+                <ul>
+                    <li>Nilai awal</li>
+                    <li>Data sistem</li>
+                    <li><code>status VARCHAR(20) DEFAULT 'pending'</code></li>
+                    <li><code>is_active BOOLEAN DEFAULT 1</code></li>
+                </ul>
+                
                 <br> <hr> <br>
 
                 <h3>G. AUTO_INCREMENT (catatan penting)</h3>
+                <ul>
+                    <li>Hanya boleh satu per tabel</li>
+                    <li>Biasanya di Primary Key</li>
+                    <li>Jangan dipakai untuk data bisnis</li>
+                </ul> <br>
 
-                Hanya boleh satu per tabel
-
-                Biasanya di Primary Key
-
-                Jangan dipakai untuk data bisnis
-
-                ❌ invoice_number AUTO_INCREMENT
+                ❌ invoice_number AUTO_INCREMENT <br>
                 ✅ id AUTO_INCREMENT
 
                 <br> <hr> <br>
@@ -393,27 +396,27 @@
                 <h3>H. ENGINE & CHARSET (LEVEL PRO)</h3>
 
                 Kalau mau rapi:
-
-                CREATE TABLE users (
-                    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                    email VARCHAR(150) NOT NULL UNIQUE
-                ) ENGINE=InnoDB
-                CHARSET=utf8mb4;
-
+<pre>
+    CREATE TABLE users ( <br>
+        id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, <br>
+        email VARCHAR(150) NOT NULL UNIQUE <br>
+    ) ENGINE=InnoDB <br>
+    CHARSET=utf8mb4;
+</pre>
 
                 Kenapa?
-
-                InnoDB → support transaction & FK
-
-                utf8mb4 → emoji & karakter internasional
+                <ul>
+                    <li>InnoDB → support transaction & FK</li>
+                    <li>utf8mb4 → emoji & karakter internasional</li>
+                </ul>
 
                 <br> <hr> <br>
 
                 <h3>I. Kesalahan Umum Pemula (hindari ini)</h3>
 
-                ❌ Pakai TEXT untuk semua string
-                ❌ Tidak pakai PK
-                ❌ Semua kolom boleh NULL
+                ❌ Pakai TEXT untuk semua string <br>
+                ❌ Tidak pakai PK <br>
+                ❌ Semua kolom boleh NULL <br>
                 ❌ Nama kolom ambigu (data, value)
 
                 <br> <hr> <br>
@@ -421,36 +424,701 @@
                 <h3>J. Checklist CREATE TABLE (ingat ini)</h3>
 
                 Sebelum execute, cek:
-
-                Ada Primary Key?
-
-                Tipe data pas?
-
-                Kolom wajib pakai NOT NULL?
-
-                Default value masuk akal?
-
-                Nama konsisten? 
-
+                <ul>
+                    <li>Ada Primary Key?</li>
+                    <li>Tipe data pas?</li>
+                    <li>Kolom wajib pakai NOT NULL?</li>
+                    <li>Default value masuk akal?</li>
+                    <li>Nama konsisten?</li>
+                </ul>
+                
                 <br> <hr> <br>
 
                 <h3>K. Mini Latihan 🔥</h3>
 
                 Coba desain tabel products dengan kebutuhan:
+                <ul>
+                    <li>id</li>
+                    <li>name</li>
+                    <li>price</li>
+                    <li>stock</li>
+                    <li>is_active</li>
+                    <li>created_at</li>
+                </ul>
+                
+                Tulis SQL-nya (versi kamu).
+
+                <br>
+                <br>
+
+                <hr>
+
+                <br>
+                <br>
+
+                <h2>2.1.2 ALTER TABLE — Mengubah Struktur Tanpa Bikin Bencana</h2>
+                <h3>A. Apa itu ALTER TABLE?</h3>
+
+                ALTER TABLE dipakai untuk mengubah struktur tabel yang SUDAH ADA.
+
+                Yang bisa diubah:
+                <ul>
+                    <li>tambah kolom</li>
+                    <li>ubah kolom</li>
+                    <li>hapus kolom</li>
+                    <li>tambah / hapus constraint</li>
+                    <li>tambah index</li>
+                </ul>
+                
+                <br>
+                
+                📌 Data lama tetap ada, tapi:
+                <ul>
+                    <li>salah ALTER = data rusak atau aplikasi error</li>
+                </ul>
+
+                <br> <hr> <br>
+
+                <h3>B. Kenapa ALTER TABLE itu sensitif?</h3>
+
+                Karena:
+                <ul>
+                    <li>tabel bisa berisi jutaan row</li>
+                    <li><code>ALTER</code> bisa lock table</li>
+                    <li>aplikasi bisa down sementara</li>
+                </ul> <br>
+
+                Makanya:
+<pre>
+    ALTER TABLE = pisau bedah, bukan palu 🔪
+</pre>
+
+
+                <h3>C. Pola Dasar ALTER TABLE</h3>
+<pre>
+    ALTER TABLE nama_tabel <br>
+        aksi perubahan;
+</pre>
+
+                Contoh:
+<pre>
+    ALTER TABLE users <br>
+    ADD phone VARCHAR(20);
+</pre>
+                <br> <hr> <br>
+
+                <h3>D. Tambah Kolom (ADD)</h3>
+                1️⃣ Tambah kolom biasa
+<pre>
+    ALTER TABLE users <br>
+    ADD age TINYINT UNSIGNED;
+</pre>
+
+                Default:
+                <ul>
+                    <li>NULL</li>
+                    <li>posisi di akhir</li>
+                </ul>
+                <br> <br>
+
+                
+
+                2️⃣ Tambah kolom + constraint
+<pre>
+    ALTER TABLE users <br>
+    ADD is_active BOOLEAN NOT NULL DEFAULT 1;
+</pre>
+
+                ⚠️ Wajib pakai DEFAULT kalau tabel sudah ada data <br> <br>
+
+                3️⃣ Tentukan posisi kolom (opsional)
+<pre>
+    ALTER TABLE users <br>
+    ADD phone VARCHAR(20) AFTER email;
+</pre>
+
+                Catatan: posisi kolom tidak berpengaruh ke performa
+
+                <br> <hr> <br>
+
+                <h3>E. Ubah Kolom (MODIFY vs CHANGE)</h3>
+                🔥 Ini sering bikin bingung <br>
+                1️⃣ MODIFY (ubah tipe / constraint)
+<pre>
+    ALTER TABLE users
+    MODIFY name VARCHAR(150) NOT NULL;
+</pre>
+
+                Nama kolom tetap <br> <br>
+
+                Bisa ubah:
+                <ul>
+                    <li>tipe data</li>
+                    <li>panjang</li>
+                    <li>NULL / NOT NULL</li>
+                </ul>
+                
+
+                2️⃣ CHANGE (ubah nama + definisi)
+<pre>
+    ALTER TABLE users <br>
+    CHANGE name full_name VARCHAR(150) NOT NULL;
+</pre>
+
+                ⚠️ Wajib tulis ulang seluruh definisi kolom <br> <br>
+
+                Kapan pakai apa?
+                <ul>
+                    <li>Ubah tipe → MODIFY</li>
+                    <li>Ganti nama kolom → CHANGE</li>
+                </ul>
+                
+                <br> <hr> <br>
+
+                <h3>F. Hapus Kolom (DROP COLUMN)</h3>
+<pre>
+    ALTER TABLE users <br>
+    DROP COLUMN phone;
+</pre>
+
+                ⚠️ PERINGATAN:
+                <ul>
+                    <li>Data hilang permanen</li>
+                    <li>Tidak bisa rollback</li>
+                    <li>Pastikan kolom benar-benar tidak dipakai aplikasi</li>
+                </ul>
+                
+                <br> <hr> <br>
+
+                <h3>G. Tambah & Hapus Constraint</h3>
+                1️⃣ UNIQUE
+<pre>
+    ALTER TABLE users <br>
+    ADD UNIQUE (email);
+</pre>
+
+                Hapus:
+<pre>
+    ALTER TABLE users <br>
+    DROP INDEX email;
+</pre>
+
+                2️⃣ FOREIGN KEY
+
+                Tambah:
+<pre>
+    ALTER TABLE orders <br>
+    ADD CONSTRAINT fk_orders_user <br>
+    FOREIGN KEY (user_id) REFERENCES users(id);
+</pre>
+
+                Hapus:
+<pre>
+    ALTER TABLE orders <br>
+    DROP FOREIGN KEY fk_orders_user;
+</pre>
+                <br> <hr> <br>
+
+                <h3>H. Rename Table</h3>
+<pre>
+    ALTER TABLE users
+    RENAME TO customers;
+</pre>
+
+                ⚠️ Pastikan:
+                <ul>
+                    <li>kode aplikasi ikut diubah</li>
+                    <li>query JOIN aman</li>
+                </ul>
+                
+                <br> <hr> <br>
+
+                <h3>I. Multiple Changes Sekaligus</h3>
+
+                Bisa, tapi hati-hati:
+<pre>
+    ALTER TABLE users <br>
+    ADD phone VARCHAR(20), <br>
+    MODIFY name VARCHAR(150), <br>
+    DROP COLUMN age;
+</pre>
+
+                Best practice:
+                <ul>
+                    <li>Production → satu perubahan per ALTER</li>
+                    <li>Development → boleh digabung</li>
+                </ul>
+                
+                <br> <hr> <br>
+
+                <h3>J. Kesalahan Fatal Pemula ❌</h3>
+
+                ❌ ALTER tanpa backup <br>
+                ❌ DROP COLUMN asal <br>
+                ❌ Ubah tipe data tanpa cek existing data <br>
+                ❌ Tambah NOT NULL tanpa DEFAULT
+
+                <br> <hr> <br>
+
+                <h3>K. Checklist Aman ALTER TABLE</h3>
+
+                Sebelum execute:
+                <ul>
+                    <li>Sudah backup?</li>
+                    <li>Cek data existing?</li>
+                    <li>Apakah aplikasi pakai kolom ini?</li>
+                    <li>Ada downtime?</li>
+                </ul>
+                
+                <br> <hr> <br>
+
+                <h3>L. Mini Latihan 🔥</h3>
+
+                Kondisi:
+                <ul>
+                    <li>Tabel products sudah ada:</li>
+<pre>
+    id, name, price
+</pre>
+                </ul> <br>
+
+                Tugas:
+                <ul>
+                    <li>Tambah kolom stock (INT, default 0)</li>
+                    <li>Ubah price jadi DECIMAL(12,2)</li>
+                    <li>Tambah UNIQUE ke name</li>
+                    <li>Tulis SQL ALTER-nya.</li>
+                </ul>
+                
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>2.1.3 DROP — Menghapus Struktur (Bukan Data Saja)</h2>
+                <h3>A. Apa itu DROP?</h3>
+
+                <div class="quote"><p>DROP adalah perintah untuk menghapus objek database secara permanen.</p></div> <br>
+
+                <p>Yang bisa di-DROP:
+                <ul>
+                    <li><code></code></li>
+                    <li><code>TABLE</code></li>
+                    <li><code>DATABASE</code></li>
+                    <li><code>INDEX</code></li>
+                    <li><code>VIEW</code></li>
+                    <li><code>FOREIGN KEY</code></li>
+                </ul> <br>
+                
+                ⚠️ DROP = permanen
+                <ul>
+                    <li>Tidak ada recycle bin</li>
+                    <li>Tidak ada undo</li>
+                    <li>Data + struktur lenyap</li>
+                </ul> </p>
+
+                <br> <hr> <br>
+
+                <h3>B. DROP vs DELETE (JANGAN KETUKER)</h3>
+                <table>
+                    <tr>
+                        <th>Perintah</th>
+                        <th>Yang Dihapus</th>
+                        <th>Bisa Rollback</th>
+                    </tr>
+                    <tr>
+                        <td><code>DELETE</code></td>
+                        <td>Data (row)</td>
+                        <td>Bisa (dalam transaction)</td>
+                    </tr>
+                    <tr>
+                        <td>DROP<code></code></td>
+                        <td>Struktur + data	</td>
+                        <td>❌ Tidak</td>
+                    </tr>
+                </table>
+                
+                <br>
+
+<pre>
+    DELETE FROM users; -- hapus data <br>
+    DROP TABLE users;  -- hapus tabelnya
+</pre>
+                		
+                <br> <hr> <br>
+
+                <h3>C. DROP TABLE</h3>
+                <p>Sintaks dasar</p>
+<pre>
+    DROP TABLE users;
+</pre> <br>
+
+                <p>Efek:
+                <ul>
+                    <li>Tabel hilang</li>
+                    <li>Semua data hilang</li>
+                    <li>Index & constraint ikut hilang</li>
+                </ul> </p>
+            
+<pre>
+                DROP IF EXISTS (aman)
+                DROP TABLE IF EXISTS users;
+</pre>
+
+                <p>Best practice:
+                <ul>
+                    <li>Hindari error</li>
+                    <li>Aman di migration script</li>
+                </ul></p>
+                
+                <br> <hr> <br>
+
+                <h3>D. DROP DATABASE (⚠️ PALING BERBAHAYA)</h3>
+<pre>
+    DROP DATABASE my_app;
+</pre>
+
+                <p>🔥 Ini menghapus semua tabel di dalamnya <br> <br>
+
+                Biasanya:   
+                <ul>
+                    <li>Hanya dipakai di local / testing</li>
+                    <li>Hampir tidak pernah di production</li>
+                </ul></p>
+                
+                <br> <hr> <br>
+
+                <h3>E. DROP INDEX</h3>
+
+                <p>Index bisa dihapus tanpa hapus tabel.</p>
+<pre>
+    DROP INDEX idx_email ON users;
+</pre>
+
+                <p>Dipakai jika:
+                <ul>
+                    <li>Index tidak kepakai</li>
+                    <li>Over-indexing</li>
+                    <li>Query berubah</li>
+                </ul></p>
+                
+                <br> <hr> <br>
+
+                <h3>F. DROP FOREIGN KEY</h3>
+
+                <p>Harus pakai constraint name:</p>
+<pre>
+    ALTER TABLE orders <br>
+    DROP FOREIGN KEY fk_orders_user;
+</pre>
+
+                <p>⚠️ FK tidak bisa di-drop pakai DROP TABLE langsung kalau masih direferensikan.</p>
+
+                <br> <hr> <br>
+
+                <h3>G. Truncate vs Drop (sering disalahpahami)</h3>
+                <p>TRUNCATE</p>
+<pre>
+    TRUNCATE TABLE users;
+</pre>
+                <ul>
+                    <li>Hapus semua data</li>
+                    <li>Struktur tetap</li>
+                    <li>Lebih cepat dari <code>DELETE</code></li>
+                    <li>AUTO_INCREMENT reset</li>
+                </ul> <br> <br>                
+
+                <p>DROP</p>
+<pre>
+    DROP TABLE users;
+</pre>
+                <ul>
+                    <li>Struktur + data hilang</li>
+                    <li>Tidak bisa dipakai lagi</li>
+                </ul>
+                
+                <br> <hr> <br>
+
+                <h3>H. Kapan DROP itu masuk akal?</h3>
+
+                <p>DROP MASUK AKAL jika:
+                <ul>
+                    <li>Refactor besar</li>
+                    <li>Migration salah</li>
+                    <li>Reset database dev</li>
+                    <li>Hapus fitur sepenuhnya</li>
+                </ul> <br>
+                
+                DROP TIDAK MASUK AKAL jika:
+                <ul>
+                    <li>Cuma mau hapus data</li>
+                    <li>Production tanpa backup</li>
+                    <li>Tabel masih dipakai</li>
+                </ul></p>
+
+                <br> <hr> <br>
+
+                <h3>I. Kesalahan Fatal yang Pernah Terjadi di Dunia Nyata 😬</h3>
+
+                <p>Salah konek DB (prod vs dev) <br> <br>
+
+                Jalankan:</p>
+<pre>
+    DROP TABLE users;
+</pre>
+                <ul>
+                    <li>Done. User hilang semua</li>
+                </ul>
+                
+
+                <p>Makanya senior selalu:
+                <ul>
+                    <li>Cek database aktif</li>
+                    <li>Pakai IF EXISTS</li>
+                    <li>Backup dulu</li>
+                </ul></p>
+                
+                <br> <hr> <br>
+
+                <h3>J. Checklist Aman sebelum DROP</h3>
+
+                <p>Sebelum tekan Enter:
+                <ul>
+                    <li>Ini DB yang benar?</li>
+                    <li>Sudah backup?</li>
+                    <li>Ini memang mau dihapus total?</li>
+                    <li>Tidak ada FK dependency?</li>
+                </ul></p>
+                
+                <br> <hr> <br>
+
+                <h3>K. Mini Latihan 🔥</h3>
+
+                <p>Jawab cepat (tanpa SQL):
+                <ul>
+                    <li>Mana yang lebih berbahaya: DROP TABLE atau TRUNCATE?</li>
+                    <li>Kapan kamu tidak boleh pakai DROP?</li>
+                    <li>Kenapa DROP DATABASE hampir tidak pernah dipakai di production?</li>
+                </ul></p>
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                2.1.4 INDEX & UNIQUE — Performa & Integritas Data
+                A. Kenapa INDEX & UNIQUE itu penting?
+
+                Tanpa index:
+
+                Query lambat
+
+                Table scan ke semua row
+
+                Makin besar data → makin sakit
+
+                Tanpa UNIQUE:
+
+                Data kotor
+
+                Duplicate masuk
+
+                Bug bisnis muncul diam-diam
+
+                🔥 Index = performa
+                🔥 Unique = kebenaran data
+
+                B. Apa itu INDEX?
+
+                INDEX = struktur data tambahan (biasanya B-Tree)
+                yang bikin MySQL menemukan data lebih cepat.
+
+                Analogi:
+
+                Tanpa index → baca buku dari halaman 1
+
+                Dengan index → langsung ke halaman tujuan
+
+                C. Kolom yang Cocok Di-Index
+
+                Index WAJIB dipertimbangkan jika kolom sering:
+
+                dipakai di WHERE
+
+                dipakai di JOIN
+
+                dipakai di ORDER BY
+
+                Contoh:
+
+                SELECT * FROM users WHERE email = 'a@b.com';
+
+
+                👉 email kandidat index
+
+                D. Membuat INDEX
+                1️⃣ INDEX biasa
+                CREATE INDEX idx_users_email ON users(email);
+
+
+                atau via ALTER:
+
+                ALTER TABLE users
+                ADD INDEX idx_users_email (email);
+
+                2️⃣ INDEX multi-kolom (composite)
+                CREATE INDEX idx_orders_user_date
+                ON orders(user_id, created_at);
+
+
+                Urutan penting:
+
+                (user_id, created_at) ≠ (created_at, user_id)
+
+                📌 Paling kiri paling penting (left-most rule)
+
+                E. Apa itu UNIQUE?
+
+                UNIQUE = constraint + index
+
+                Artinya:
+
+                Data harus unik
+
+                MySQL otomatis bikin index
+
+                Contoh:
+
+                ALTER TABLE users
+                ADD UNIQUE (email);
+
+
+                ❌ Insert email sama → ERROR
+
+                F. UNIQUE vs INDEX Biasa
+                Aspek	INDEX	UNIQUE
+                Performa	✅	✅
+                Cegah duplikasi	❌	✅
+                Cocok untuk	pencarian	identitas data
+                G. PRIMARY KEY = INDEX + UNIQUE + NOT NULL
+                id INT PRIMARY KEY
+
+
+                Itu artinya:
+
+                Unik
+
+                Tidak boleh NULL
+
+                Terindex otomatis
+
+                H. Index yang HARUS kamu hindari ❌
+
+                ❌ Index di kolom:
+
+                BOOLEAN
+
+                gender
+
+                is_active
+
+                Kenapa?
+
+                Terlalu sedikit variasi
+
+                Index tidak efektif
+
+                I. Over-Indexing (penyakit pemula)
+
+                Masalah:
+
+                INSERT / UPDATE jadi lambat
+
+                Storage membengkak
+
+                Maintenance berat
+
+                Rule of thumb:
+
+                Index hanya untuk query nyata, bukan asumsi
+
+                J. Hapus INDEX
+                DROP INDEX idx_users_email ON users;
+
+
+                Gunakan kalau:
+
+                Query berubah
+
+                Index tidak kepakai
+
+                K. Cara Berpikir Profesional soal INDEX
+
+                Sebelum bikin index, tanya:
+
+                Query apa yang paling sering?
+
+                Kolom mana di WHERE?
+
+                Data besar atau kecil?
+
+                Index mengikuti query, bukan sebaliknya.
+
+                L. Contoh Kasus Nyata
+
+                Query:
+
+                SELECT *
+                FROM orders
+                WHERE user_id = 10
+                ORDER BY created_at DESC
+                LIMIT 10;
+
+
+                Index terbaik:
+
+                CREATE INDEX idx_orders_user_created
+                ON orders(user_id, created_at);
+
+
+                🔥 Cepat + optimal
+
+                M. Mini Latihan 🔥
+
+                Tabel users punya kolom:
 
                 id
 
-                name
+                email
 
-                price
-
-                stock
+                username
 
                 is_active
 
                 created_at
 
-                Tulis SQL-nya (versi kamu).
+                Jawab:
+
+                Kolom mana wajib UNIQUE?
+
+                Kolom mana cocok di-INDEX?
+
+                Kolom mana tidak perlu index?
+
+                N. Ringkasan BAB 2.1
+                Topik	Inti
+                CREATE TABLE	Fondasi struktur
+                ALTER TABLE	Perubahan aman
+                DROP	Tombol merah
+                INDEX	Performa
+                UNIQUE	Integritas
+
+                🔥 Kalau 2.1 ini kamu kuasai, kamu sudah siap kerja backend beneran
+                
+                <a href="2b-dml.html" class="btn-next">2b. DDL</a>
             </div>
         </main>
     </div>
