@@ -1360,201 +1360,273 @@
 
                 <br> <br>
 
-                1.2.5 ENUM vs Lookup Table (⚠️ PENTING BANGET)
+                <h2>1.2.5 ENUM vs Lookup Table (⚠️ PENTING BANGET)</h2>
 
-                Ini salah satu keputusan desain database paling sering salah kaprah.
+                <div class="quote"><p>Ini salah satu keputusan desain database paling sering salah kaprah.</p></div>
 
-                A. Apa itu ENUM?
+                <h3>A. Apa itu ENUM?</h3>
 
-                ENUM adalah tipe data khusus MySQL yang isinya sudah ditentukan di level kolom.
+                <div class="quote"><p>ENUM adalah tipe data khusus MySQL yang isinya sudah ditentukan di level kolom.</p></div>
 
-                Contoh ENUM
-                CREATE TABLE orders (
-                    id INT PRIMARY KEY,
-                    status ENUM('pending', 'paid', 'shipped', 'cancelled')
-                );
+                <p>Contoh ENUM</p>
+<pre>
+    CREATE TABLE orders ( <br>
+        id INT PRIMARY KEY, <br>
+        status ENUM('pending', 'paid', 'shipped', 'cancelled') <br>
+    );
+</pre>
 
+                <p>Artinya:
+                <ul>
+                    <li>Kolom status HANYA boleh berisi salah satu dari nilai tersebut</li>
+                    <li>Tidak bisa insert nilai lain</li>
+                </ul> <br> <br>
+                
+                Insert valid</p>
+<pre>
+    INSERT INTO orders (id, status) <br>
+    VALUES (1, 'paid');
+</pre>
 
-                Artinya:
+                <p>Insert invalid ❌</p>
+<pre>
+    INSERT INTO orders (id, status) <br>
+    VALUES (2, 'refund'); -- ERROR
+</pre>            
 
-                Kolom status HANYA boleh berisi salah satu dari nilai tersebut
+                <br> <hr> <br>
 
-                Tidak bisa insert nilai lain
+                <h3>B. Kelebihan ENUM</h3>
 
-                Insert valid
-                INSERT INTO orders (id, status)
-                VALUES (1, 'paid');
-
-                Insert invalid ❌
-                INSERT INTO orders (id, status)
-                VALUES (2, 'refund'); -- ERROR
-
-                B. Kelebihan ENUM
-
-                ✅ Simple & cepat
-
-                Tidak perlu tabel tambahan
-
-                Cocok untuk data kecil & jarang berubah
+                <p>✅ Simple & cepat
+                <ul>
+                    <li>Tidak perlu tabel tambahan</li>
+                    <li>Cocok untuk data kecil & jarang berubah</li>
+                </ul>
+                <br>
 
                 ✅ Data terkontrol
-
-                Tidak bisa input nilai di luar pilihan
+                <ul>
+                    <li>Tidak bisa input nilai di luar pilihan</li>
+                </ul>
+                
 
                 ✅ Hemat storage
+                <ul>
+                    <li>MySQL menyimpan ENUM sebagai angka internal</li>
+                </ul></p>
+                
 
-                MySQL menyimpan ENUM sebagai angka internal
+                <br> <hr> <br>
 
-                C. Kekurangan ENUM (INI YANG SERING DIABAIKAN)
+                <h3>C. Kekurangan ENUM (INI YANG SERING DIABAIKAN)</h3>
 
-                ❌ Sulit dikembangkan
+                <p>❌ Sulit dikembangkan
+                <ul>
+                    <li>Mau tambah value → harus ALTER TABLE</li>
+                </ul></p>
+<pre>
+    ALTER TABLE orders <br>
+    MODIFY status ENUM('pending','paid','shipped','cancelled','refund');
+</pre>
 
-                Mau tambah value → harus ALTER TABLE
-
-                ALTER TABLE orders
-                MODIFY status ENUM('pending','paid','shipped','cancelled','refund');
-
-
-                ❌ Tightly coupled dengan schema
-
-                Logika bisnis “tertanam” di struktur DB
-
-                Kurang fleksibel untuk sistem besar
+                <p>❌ Tightly coupled dengan schema
+                <ul>
+                    <li>Logika bisnis “tertanam” di struktur DB</li>
+                    <li>Kurang fleksibel untuk sistem besar</li>
+                </ul> <br>
 
                 ❌ Kurang portable
+                <ul>
+                    <li>ENUM MySQL-specific</li>
+                    <li>Pindah ke PostgreSQL? Ribet</li>
+                </ul> <br>
 
-                ENUM MySQL-specific
-
-                Pindah ke PostgreSQL? Ribet
-
-                ❌ Tidak bisa attach metadata
-
+                ❌ Tidak bisa attach metadata <br>
                 Tidak bisa kasih:
+                <ul>
+                    <li>label display</li>
+                    <li>urutan</li>
+                    <li>warna status</li>
+                    <li>deskripsi</li>
+                </ul></p>
+                
+                <br> <hr> <br>
 
-                label display
+                <h3>D. Apa itu Lookup Table?</h3>
 
-                urutan
+                <div class="quote"><p>Lookup table adalah tabel referensi terpisah untuk nilai yang berulang.</p></div>
 
-                warna status
+                <p>Contoh Lookup Table</p>
+<pre>
+    CREATE TABLE order_statuses ( <br>
+        id INT PRIMARY KEY, <br>
+        code VARCHAR(20), <br>
+        label VARCHAR(50) <br>
+    ); <br> <br>
 
-                deskripsi
+    INSERT INTO order_statuses VALUES <br>
+    (1, 'pending', 'Menunggu Pembayaran'), <br>
+    (2, 'paid', 'Sudah Dibayar'), <br>
+    (3, 'shipped', 'Dikirim'), <br>
+    (4, 'cancelled', 'Dibatalkan');
+</pre>
 
-                D. Apa itu Lookup Table?
+<br>
 
-                Lookup table adalah tabel referensi terpisah untuk nilai yang berulang.
+                <p>Tabel utama</p>
+<pre>
+    CREATE TABLE orders ( <br>
+        id INT PRIMARY KEY, <br>
+        status_id INT, <br>
+        FOREIGN KEY (status_id) REFERENCES order_statuses(id) <br>
+    );
+</pre>
 
-                Contoh Lookup Table
-                CREATE TABLE order_statuses (
-                    id INT PRIMARY KEY,
-                    code VARCHAR(20),
-                    label VARCHAR(50)
-                );
+                <br> <hr> <br>
 
-                INSERT INTO order_statuses VALUES
-                (1, 'pending', 'Menunggu Pembayaran'),
-                (2, 'paid', 'Sudah Dibayar'),
-                (3, 'shipped', 'Dikirim'),
-                (4, 'cancelled', 'Dibatalkan');
+                <h3>E. Kelebihan Lookup Table</h3>
 
-                Tabel utama
-                CREATE TABLE orders (
-                    id INT PRIMARY KEY,
-                    status_id INT,
-                    FOREIGN KEY (status_id) REFERENCES order_statuses(id)
-                );
-
-                E. Kelebihan Lookup Table
-
-                ✅ Fleksibel
-
-                Tambah status → cukup INSERT
-
-                Tidak perlu alter struktur tabel besar
+                <p>✅ Fleksibel
+                <ul>
+                    <li>Tambah status → cukup INSERT</li>
+                    <li>Tidak perlu alter struktur tabel besar</li>
+                </ul> <br>
 
                 ✅ Relasi jelas & scalable
+                <ul>
+                    <li>Cocok untuk aplikasi berkembang</li>
+                </ul> <br>
 
-                Cocok untuk aplikasi berkembang
+                ✅ Bisa tambah metadata</p>
+<pre>
+    ALTER TABLE order_statuses <br>
+    ADD color VARCHAR(20), <br>
+    ADD is_active BOOLEAN;
+</pre>
 
-                ✅ Bisa tambah metadata
+<br>
+                <p>✅ Clean secara arsitektur
+                <ul>
+                    <li>Logic bisnis di data, bukan di schema</li>
+                </ul></p>
+                
 
-                ALTER TABLE order_statuses
-                ADD color VARCHAR(20),
-                ADD is_active BOOLEAN;
+                <br> <hr> <br>
 
+                <h3>F. Kekurangan Lookup Table</h3>
 
-                ✅ Clean secara arsitektur
+                <p>❌ Lebih kompleks <br> <br>
 
-                Logic bisnis di data, bukan di schema
+                Harus JOIN</p>
+<pre>
+    SELECT o.id, s.label <br>
+    FROM orders o <br>
+    JOIN order_statuses s ON o.status_id = s.id;
+</pre> <br>
 
-                F. Kekurangan Lookup Table
+                <p>❌ Sedikit overhead
+                <ul>
+                    <li>Tapi ini tidak signifikan di sistem modern</li>
+                </ul></p>
 
-                ❌ Lebih kompleks
+                <br> <hr> <br>
 
-                Harus JOIN
+                <h3>G. ENUM vs Lookup — Perbandingan Cepat</h3>
+                <table>
+                    <tr>
+                        <th>Aspek</th>
+                        <th>ENUM</th>
+                        <th>Lookup Table</th>
+                    </tr>
+                    <tr>
+                        <td>Mudah dibuat</td>
+                        <td class="ct">✅</td>
+                        <td class="ct">❌</td>
+                    </tr>
+                    <tr>
+                        <td>Mudah dikembangkan</td>
+                        <td class="ct">❌</td>
+                        <td class="ct">✅</td>
+                    </tr>
+                    <tr>
+                        <td>Cocok skala besar</td>
+                        <td class="ct">❌</td>
+                        <td class="ct">✅</td>
+                    </tr>
+                    <tr>
+                        <td>Bisa metadata</td>
+                        <td class="ct">❌</td>
+                        <td class="ct">✅</td>
+                    </tr>
+                    <tr>
+                        <td>Portable DB</td>
+                        <td class="ct">❌</td>
+                        <td class="ct">✅</td>
+                    </tr>
+                    <tr>
+                        <td>Best practice profesional</td>
+                        <td class="ct">❌</td>
+                        <td class="ct">✅</td>
+                    </tr>
+                </table>
 
-                SELECT o.id, s.label
-                FROM orders o
-                JOIN order_statuses s ON o.status_id = s.id;
+                <br> <hr> <br>
+                
+                <h3>H. Kapan Pakai ENUM?</h3>
 
+                <p>ENUM BOLEH dipakai jika: <br> <br>
 
-                ❌ Sedikit overhead
+                ✅ Nilai sangat terbatas <br>
+                ✅ Tidak akan berubah <br>
+                ✅ Tidak butuh metadata <br>
+                ✅ Sistem kecil / internal <br> <br>
 
-                Tapi ini tidak signifikan di sistem modern
+                Contoh ENUM yang aman</p>
+<pre>
+    gender ENUM('male','female') <br>
+    day ENUM('mon','tue','wed','thu','fri')
+</pre>
+                <br> <hr> <br>
 
-                G. ENUM vs Lookup — Perbandingan Cepat
-                Aspek	ENUM	Lookup Table
-                Mudah dibuat	✅	❌
-                Mudah dikembangkan	❌	✅
-                Cocok skala besar	❌	✅
-                Bisa metadata	❌	✅
-                Portable DB	❌	✅
-                Best practice profesional	❌	✅
-                H. Kapan Pakai ENUM?
+                <h3>I. Kapan HARUS Lookup Table?</h3>
 
-                ENUM BOLEH dipakai jika:
+                <p>Lookup Table WAJIB jika: <br> <br>
 
-                ✅ Nilai sangat terbatas
-                ✅ Tidak akan berubah
-                ✅ Tidak butuh metadata
-                ✅ Sistem kecil / internal
-
-                Contoh ENUM yang aman
-                gender ENUM('male','female')
-
-                day ENUM('mon','tue','wed','thu','fri')
-
-                I. Kapan HARUS Lookup Table?
-
-                Lookup Table WAJIB jika:
-
-                🚨 Nilai bisa bertambah
-                🚨 Ada label tampilan
-                🚨 Ada urutan / warna / status aktif
-                🚨 Dipakai di banyak modul
-                🚨 Aplikasi bisnis nyata
+                🚨 Nilai bisa bertambah <br>
+                🚨 Ada label tampilan <br>
+                🚨 Ada urutan / warna / status aktif <br>
+                🚨 Dipakai di banyak modul <br>
+                🚨 Aplikasi bisnis nyata <br> <br>
 
                 Contoh wajib lookup
+                <ul>
+                    <li>Status order</li>
+                    <li>Role user</li>
+                    <li>Payment method</li>
+                    <li>Kategori produk</li>
+                    <li>Level prioritas</li>
+                </ul></p>
 
-                Status order
+                <br> <hr> <br>
+                
 
-                Role user
+                <h3>J. Mindset Penting (ingat ini)</h3>
+                <ul>
+                    <li>ENUM = cepat sekarang, mahal nanti</li>
+                    <li>Lookup = sedikit ribet sekarang, aman selamanya</li>
+                </ul>
+                
+                <br>
 
-                Payment method
+                <p>Kalau kamu bangun sistem:
+                <ul>
+                    <li>UMKM → ENUM masih oke</li>
+                    <li>SaaS / ERP / bisnis berkembang → lookup table</li>
+                </ul></p>
 
-                Kategori produk
+                <a href="2a-ddl.html" class="btn-next">2a. DDL</a>
 
-                Level prioritas
-
-                J. Mindset Penting (ingat ini)
-
-                ENUM = cepat sekarang, mahal nanti
-                Lookup = sedikit ribet sekarang, aman selamanya
-
-                Kalau kamu bangun sistem:
-
-                UMKM → ENUM masih oke
-
-                SaaS / ERP / bisnis berkembang → lookup table
             </div>
         </main>
     </div>

@@ -18,29 +18,28 @@
             </header>
             
             <div class="content">
-                BAB 2 — SQL Dasar (Operasional Harian)
-                A. Kenapa BAB 2 ini krusial?
-
-                Kalau BAB 1 = arsitektur & fondasi,
-                maka BAB 2 = alat kerja harian.
+                
+                <h2>BAB 2 — SQL Dasar (Operasional Harian)</h2>
+                <h3>A. Kenapa BAB 2 ini krusial?</h3>
+                
+                <div class="quote"><p>Kalau BAB 1 = arsitektur & fondasi, <br>
+                maka BAB 2 = alat kerja harian.</p></div>
 
                 Di dunia nyata:
-
-                70% kerja backend = SELECT
-
-                20% = INSERT / UPDATE
-
-                10% = mikir kenapa query lambat 😄
+                <ul>
+                    <li>70% kerja backend = SELECT</li>
+                    <li>20% = INSERT / UPDATE</li>
+                    <li>10% = mikir kenapa query lambat 😄</li>
+                </ul> <br>
 
                 BAB ini ngajarin:
-
-                Cara membentuk struktur data
-
-                Cara memasukkan & mengambil data
-
-                Cara memfilter data sesuai kebutuhan bisnis
-
-                B. Pembagian Besar SQL
+                <ul>
+                    <li>Cara membentuk struktur data</li>
+                    <li>Cara memasukkan & mengambil data</li>
+                    <li>Cara memfilter data sesuai kebutuhan bisnis</li>
+                </ul>
+                
+                <h3>B. Pembagian Besar SQL</h3>
 
                 SQL dibagi berdasarkan tujuan, bukan sekadar sintaks:
 
@@ -52,8 +51,8 @@
 
                 👉 Di MySQL, SELECT sering dimasukkan ke DML/DQL, tapi mindset-nya tetap beda.
 
-                2.1 DDL — Data Definition Language (Structure)
-                A. Apa itu DDL?
+                <h2>2.1 DDL — Data Definition Language (Structure)</h2>
+                <h3>A. Apa itu DDL?</h3>
 
                 DDL = perintah untuk mendefinisikan & mengubah struktur database
 
@@ -69,7 +68,7 @@
 
                 DML = pengisi barang
 
-                B. Apa saja yang diatur oleh DDL?
+                <h3>B. Apa saja yang diatur oleh DDL?</h3>
 
                 Dengan DDL kamu mengatur:
 
@@ -89,8 +88,8 @@
 
                 📌 Sekali salah desain di DDL → efeknya panjang
 
-                C. Karakteristik DDL (PENTING)
-                1. Mengubah struktur permanen
+                <h3>C. Karakteristik DDL (PENTING)</h3>
+                <h4>1. Mengubah struktur permanen</h4>
                 CREATE TABLE users (...);
 
 
@@ -100,7 +99,7 @@
 
                 Tidak bisa “undo” tanpa drop/alter lagi
 
-                2. Biasanya jarang dijalankan di production
+                <h4>2. Biasanya jarang dijalankan di production</h4>
 
                 Local / development: sering
 
@@ -112,7 +111,7 @@
 
                 DROP TABLE = goodbye data 👋
 
-                3. DDL = keputusan arsitektur
+                <h4>3. DDL = keputusan arsitektur</h4>
 
                 Contoh keputusan DDL:
 
@@ -124,7 +123,7 @@
 
                 Ini bukan sekadar teknis, tapi keputusan jangka panjang
 
-                D. Komponen utama DDL (yang akan kita dalami)
+                <h3>D. Komponen utama DDL (yang akan kita dalami)</h3>
 
                 Di BAB 2.1, kita fokus ke:
 
@@ -146,7 +145,7 @@
 
                 🔥 Profesional backend dinilai dari seberapa aman dan rapi DDL-nya
 
-                E. Mindset penting sebelum nulis DDL
+                <h3>E. Mindset penting sebelum nulis DDL</h3>
 
                 Sebelum ngetik SQL, tanyakan:
 
@@ -166,7 +165,7 @@
 
                 Tidak over-engineering
 
-                F. Contoh mental model DDL
+                <h3>F. Contoh mental model DDL</h3>
                 Buruk ❌
                 CREATE TABLE users (
                     id INT,
@@ -199,7 +198,7 @@
 
                 Masuk akal
 
-                G. Ringkasan 2.1 DDL
+                <h3>G. Ringkasan 2.1 DDL</h3>
 
                 DDL = fondasi rumah
                 DML = isi rumah
@@ -221,8 +220,8 @@
                 <br> <br>
 
 
-                2.1.1 CREATE TABLE — Fondasi Semua Query
-                A. Apa itu CREATE TABLE?
+                <h2>2.1.1 CREATE TABLE — Fondasi Semua Query</h2>
+                <h3>A. Apa itu CREATE TABLE?</h3>
 
                 CREATE TABLE digunakan untuk membuat struktur tabel baru di database.
 
@@ -236,7 +235,9 @@
 
                 SELECT berat
 
-                B. Struktur Dasar CREATE TABLE
+                <br> <hr> <br>
+
+                <h3>B. Struktur Dasar CREATE TABLE</h3>
 
                 Bentuk paling umum:
 
@@ -257,7 +258,7 @@
 
                 👉 Ini valid, tapi belum profesional.
 
-                C. Komponen Penting CREATE TABLE (WAJIB PAHAM)
+                <h3>C. Komponen Penting CREATE TABLE (WAJIB PAHAM)</h3>
                 1️⃣ Nama Tabel
 
                 Best practice:
@@ -317,7 +318,9 @@
 
                 id INT AUTO_INCREMENT PRIMARY KEY
 
-                D. CREATE TABLE Versi Profesional (Contoh Nyata)
+                <br> <hr> <br>
+
+                <h3>D. CREATE TABLE Versi Profesional (Contoh Nyata)</h3>
                 CREATE TABLE users (
                     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                     email VARCHAR(150) NOT NULL UNIQUE,
@@ -337,7 +340,9 @@
 
                 Timestamp otomatis
 
-                E. Primary Key di CREATE TABLE
+                <br> <hr> <br>
+
+                <h3>E. Primary Key di CREATE TABLE</h3>
                 Cara 1: Inline (paling sering)
                 id INT AUTO_INCREMENT PRIMARY KEY
 
@@ -356,7 +361,9 @@
 
                 Tidak perlu id auto increment
 
-                F. DEFAULT Value
+                <br> <hr> <br>
+
+                <h3>F. DEFAULT Value</h3>
 
                 Dipakai untuk:
 
@@ -368,7 +375,9 @@
 
                 is_active BOOLEAN DEFAULT 1
 
-                G. AUTO_INCREMENT (catatan penting)
+                <br> <hr> <br>
+
+                <h3>G. AUTO_INCREMENT (catatan penting)</h3>
 
                 Hanya boleh satu per tabel
 
@@ -379,7 +388,9 @@
                 ❌ invoice_number AUTO_INCREMENT
                 ✅ id AUTO_INCREMENT
 
-                H. ENGINE & CHARSET (LEVEL PRO)
+                <br> <hr> <br>
+
+                <h3>H. ENGINE & CHARSET (LEVEL PRO)</h3>
 
                 Kalau mau rapi:
 
@@ -396,14 +407,18 @@
 
                 utf8mb4 → emoji & karakter internasional
 
-                I. Kesalahan Umum Pemula (hindari ini)
+                <br> <hr> <br>
+
+                <h3>I. Kesalahan Umum Pemula (hindari ini)</h3>
 
                 ❌ Pakai TEXT untuk semua string
                 ❌ Tidak pakai PK
                 ❌ Semua kolom boleh NULL
                 ❌ Nama kolom ambigu (data, value)
 
-                J. Checklist CREATE TABLE (ingat ini)
+                <br> <hr> <br>
+
+                <h3>J. Checklist CREATE TABLE (ingat ini)</h3>
 
                 Sebelum execute, cek:
 
@@ -415,9 +430,11 @@
 
                 Default value masuk akal?
 
-                Nama konsisten?
+                Nama konsisten? 
 
-                K. Mini Latihan 🔥
+                <br> <hr> <br>
+
+                <h3>K. Mini Latihan 🔥</h3>
 
                 Coba desain tabel products dengan kebutuhan:
 
