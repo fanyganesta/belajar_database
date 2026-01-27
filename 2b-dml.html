@@ -213,6 +213,174 @@
                 INSERT 3 produk sekaligus
 
                 INSERT produk tanpa isi is_active & created_at
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                2.2.2 UPDATE — Mengubah Data Tanpa Nyesel
+                A. Apa itu UPDATE?
+
+                UPDATE dipakai untuk mengubah data yang SUDAH ADA di tabel.
+
+                UPDATE nama_tabel
+                SET kolom = nilai
+                WHERE kondisi;
+
+
+                ⚠️ Tanpa WHERE = semua data berubah
+
+                B. Contoh UPDATE Paling Dasar
+                UPDATE users
+                SET name = 'Fany'
+                WHERE id = 1;
+
+
+                Artinya:
+
+                Cari user id = 1
+
+                Ubah name
+
+                C. UPDATE Banyak Kolom Sekaligus
+                UPDATE users
+                SET
+                    name = 'Fany Ganesta',
+                    is_active = 1
+                WHERE id = 1;
+
+                D. UPDATE Tanpa WHERE (INI DOSA BESAR)
+                UPDATE users
+                SET is_active = 0;
+
+
+                🔥 Semua user nonaktif
+                🔥 Pernah kejadian di production dunia nyata
+
+                Senior rule:
+                SELECT dulu, baru UPDATE
+
+                E. Pola Aman UPDATE (WAJIB DIPAKAI)
+                Step 1: SELECT dulu
+                SELECT * FROM users WHERE id = 1;
+
+                Step 2: Kalau benar → UPDATE
+                UPDATE users
+                SET is_active = 0
+                WHERE id = 1;
+
+                F. UPDATE dengan Kondisi Kompleks
+                UPDATE orders
+                SET status = 'cancelled'
+                WHERE status = 'pending'
+                AND created_at < NOW() - INTERVAL 7 DAY;
+
+
+                Dipakai untuk:
+
+                auto-cancel
+
+                cleanup data
+
+                G. UPDATE + LIMIT (MySQL Spesifik)
+                UPDATE users
+                SET is_active = 0
+                ORDER BY created_at ASC
+                LIMIT 10;
+
+
+                ⚠️ MySQL-only
+                ⚠️ Hati-hati di production
+
+                H. UPDATE Berdasarkan Tabel Lain (JOIN)
+
+                🔥 LEVEL PRO
+
+                UPDATE orders o
+                JOIN users u ON o.user_id = u.id
+                SET o.status = 'blocked'
+                WHERE u.is_active = 0;
+
+
+                Dipakai untuk:
+
+                sinkron status
+
+                data cleanup
+
+                I. UPDATE + UNIQUE Constraint
+                UPDATE users
+                SET email = 'a@b.com'
+                WHERE id = 2;
+
+
+                Jika email sudah ada:
+                ❌ ERROR duplicate key
+
+                👉 Database menjaga integritas
+
+                J. UPDATE + NULL
+
+                Set ke NULL:
+
+                UPDATE users
+                SET phone = NULL
+                WHERE id = 1;
+
+
+                Kalau kolom NOT NULL:
+                ❌ ERROR
+
+                K. UPDATE dalam Transaction (LEVEL AMAN)
+                START TRANSACTION;
+
+                UPDATE users SET is_active = 0 WHERE id = 1;
+
+                -- cek dulu
+                SELECT * FROM users WHERE id = 1;
+
+                COMMIT;   -- simpan
+                -- atau
+                ROLLBACK; -- batal
+
+
+                🔥 Ini kebiasaan senior
+
+                L. Kesalahan Fatal Pemula ❌
+
+                ❌ UPDATE tanpa WHERE
+                ❌ Salah kondisi WHERE
+                ❌ Tidak cek data sebelum UPDATE
+                ❌ UPDATE massal di jam sibuk
+
+                M. Checklist Aman UPDATE
+
+                Sebelum tekan Enter:
+
+                Sudah SELECT dulu?
+
+                WHERE spesifik?
+
+                Pakai PK?
+
+                Perlu transaction?
+
+                N. Mini Latihan 🔥
+
+                Tabel products:
+
+                id, name, price, stock, is_active
+
+
+                Tugas:
+
+                Update harga produk id = 5
+
+                Nonaktifkan semua produk dengan stock = 0
+
+                Tambah stock +10 untuk produk tertentu
                 
                 <a href="2b-dml.html" class="btn-next">2b. DDL</a>
             </div>
