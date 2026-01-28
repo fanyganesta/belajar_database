@@ -381,6 +381,171 @@
                 Nonaktifkan semua produk dengan stock = 0
 
                 Tambah stock +10 untuk produk tertentu
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                2.2.3 DELETE — Menghapus Data Tanpa Bikin Kuburan Massal
+                A. Apa itu DELETE?
+
+                DELETE digunakan untuk menghapus data (row) dari tabel.
+
+                DELETE FROM nama_tabel
+                WHERE kondisi;
+
+
+                📌 Struktur tabel tetap ada
+                📌 Yang hilang cuma datanya
+
+                B. DELETE vs DROP vs TRUNCATE (recap cepat)
+                Perintah	Efek	Bisa Rollback
+                DELETE	Hapus row tertentu	✅ (transaction)
+                TRUNCATE	Hapus semua row	❌
+                DROP	Hapus tabel	❌
+                C. DELETE Paling Dasar
+                DELETE FROM users
+                WHERE id = 10;
+
+
+                Hapus 1 baris spesifik
+
+                D. DELETE Tanpa WHERE = Bencana
+                DELETE FROM users;
+
+
+                🔥 Semua data hilang
+                🔥 Pernah bikin startup rollback database
+
+                Rule emas:
+                DELETE TANPA WHERE = SALAH BESAR
+
+                E. Pola Aman DELETE (WAJIB)
+                Step 1: SELECT dulu
+                SELECT * FROM users WHERE is_active = 0;
+
+                Step 2: DELETE kalau yakin
+                DELETE FROM users WHERE is_active = 0;
+
+                F. DELETE dengan Kondisi Kompleks
+                DELETE FROM orders
+                WHERE status = 'cancelled'
+                AND created_at < NOW() - INTERVAL 1 YEAR;
+
+
+                Dipakai untuk:
+
+                data cleanup
+
+                archiving
+
+                G. DELETE + LIMIT (MySQL Spesifik)
+                DELETE FROM logs
+                ORDER BY created_at ASC
+                LIMIT 1000;
+
+
+                Dipakai untuk:
+
+                hapus bertahap
+
+                hindari lock besar
+
+                H. DELETE dengan JOIN (LEVEL PRO)
+                DELETE o
+                FROM orders o
+                JOIN users u ON o.user_id = u.id
+                WHERE u.is_active = 0;
+
+
+                Hapus order milik user nonaktif.
+
+                ⚠️ Sangat powerful → sangat berbahaya
+
+                I. DELETE + FOREIGN KEY
+
+                Jika tabel direferensikan:
+
+                DELETE FROM users WHERE id = 1;
+
+
+                Jika ada order milik user tsb:
+
+                ❌ ERROR (default)
+
+                atau:
+
+                ON DELETE CASCADE
+
+                ON DELETE SET NULL
+
+                📌 FK rules menentukan perilaku
+
+                J. Soft Delete (BEST PRACTICE)
+
+                🔥 Di aplikasi nyata, jarang pakai DELETE langsung
+
+                Pola soft delete
+                UPDATE users
+                SET deleted_at = NOW()
+                WHERE id = 1;
+
+
+                Keuntungan:
+
+                Data aman
+
+                Bisa restore
+
+                Audit trail
+
+                Framework seperti Laravel pakai ini.
+
+                K. DELETE dalam Transaction (SUPER AMAN)
+                START TRANSACTION;
+
+                DELETE FROM users WHERE id = 5;
+
+                SELECT * FROM users WHERE id = 5;
+
+                ROLLBACK; -- kalau salah
+                -- COMMIT; -- kalau yakin
+
+                L. Kesalahan Fatal Pemula ❌
+
+                ❌ DELETE tanpa WHERE
+                ❌ Salah kondisi WHERE
+                ❌ Tidak cek FK
+                ❌ Hapus data bisnis penting permanen
+
+                M. Checklist Aman DELETE
+
+                Sebelum execute:
+
+                Sudah SELECT dulu?
+
+                WHERE spesifik?
+
+                FK aman?
+
+                Lebih baik soft delete?
+
+                N. Mini Latihan 🔥
+
+                Tabel products:
+
+                id, name, stock, is_active, deleted_at
+
+
+                Tugas:
+
+                Soft delete produk id = 3
+
+                Hapus permanen produk yang deleted_at lebih dari 2 tahun
+
+                Hapus 100 data log terlama
                 
                 <a href="2b-dml.html" class="btn-next">2b. DDL</a>
             </div>
