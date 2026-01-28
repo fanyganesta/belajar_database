@@ -546,6 +546,166 @@
                 Hapus permanen produk yang deleted_at lebih dari 2 tahun
 
                 Hapus 100 data log terlama
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                2.2.4 SELECT — Mengambil Data (Inti SQL)
+                A. Apa itu SELECT?
+
+                SELECT dipakai untuk mengambil / membaca data dari database.
+
+                SELECT kolom
+                FROM tabel;
+
+
+                📌 SELECT tidak mengubah data
+                📌 80% waktu kamu di SQL = SELECT
+
+                B. SELECT Paling Dasar
+                SELECT * FROM users;
+
+
+                Artinya:
+
+                Ambil semua kolom
+
+                Dari semua baris
+
+                ⚠️ Di production:
+
+                hindari SELECT *
+
+                C. SELECT Kolom Tertentu (BEST PRACTICE)
+                SELECT id, name, email
+                FROM users;
+
+
+                Lebih:
+
+                cepat
+
+                aman
+
+                jelas
+
+                D. Alias Kolom & Tabel
+                Alias kolom
+                SELECT name AS full_name
+                FROM users;
+
+                Alias tabel
+                SELECT u.name, u.email
+                FROM users u;
+
+
+                Dipakai saat:
+
+                JOIN
+
+                query panjang
+
+                E. SELECT + Perhitungan
+                SELECT
+                    name,
+                    price,
+                    price * stock AS total_value
+                FROM products;
+
+
+                📌 Query bisa olah data sederhana
+
+                F. SELECT DISTINCT
+                SELECT DISTINCT status
+                FROM orders;
+
+
+                Ambil nilai unik (tanpa duplikasi).
+
+                ⚠️ DISTINCT mahal kalau data besar
+
+                G. SELECT + LIMIT
+                SELECT id, name
+                FROM users
+                LIMIT 10;
+
+
+                Ambil 10 data pertama.
+
+                H. SELECT + OFFSET (pagination)
+                SELECT id, name
+                FROM users
+                LIMIT 10 OFFSET 20;
+
+
+                Artinya:
+
+                page ke-3 (0–9, 10–19, 20–29)
+
+                I. Urutan Eksekusi SELECT (WAJIB PAHAM)
+
+                Secara logika:
+
+                FROM
+
+                WHERE
+
+                SELECT
+
+                ORDER BY
+
+                LIMIT
+
+                Ini penting saat query kompleks.
+
+                J. Kesalahan Umum Pemula ❌
+
+                ❌ SELECT * di tabel besar
+                ❌ Ambil kolom yang tidak dipakai
+                ❌ Tidak pakai LIMIT
+                ❌ Query tanpa alias saat JOIN
+
+                K. Contoh Query Nyata
+                SELECT id, email, created_at
+                FROM users
+                LIMIT 50;
+
+
+                Simple, aman, efisien.
+
+                L. SELECT itu fondasi ke mana-mana
+
+                Dari sini kamu akan lanjut ke:
+
+                WHERE
+
+                JOIN
+
+                GROUP BY
+
+                HAVING
+
+                Subquery
+
+                SELECT = bahasa berpikir SQL
+
+                M. Mini Latihan 🔥
+
+                Tabel products:
+
+                id, name, price, stock
+
+
+                Tugas:
+
+                Ambil name & price
+
+                Ambil produk dengan total_value = price * stock
+
+                Ambil 5 produk pertama
                 
                 <a href="2b-dml.html" class="btn-next">2b. DDL</a>
             </div>
