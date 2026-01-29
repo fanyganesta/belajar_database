@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Type</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+
+        <main>
+            <header>
+                
+            </header>
+            
+            <div class="content">
+
+                2.3 Filtering & Sorting — Menyaring & Mengurutkan Data
+                A. Apa itu Filtering?
+
+                Filtering = memilih data yang relevan dari banyak data.
+
+                Tanpa filtering:
+
+                SELECT * FROM orders;
+
+
+                Dengan filtering:
+
+                SELECT * FROM orders WHERE status = 'paid';
+
+
+                👉 dari ribuan data, kamu ambil yang kamu butuhkan saja
+
+                B. Apa itu Sorting?
+
+                Sorting = mengurutkan hasil query
+
+                Contoh:
+
+                ORDER BY created_at DESC;
+
+
+                Artinya:
+
+                data terbaru dulu
+
+                atau termurah
+
+                atau alfabet
+
+                📌 Sorting tidak mengubah data, cuma urutan tampilannya
+
+                C. Kenapa Filtering & Sorting Penting?
+
+                Di aplikasi nyata:
+
+                halaman list
+
+                search
+
+                laporan
+
+                dashboard
+
+                Semua pakai:
+
+                WHERE
+
+                ORDER BY
+
+                LIMIT
+
+                🔥 90% query bisnis = SELECT + WHERE + ORDER BY
+
+                2.3.1 WHERE — Pondasi Filtering
+                A. Apa itu WHERE?
+
+                WHERE digunakan untuk memfilter baris (row) berdasarkan kondisi.
+
+                SELECT kolom
+                FROM tabel
+                WHERE kondisi;
+
+                B. WHERE Paling Dasar
+                SELECT * FROM users
+                WHERE id = 1;
+
+
+                Ambil satu user spesifik.
+
+                C. Operator Dasar di WHERE
+                Operator	Arti
+                =	sama dengan
+                != / <>	tidak sama
+                >	lebih besar
+                <	lebih kecil
+                >=	lebih besar sama
+                <=	lebih kecil sama
+
+                Contoh:
+
+                SELECT * FROM products
+                WHERE price > 100000;
+
+                D. WHERE + String
+                SELECT * FROM users
+                WHERE email = 'a@b.com';
+
+
+                ⚠️ String harus pakai tanda petik
+
+                E. WHERE + NULL (⚠️ sering salah)
+
+                ❌ SALAH:
+
+                WHERE deleted_at = NULL;
+
+
+                ✅ BENAR:
+
+                WHERE deleted_at IS NULL;
+
+
+                Dan:
+
+                WHERE deleted_at IS NOT NULL;
+
+                F. WHERE + Boolean
+                SELECT * FROM users
+                WHERE is_active = 1;
+
+
+                atau:
+
+                WHERE is_active = TRUE;
+
+
+                (MySQL treat TRUE = 1)
+
+                G. WHERE + Index (penting!)
+                SELECT * FROM users
+                WHERE email = 'x@y.com';
+
+
+                🔥 Kalau email di-index → query super cepat
+
+                Makanya:
+
+                WHERE menentukan kebutuhan INDEX
+
+                H. WHERE + Perhitungan
+                SELECT * FROM products
+                WHERE price * stock > 1000000;
+
+
+                ⚠️ Ini tidak pakai index, karena ada kalkulasi
+
+                Better:
+
+                WHERE stock > 0 AND price > 100000;
+
+                I. Kesalahan Umum Pemula ❌
+
+                ❌ Lupa WHERE → semua data
+                ❌ Salah operator
+                ❌ Bandingin NULL pakai =
+                ❌ WHERE di kolom tanpa index (tabel besar)
+
+                J. Pola Aman Query Filtering
+
+                Selalu mulai dari:
+
+                SELECT *
+                FROM tabel
+                WHERE ...
+                LIMIT 10;
+
+
+                👉 Aman, tidak nyedot data besar
+
+                K. Mini Latihan 🔥
+
+                Tabel products:
+
+                id, name, price, stock, is_active, created_at
+
+
+                Tugas:
+
+                Ambil produk dengan price > 50000
+
+                Ambil produk yang masih aktif
+
+                Ambil produk yang stoknya habis
+                
+                <a href="2b-dml.html" class="btn-next">2b. DDL</a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        fetch('layout/aside.html').then(response => response.text()).then(data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop();
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
