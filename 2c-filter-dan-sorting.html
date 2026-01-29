@@ -197,6 +197,141 @@
                 Ambil produk yang masih aktif
 
                 Ambil produk yang stoknya habis
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                2.3.2 AND / OR — Gabung Kondisi Biar Query Pintar
+                A. Kenapa Butuh AND / OR?
+
+                Satu kondisi jarang cukup.
+
+                Contoh dunia nyata:
+
+                produk aktif DAN stok ada
+
+                user admin ATAU manager
+
+                order paid DAN belum dikirim
+
+                👉 Di sinilah AND & OR dipakai.
+
+                B. AND — Semua Harus Benar
+                SELECT * FROM products
+                WHERE is_active = 1
+                AND stock > 0;
+
+
+                Artinya:
+
+                aktif ✅
+
+                stok ada ✅
+
+                Kalau salah satu false → tidak masuk hasil
+
+                C. OR — Salah Satu Benar Cukup
+                SELECT * FROM users
+                WHERE role = 'admin'
+                OR role = 'manager';
+
+
+                Kalau salah satu cocok → masuk hasil
+
+                D. AND vs OR (Logika Sederhana)
+                Kondisi A	Kondisi B	AND	OR
+                true	true	true	true
+                true	false	false	true
+                false	true	false	true
+                false	false	false	false
+                E. Kombinasi AND + OR (⚠️ WAJIB PAKAI KURUNG)
+
+                ❌ SALAH (logika kacau):
+
+                WHERE role = 'admin'
+                OR role = 'manager'
+                AND is_active = 1;
+
+
+                SQL baca sebagai:
+
+                admin OR (manager AND aktif)
+
+
+                ✅ BENAR (jelas maksudnya):
+
+                WHERE (role = 'admin' OR role = 'manager')
+                AND is_active = 1;
+
+
+                📌 Pakai tanda kurung = nyelametin hidup kamu
+
+                F. Contoh Kasus Nyata
+                Produk siap dijual
+                SELECT * FROM products
+                WHERE is_active = 1
+                AND stock > 0
+                AND price >= 10000;
+
+                User berhak akses
+                SELECT * FROM users
+                WHERE (role = 'admin' OR role = 'editor')
+                AND is_active = 1;
+
+                G. AND / OR + Index (penting!)
+
+                🔥 Paling optimal:
+
+                WHERE email = 'x@y.com' AND is_active = 1;
+
+
+                ⚠️ Kurang optimal:
+
+                WHERE price > 10000 OR stock > 0;
+
+
+                Kenapa?
+
+                OR sering bikin index tidak kepakai
+
+                📌 Rule:
+
+                AND = ramah index
+                OR = hati-hati di tabel besar
+
+                H. NOT (bonus dikit)
+                SELECT * FROM users
+                WHERE NOT is_active;
+
+
+                Atau:
+
+                WHERE role != 'admin';
+
+                I. Kesalahan Umum ❌
+
+                ❌ Lupa kurung
+                ❌ OR berlebihan
+                ❌ Logika kebalik
+                ❌ Query lambat karena OR di kolom besar
+
+                J. Mini Latihan 🔥
+
+                Tabel orders:
+
+                id, status, payment_method, total, created_at
+
+
+                Tugas:
+
+                Order paid DAN total > 100000
+
+                Order paid ATAU shipped
+
+                Order paid atau shipped yang total > 100000
                 
                 <a href="2b-dml.html" class="btn-next">2b. DDL</a>
             </div>
