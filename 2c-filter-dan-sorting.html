@@ -536,6 +536,179 @@
                 %kata → akhiran
 
                 _ → satu karakter
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                2.3.4 IN
+
+                IN dipakai kalau kita mau filter berdasarkan beberapa nilai sekaligus
+                tanpa nulis OR panjang-panjang.
+
+                Kalau di aplikasi:
+
+                filter status
+
+                filter kategori
+
+                filter role user
+
+                filter beberapa ID
+
+                Masalah Kalau Tanpa IN (OR Hell 😵)
+                SELECT * FROM orders
+                WHERE status = 'pending'
+                OR status = 'paid'
+                OR status = 'shipped';
+
+
+                ✔️ benar
+                ❌ tapi ribet, panjang, rawan typo
+
+                Solusi: IN ✨
+                SELECT * FROM orders
+                WHERE status IN ('pending', 'paid', 'shipped');
+
+
+                🎯 Lebih:
+
+                ringkas
+
+                enak dibaca
+
+                gampang di-maintain
+
+                Cara Kerja IN (Konsep)
+                column IN (value1, value2, value3)
+
+
+                Artinya:
+
+                ambil data kalau column sama dengan salah satu nilai di dalam kurung
+
+                Contoh Kasus Nyata
+                1️⃣ Filter status pesanan
+                SELECT * FROM orders
+                WHERE status IN ('pending', 'processing');
+
+
+                📦 Artinya:
+
+                pesanan yang belum selesai
+
+                2️⃣ Filter role user
+                SELECT * FROM users
+                WHERE role IN ('admin', 'staff');
+
+
+                🧠 Cocok buat:
+
+                dashboard admin
+
+                akses internal
+
+                3️⃣ Filter kategori produk
+                SELECT * FROM products
+                WHERE category_id IN (1, 3, 5);
+
+
+                📌 Biasanya hasil dari:
+
+                checkbox filter
+
+                multi select
+
+                IN vs AND (INI PENTING!)
+
+                ❌ SALAH:
+
+                WHERE status = 'pending'
+                AND status = 'paid';
+
+
+                😵 tidak mungkin, status cuma satu.
+
+                ✔️ BENAR:
+
+                WHERE status IN ('pending', 'paid');
+
+
+                🧠 Rule:
+
+                OR logic → IN
+
+                AND logic → kondisi beda kolom
+
+                IN + AND (Kombinasi Umum)
+                SELECT * FROM orders
+                WHERE status IN ('paid', 'shipped')
+                AND total_price > 500000;
+
+
+                Artinya:
+
+                status tertentu
+
+                nilai transaksi besar
+
+                🔥 ini real banget di laporan.
+
+                NOT IN (Kebalikannya)
+                SELECT * FROM users
+                WHERE status NOT IN ('banned', 'deleted');
+
+
+                Artinya:
+
+                ambil semua kecuali status tersebut
+
+                📌 Cocok buat:
+
+                data aktif
+
+                hide data rusak
+
+                IN dengan Subquery (Level Naik dikit 🚀)
+                SELECT * FROM products
+                WHERE category_id IN (
+                    SELECT id FROM categories
+                    WHERE is_active = 1
+                );
+
+
+                🧠 Artinya:
+
+                produk yang kategorinya masih aktif
+
+                ini fondasi sebelum JOIN & RELATION 🔑
+
+                IN vs BETWEEN vs LIKE
+                Kebutuhan	Pakai
+                beberapa nilai tetap	IN
+                rentang angka/tanggal	BETWEEN
+                search teks	LIKE
+                Performa Catatan (Santai tapi Penting)
+
+                IN aman & cepat untuk list kecil–menengah
+
+                IN pakai index → OK
+
+                list ratusan/ribuan → mending JOIN / temp table
+
+                Mental Model biar nempel 🧠
+
+                IN = OR versi rapi
+
+                Kalau kamu mulai ngetik:
+
+                col = A OR col = B OR col = C
+
+
+                ⛔ STOP
+                ➡️ ganti ke IN
                 
                 <a href="2b-dml.html" class="btn-next">2b. DDL</a>
             </div>
