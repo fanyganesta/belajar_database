@@ -332,6 +332,210 @@
                 Order paid ATAU shipped
 
                 Order paid atau shipped yang total > 100000
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                2.3.3 LIKE
+
+                LIKE dipakai buat pencarian berbasis pola (pattern matching).
+                Ini yang dipakai di fitur:
+
+                search produk
+
+                search user
+
+                filter nama / email
+
+                kolom “cari…” di aplikasi
+
+                Kalau = itu harus sama persis,
+                LIKE itu lebih fleksibel.
+
+                Konsep Dasar LIKE
+                SELECT * FROM users
+                WHERE name LIKE 'Ani';
+
+
+                ⚠️ Ini sama saja dengan =, karena tidak ada wildcard.
+
+                LIKE jadi berguna karena wildcard.
+
+                Wildcard di LIKE
+                % → mewakili banyak karakter (0 atau lebih)
+                _ → mewakili 1 karakter saja
+                1️⃣ Paling umum: %kata% (contains)
+                SELECT * FROM products
+                WHERE name LIKE '%sepatu%';
+
+
+                Artinya:
+
+                mengandung kata sepatu
+
+                posisi bebas (awal, tengah, akhir)
+
+                📦 Contoh data yang lolos:
+
+                Sepatu Lari
+
+                Sepatu Casual Pria
+
+                Tas + Sepatu Travel
+
+                🧠 Ini yang dipakai di search box aplikasi
+
+                2️⃣ Awalan kata: kata%
+                SELECT * FROM users
+                WHERE email LIKE 'admin%';
+
+
+                Artinya:
+
+                dimulai dengan admin
+
+                ✔️ cocok:
+
+                admin@gmail.com
+
+                admin123@company.com
+
+                ❌ tidak cocok:
+
+                superadmin@gmail.com
+
+                📌 Cocok buat:
+
+                kode produk
+
+                username prefix
+
+                kategori
+
+                3️⃣ Akhiran kata: %kata
+                SELECT * FROM users
+                WHERE email LIKE '%@gmail.com';
+
+
+                Artinya:
+
+                diakhiri dengan @gmail.com
+
+                🧠 Ini sering dipakai buat:
+
+                filter domain email
+
+                tipe file (%.pdf, %.jpg)
+
+                4️⃣ Single character wildcard _
+                SELECT * FROM users
+                WHERE username LIKE 'adm_n';
+
+
+                Artinya:
+
+                adm + 1 karakter + n
+
+                ✔️ cocok:
+
+                admin
+
+                adm1n
+
+                ❌ tidak cocok:
+
+                admiiin
+
+                admmn
+
+                📌 Jarang dipakai, tapi penting buat:
+
+                kode tetap
+
+                format tertentu
+
+                LIKE + AND / OR (Real Case)
+                SELECT * FROM products
+                WHERE name LIKE '%sepatu%'
+                AND price BETWEEN 100000 AND 300000;
+
+
+                Artinya:
+
+                nama mengandung sepatu
+
+                harga di range tertentu
+
+                🧠 Ini search + filter harga → khas e-commerce.
+
+                LIKE + WHERE Status
+                SELECT * FROM users
+                WHERE name LIKE '%fan%'
+                AND status = 'active';
+
+
+                Artinya:
+
+                nama mengandung "fan"
+
+                user masih aktif
+
+                Case Sensitivity (PENTING!)
+
+                Di MySQL:
+
+                LIKE biasanya case-insensitive
+
+                tergantung collation
+
+                Contoh:
+
+                'Fany' LIKE '%fan%'  → TRUE
+
+
+                Kalau mau case-sensitive:
+
+                WHERE BINARY name LIKE '%fan%';
+
+                LIKE vs = (perbandingan cepat)
+                Operator	Kapan Dipakai
+                =	exact match
+                LIKE	search / partial
+                IN	beberapa nilai tetap
+                ⚠️ Performa Warning (WAJIB TAHU)
+                WHERE name LIKE '%sepatu%'
+
+
+                ❌ TIDAK BISA pakai index
+                karena % di depan.
+
+                Lebih aman:
+
+                WHERE name LIKE 'sepatu%'
+
+
+                ✔️ masih bisa pakai index
+
+                🧠 Jadi:
+
+                search besar → butuh FULLTEXT (nanti level lanjut)
+
+                data kecil → LIKE aman
+
+                Mental Model (biar nempel)
+
+                LIKE = cari pola teks, bukan bandingin nilai
+
+                %kata% → mengandung
+
+                kata% → awalan
+
+                %kata → akhiran
+
+                _ → satu karakter
                 
                 <a href="2b-dml.html" class="btn-next">2b. DDL</a>
             </div>
