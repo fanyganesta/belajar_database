@@ -866,6 +866,163 @@
                 2️⃣ Ambil pembayaran bulan Februari 2025
                 3️⃣ Ambil pembayaran di luar range 2024
                 
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                2.3.6 ORDER BY
+
+                ORDER BY dipakai untuk mengurutkan hasil SELECT.
+
+                SELECT kolom
+                FROM tabel
+                ORDER BY kolom;
+
+
+                Default:
+
+                ASC (ascending / naik)
+
+                ORDER BY ASC vs DESC
+                🔼 ASC (kecil → besar)
+                ORDER BY price ASC;
+
+                🔽 DESC (besar → kecil)
+                ORDER BY price DESC;
+
+                Contoh Nyata (WAJIB PAHAM)
+                1️⃣ Produk termurah ke termahal
+                SELECT name, price
+                FROM products
+                ORDER BY price ASC;
+
+                2️⃣ Produk terbaru (PALING SERING)
+                SELECT id, name, created_at
+                FROM products
+                ORDER BY created_at DESC;
+
+
+                📌 Ini default:
+
+                listing admin
+
+                feed
+
+                dashboard
+
+                ORDER BY Lebih dari Satu Kolom
+                SELECT * FROM users
+                ORDER BY role ASC, created_at DESC;
+
+
+                Artinya:
+
+                urutkan berdasarkan role
+
+                kalau role sama → urutkan by tanggal
+
+                ORDER BY Berdasarkan Kolom SELECT
+                SELECT
+                    name,
+                    price,
+                    price * stock AS total_value
+                FROM products
+                ORDER BY total_value DESC;
+
+
+                🔥 Berguna buat:
+
+                ranking
+
+                leaderboard
+
+                laporan nilai tertinggi
+
+                ORDER BY Angka Kolom (⚠️ Hindari)
+                SELECT name, price FROM products
+                ORDER BY 2 DESC;
+
+
+                Artinya:
+
+                urutkan kolom ke-2 (price)
+
+                ❌ Tidak disarankan:
+
+                rawan error
+
+                susah dibaca
+
+                ORDER BY + WHERE (Combo Wajib)
+                SELECT * FROM orders
+                WHERE status = 'paid'
+                ORDER BY created_at DESC;
+
+
+                🧠 Filter dulu, baru urutkan.
+
+                ORDER BY + LIMIT (Top / Latest Data)
+                SELECT * FROM products
+                ORDER BY sold DESC
+                LIMIT 5;
+
+
+                🔥 Contoh:
+
+                5 produk terlaris
+
+                5 user terbaru
+
+                10 transaksi terakhir
+
+                ORDER BY Random (Jarang tapi Ada)
+                ORDER BY RAND();
+
+
+                ⚠️ BERAT untuk data besar
+                Cocok:
+
+                sample kecil
+
+                demo
+
+                quiz
+
+                Performa & Index (Penting dikit)
+
+                ORDER BY kolom ber-index → cepat
+
+                ORDER BY kolom tanpa index → full scan
+
+                ORDER BY + LIMIT → sangat efektif
+
+                📌 Index di created_at itu investasi 💎
+
+                Kesalahan Umum ❌
+
+                ❌ Lupa DESC untuk data terbaru
+                ❌ ORDER BY sebelum WHERE (salah urutan SQL)
+                ❌ ORDER BY kolom yang nggak perlu
+
+                Mental Model biar nempel 🧠
+
+                ORDER BY = cara data disajikan, bukan cara disimpan
+
+                Data di DB tidak punya urutan sampai kamu tentukan.
+
+                Mini Latihan 🔥
+
+                Tabel posts:
+
+                id, title, views, created_at
+
+
+                1️⃣ Urutkan dari view terbanyak
+                2️⃣ Ambil 3 post terbaru
+                3️⃣ Urutkan berdasarkan views, lalu created_at
                 <a href="2b-dml.html" class="btn-next">2b. DDL</a>
             </div>
         </main>
