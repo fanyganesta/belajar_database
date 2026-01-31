@@ -709,6 +709,162 @@
 
                 ⛔ STOP
                 ➡️ ganti ke IN
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                2.3.5 BETWEEN
+
+                BETWEEN dipakai buat filter data dalam rentang tertentu.
+
+                Biasanya buat:
+
+                tanggal (harian, bulanan)
+
+                harga
+
+                umur
+
+                nilai
+
+                saldo
+
+                Sintaks Dasar
+                WHERE column BETWEEN nilai_awal AND nilai_akhir;
+
+
+                ⚠️ INCLUSIVE
+
+                nilai_awal DAN nilai_akhir ikut terhitung
+
+                BETWEEN untuk Angka
+                Contoh: harga produk
+                SELECT * FROM products
+                WHERE price BETWEEN 100000 AND 300000;
+
+
+                Artinya:
+
+                harga ≥ 100.000
+
+                harga ≤ 300.000
+
+                Contoh: umur user
+                SELECT * FROM users
+                WHERE age BETWEEN 18 AND 25;
+
+
+                📌 Cocok buat:
+
+                segmentasi user
+
+                validasi data
+
+                BETWEEN untuk Tanggal (INI PALING SERING DIPAKAI)
+                Contoh: transaksi di bulan tertentu
+                SELECT * FROM orders
+                WHERE created_at BETWEEN '2025-01-01' AND '2025-01-31';
+
+
+                🧠 Ambil transaksi selama Januari 2025
+
+                ⚠️ Jebakan BETWEEN + DATETIME (PENTING)
+
+                Kalau created_at bertipe DATETIME:
+
+                '2025-01-31' = '2025-01-31 00:00:00'
+
+
+                ❌ Artinya tanggal 31 siang–malam KELEWAT
+
+                Solusi Aman untuk DATETIME
+                ✅ Cara 1 (Recommended)
+                WHERE created_at >= '2025-01-01'
+                AND created_at < '2025-02-01';
+
+
+                📌 Aman untuk:
+
+                laporan bulanan
+
+                index optimal
+
+                timezone friendly
+
+                ❌ Cara 2 (Kurang disarankan)
+                WHERE created_at BETWEEN
+                '2025-01-01 00:00:00'
+                AND '2025-01-31 23:59:59';
+
+
+                Bisa error kalau:
+
+                precision microsecond
+
+                timezone beda
+
+                BETWEEN + DATE Column
+
+                Kalau kolom DATE (bukan DATETIME):
+
+                WHERE order_date BETWEEN '2025-01-01' AND '2025-01-31';
+
+
+                ✔️ Aman
+                ✔️ Simpel
+
+                NOT BETWEEN (Kebalikannya)
+                SELECT * FROM products
+                WHERE price NOT BETWEEN 100000 AND 300000;
+
+
+                Artinya:
+
+                harga di luar range
+
+                BETWEEN vs IN vs LIKE
+                Kebutuhan	Pakai
+                rentang nilai	BETWEEN
+                beberapa nilai tertentu	IN
+                teks mengandung	LIKE
+                BETWEEN + AND (Kombinasi Real Life)
+                SELECT * FROM orders
+                WHERE status = 'paid'
+                AND created_at >= '2025-01-01'
+                AND created_at < '2025-02-01';
+
+
+                🔥 Ini query laporan bulanan standar industri.
+
+                Kesalahan Umum ❌
+
+                ❌ Pakai BETWEEN untuk DATETIME tanpa mikir jam
+                ❌ Rentang terbalik (BETWEEN 300 AND 100)
+                ❌ Pakai fungsi di kolom (bikin index mati)
+
+                Mental Model biar nempel 🧠
+
+                BETWEEN = pagar awal & akhir
+
+                Kalau mikir:
+
+                “ambil data dari X sampai Y”
+
+                ➡️ BETWEEN (atau >= & < kalau datetime)
+
+                Mini Latihan 🔥
+
+                Tabel payments:
+
+                id, amount, paid_at
+
+
+                1️⃣ Ambil pembayaran 1jt – 5jt
+                2️⃣ Ambil pembayaran bulan Februari 2025
+                3️⃣ Ambil pembayaran di luar range 2024
                 
                 <a href="2b-dml.html" class="btn-next">2b. DDL</a>
             </div>
