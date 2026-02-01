@@ -1023,7 +1023,164 @@
                 1️⃣ Urutkan dari view terbanyak
                 2️⃣ Ambil 3 post terbaru
                 3️⃣ Urutkan berdasarkan views, lalu created_at
-                <a href="2b-dml.html" class="btn-next">2b. DDL</a>
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                2.3.7 LIMIT / OFFSET — Pagination & Kontrol Data
+
+                Kalau nggak ada LIMIT, database kamu bisa batuk darah 😅
+                Ini fitur wajib buat aplikasi nyata.
+
+                A. Apa itu LIMIT?
+
+                LIMIT membatasi jumlah baris yang dikembalikan oleh query.
+
+                SELECT * FROM users
+                LIMIT 10;
+
+
+                Artinya:
+
+                ambil 10 data pertama
+
+                📌 Hampir semua query produksi HARUS pakai LIMIT
+
+                B. LIMIT + ORDER BY (WAJIB BARENG)
+
+                ❌ Salah (tidak deterministik):
+
+                SELECT * FROM users
+                LIMIT 10;
+
+
+                ✔️ Benar:
+
+                SELECT * FROM users
+                ORDER BY created_at DESC
+                LIMIT 10;
+
+
+                🧠 Urutan dulu → baru dibatasi.
+
+                C. Apa itu OFFSET?
+
+                OFFSET = jumlah data yang dilewati.
+
+                SELECT * FROM users
+                LIMIT 10 OFFSET 20;
+
+
+                Artinya:
+
+                lewati 20 data
+
+                ambil 10 berikutnya
+
+                📌 Ini pagination halaman ke-3 (0–9, 10–19, 20–29)
+
+                D. Pagination Standar (Page-based)
+
+                Rumus:
+
+                OFFSET = (page - 1) * limit
+
+
+                Contoh:
+
+                -- page 2
+                SELECT * FROM products
+                ORDER BY created_at DESC
+                LIMIT 10 OFFSET 10;
+
+                E. Sintaks Singkat MySQL
+                LIMIT offset, jumlah;
+
+
+                Contoh:
+
+                SELECT * FROM products
+                LIMIT 20, 10;
+
+
+                Artinya:
+
+                skip 20
+
+                ambil 10
+
+                📌 Sama dengan:
+
+                LIMIT 10 OFFSET 20;
+
+                F. LIMIT untuk Top Data
+                SELECT * FROM products
+                ORDER BY sold DESC
+                LIMIT 5;
+
+
+                🔥 Top 5 produk terlaris.
+
+                G. Masalah OFFSET (Level Naik Dikiiit 🚨)
+
+                Kalau data besar:
+
+                OFFSET 100000
+
+
+                ❌ Lambat
+                ❌ Database tetap scan data awal
+
+                H. Solusi Lebih Advanced: Cursor Pagination (Preview)
+                SELECT * FROM orders
+                WHERE id > 500
+                ORDER BY id ASC
+                LIMIT 10;
+
+
+                ✔️ Lebih cepat
+                ✔️ Dipakai di feed besar
+
+                📌 Kita bahas detail di bab lanjut.
+
+                I. LIMIT 1 (Validasi Data)
+                SELECT * FROM users
+                WHERE email = 'test@mail.com'
+                LIMIT 1;
+
+
+                🔥 Sangat umum buat:
+
+                login
+
+                validasi unik
+
+                J. Kesalahan Umum ❌
+
+                ❌ Pagination tanpa ORDER BY
+                ❌ OFFSET besar di tabel besar
+                ❌ Query tanpa LIMIT di API
+                ❌ Ambil ribuan data padahal cuma butuh 10
+
+                Mental Model biar nempel 🧠
+
+                LIMIT = rem
+                OFFSET = pindah gigi
+
+                Mini Latihan Penutup 🔥
+
+                Tabel orders:
+
+                id, total, created_at
+
+
+                1️⃣ Ambil 10 order terbaru
+                2️⃣ Page ke-3 (limit 10)
+                3️⃣ Ambil order terbesar tapi cuma 1
+                <a href="3a-relasi-data.html" class="btn-next">3a Relasi Data</a>
             </div>
         </main>
     </div>
