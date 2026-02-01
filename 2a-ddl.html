@@ -909,214 +909,278 @@
 
                 <br> <br>
 
-                2.1.4 INDEX & UNIQUE — Performa & Integritas Data
-                A. Kenapa INDEX & UNIQUE itu penting?
+                <h2>2.1.4 INDEX & UNIQUE — Performa & Integritas </h2>
+                <h3>A. Kenapa INDEX & UNIQUE itu penting?</h3>
 
-                Tanpa index:
-
-                Query lambat
-
-                Table scan ke semua row
-
-                Makin besar data → makin sakit
+                <p>Tanpa index:
+                <ul>
+                    <li>Query lambat</li>
+                    <li>Table scan ke semua row</li>
+                    <li>Makin besar data → makin sakit</li>
+                </ul> <br>
 
                 Tanpa UNIQUE:
+                <ul>
+                    <li>Data kotor</li>
+                    <li>Duplicate masuk</li>
+                    <li>Bug bisnis muncul diam-diam</li>
+                </ul> <br>
+                
+                <ul>
+                    <li>Index = performa</li>
+                    <li>Unique = kebenaran data</li>
+                </ul></p>
 
-                Data kotor
+                <br> <hr> <br>
 
-                Duplicate masuk
+                <h3>B. Apa itu INDEX?</h3>
 
-                Bug bisnis muncul diam-diam
+                <div class="quote"><p>INDEX = struktur data tambahan (biasanya B-Tree) <br>
+                yang bikin MySQL menemukan data lebih cepat.</p></div>
 
-                🔥 Index = performa
-                🔥 Unique = kebenaran data
+                <p>Analogi:</p>
+                <ul>
+                    <li>Tanpa index → baca buku dari halaman 1</li>
+                    <li>Dengan index → langsung ke halaman tujuan</li>
+                </ul>
 
-                B. Apa itu INDEX?
+                <br> <hr> <br>
 
-                INDEX = struktur data tambahan (biasanya B-Tree)
-                yang bikin MySQL menemukan data lebih cepat.
+                <h3>C. Kolom yang Cocok Di-Index</h3>
 
-                Analogi:
-
-                Tanpa index → baca buku dari halaman 1
-
-                Dengan index → langsung ke halaman tujuan
-
-                C. Kolom yang Cocok Di-Index
-
-                Index WAJIB dipertimbangkan jika kolom sering:
-
-                dipakai di WHERE
-
-                dipakai di JOIN
-
-                dipakai di ORDER BY
-
-                Contoh:
-
-                SELECT * FROM users WHERE email = 'a@b.com';
-
-
-                👉 email kandidat index
-
-                D. Membuat INDEX
-                1️⃣ INDEX biasa
-                CREATE INDEX idx_users_email ON users(email);
-
-
-                atau via ALTER:
-
-                ALTER TABLE users
-                ADD INDEX idx_users_email (email);
-
-                2️⃣ INDEX multi-kolom (composite)
-                CREATE INDEX idx_orders_user_date
-                ON orders(user_id, created_at);
-
-
-                Urutan penting:
-
-                (user_id, created_at) ≠ (created_at, user_id)
-
-                📌 Paling kiri paling penting (left-most rule)
-
-                E. Apa itu UNIQUE?
-
-                UNIQUE = constraint + index
-
-                Artinya:
-
-                Data harus unik
-
-                MySQL otomatis bikin index
+                <p>Index WAJIB dipertimbangkan jika kolom sering:
+                <ul>
+                    <li>dipakai di <code>WHERE</code></li>
+                    <li>dipakai di <code>JOIN</code></li>
+                    <li>dipakai di <code>ORDER BY</code></li>
+                </ul>
+                
+                <br>
 
                 Contoh:
+<pre>
+    SELECT * FROM users WHERE email = 'a@b.com';
+</pre>
 
-                ALTER TABLE users
-                ADD UNIQUE (email);
+                👉 email kandidat index</p>
 
+                <br> <hr> <br>
 
-                ❌ Insert email sama → ERROR
+                <h3>D. Membuat INDEX</h3>
+                <p>1️⃣ INDEX biasa</p>
+<pre>
+    CREATE INDEX idx_users_email ON users(email);
+</pre>
 
-                F. UNIQUE vs INDEX Biasa
-                Aspek	INDEX	UNIQUE
-                Performa	✅	✅
-                Cegah duplikasi	❌	✅
-                Cocok untuk	pencarian	identitas data
-                G. PRIMARY KEY = INDEX + UNIQUE + NOT NULL
-                id INT PRIMARY KEY
+                <p>atau via ALTER:</p>
+<pre>
+    ALTER TABLE users <br>
+    ADD INDEX idx_users_email (email);
+</pre>
+                <p>2️⃣ INDEX multi-kolom (composite)</p>
+<pre>
+    CREATE INDEX idx_orders_user_date <br>
+    ON orders(user_id, created_at);
+</pre>
+ <br>
+                <p>Urutan penting:</p>
+<pre>
+    (user_id, created_at) ≠ (created_at, user_id)
+</pre>
+                <p>📌 Paling kiri paling penting (left-most rule)</p>
 
+                <br> <hr> <br>
 
-                Itu artinya:
+                <h3>E. Apa itu UNIQUE?</h3>
+<pre>
+    UNIQUE = constraint + index
+</pre>
+                <p>Artinya:
+                <ul>
+                    <li>Data harus unik</li>
+                    <li>MySQL otomatis bikin index</li>
+                </ul> <br>
+                
+                Contoh:</p>
+<pre>
+    ALTER TABLE users <br>
+    ADD UNIQUE (email);
+</pre>
 
-                Unik
+                <p>❌ Insert email sama → ERROR</p>
 
-                Tidak boleh NULL
+                <br> <hr> <br>
 
-                Terindex otomatis
+                <h3>F. UNIQUE vs INDEX Biasa</h3>
+                <table>
+                    <tr>
+                        <th>Aspek</th>
+                        <th>INDEX</th>
+                        <th>UNIQUE</th>
+                    </tr>
+                    <tr>
+                        <td>Performa</td>
+                        <td class="ct">✅</td>
+                        <td class="ct">✅</td>
+                    </tr>
+                    <tr>
+                        <td>Cegah duplikasi</td>
+                        <td class="ct">❌</td>
+                        <td class="ct">✅</td>
+                    </tr>
+                    <tr>
+                        <td>Cocok untuk</td>
+                        <td class="ct">pencarian</td>
+                        <td class="ct">identitas data</td>
+                    </tr>
+                </table>
 
-                H. Index yang HARUS kamu hindari ❌
+                <br> <hr> <br>
 
-                ❌ Index di kolom:
+                <h3>G. PRIMARY KEY = INDEX + UNIQUE + NOT NULL</h3>
+<pre>
+    id INT PRIMARY KEY
+</pre>
 
-                BOOLEAN
+                <p>Itu artinya:
+                <ul>
+                    <li>Unik</li>
+                    <li>Tidak boleh NULL</li>
+                    <li>Terindex otomatis</li>
+                </ul></p>
+                
+                <br> <hr> <br>
 
-                gender
+                <h3>H. Index yang HARUS kamu hindari ❌</h3>
 
-                is_active
+                <p>❌ Index di kolom:
+                <ul>
+                    <li><code>BOOLEAN</code></li>
+                    <li><code>gender</code></li>
+                    <li><code>is_active</code></li>
+                </ul> <br>
+                
 
                 Kenapa?
+                <ul>
+                    <li>Terlalu sedikit variasi</li>
+                    <li>Index tidak efektif</li>
+                </ul></p>
+                
+                <br> <hr> <br>
 
-                Terlalu sedikit variasi
+                <h3>I. Over-Indexing (penyakit pemula)</h3>
 
-                Index tidak efektif
+                <p>Masalah:
+                <ul>
+                    <li><code>INSERT</code> / <code>UPDATE</code> jadi lambat</li>
+                    <li>Storage membengkak</li>
+                    <li>Maintenance berat</li>
+                </ul> <br>
+                
 
-                I. Over-Indexing (penyakit pemula)
+                Rule of thumb:</p>
 
-                Masalah:
+                <div class="quote"><p>Index hanya untuk query nyata, bukan asumsi</p></div>
 
-                INSERT / UPDATE jadi lambat
+                <br> <hr> <br>
 
-                Storage membengkak
+                <h3>J. Hapus INDEX</h3>
+<pre>
+    DROP INDEX idx_users_email ON users;
+</pre>
 
-                Maintenance berat
+                <p>Gunakan kalau:
+                <ul>
+                    <li>Query berubah</li>
+                    <li>Index tidak kepakai</li>
+                </ul></p>
+                
+                <br> <hr> <br>
 
-                Rule of thumb:
+                <h3>K. Cara Berpikir Profesional soal INDEX</h3>
 
-                Index hanya untuk query nyata, bukan asumsi
+                <p>Sebelum bikin index, tanya:
+                <ul>
+                    <li>Query apa yang paling sering?</li>
+                    <li>Kolom mana di WHERE?</li>
+                    <li>Data besar atau kecil?</li>
+                    <li>Index mengikuti query, bukan sebaliknya.</li>
+                </ul></p>
+                
+                <br> <hr> <br>
 
-                J. Hapus INDEX
-                DROP INDEX idx_users_email ON users;
+                <h3>. Contoh Kasus Nyata</h3>
 
+                <p>Query:</p>
+<pre>
+    SELECT * <br>
+    FROM orders <br>
+    WHERE user_id = 10 <br>
+    ORDER BY created_at DESC <br>
+    LIMIT 10;
+</pre>
 
-                Gunakan kalau:
-
-                Query berubah
-
-                Index tidak kepakai
-
-                K. Cara Berpikir Profesional soal INDEX
-
-                Sebelum bikin index, tanya:
-
-                Query apa yang paling sering?
-
-                Kolom mana di WHERE?
-
-                Data besar atau kecil?
-
-                Index mengikuti query, bukan sebaliknya.
-
-                L. Contoh Kasus Nyata
-
-                Query:
-
-                SELECT *
-                FROM orders
-                WHERE user_id = 10
-                ORDER BY created_at DESC
-                LIMIT 10;
-
-
-                Index terbaik:
-
-                CREATE INDEX idx_orders_user_created
-                ON orders(user_id, created_at);
-
+                <p>Index terbaik:</p>
+<pre>
+    CREATE INDEX idx_orders_user_created <br>
+    ON orders(user_id, created_at);
+</pre>
 
                 🔥 Cepat + optimal
 
-                M. Mini Latihan 🔥
+                <br> <hr> <br>
 
-                Tabel users punya kolom:
+                <h3>M. Mini Latihan 🔥</h3>
 
-                id
-
-                email
-
-                username
-
-                is_active
-
-                created_at
-
+                <p>Tabel users punya kolom:
+                <ul>
+                    <li><code>id</code></li>
+                    <li><code>email</code></li>
+                    <li><code>username</code></li>
+                    <li><code>is_active</code></li>
+                    <li><code>created_at</code></li>
+                </ul> <br>
+                
                 Jawab:
+                <ul>
+                    <li>Kolom mana wajib UNIQUE?</li>
+                    <li>Kolom mana cocok di-INDEX?</li>
+                    <li>Kolom mana tidak perlu index?</li>
+                </ul></p>
+                
 
-                Kolom mana wajib UNIQUE?
+                <br> <hr> <br>
 
-                Kolom mana cocok di-INDEX?
-
-                Kolom mana tidak perlu index?
-
-                N. Ringkasan BAB 2.1
-                Topik	Inti
-                CREATE TABLE	Fondasi struktur
-                ALTER TABLE	Perubahan aman
-                DROP	Tombol merah
-                INDEX	Performa
-                UNIQUE	Integritas
-
-                🔥 Kalau 2.1 ini kamu kuasai, kamu sudah siap kerja backend beneran
+                <h3>N. Ringkasan BAB 2.1</h3>
+                <table>
+                    <tr>
+                        <th>Topik</th>
+                        <th>Inti</th>
+                    </tr>
+                    <tr>
+                        <td><code>CREATE TABLE</code></td>
+                        <td>Fondasi struktur</td>
+                    </tr>
+                    <tr>
+                        <td><code>ALTER TABLE</code></td>
+                        <td>Perubahan aman</td>
+                    </tr>
+                    <tr>
+                        <td><code>DROP</code></td>
+                        <td>Tombol merah</td>
+                    </tr>
+                    <tr>
+                        <td><code>INDEX</code></td>
+                        <td>Performa</td>
+                    </tr>
+                    <tr>
+                        <td><code>UNIQUE</code></td>
+                        <td>Integritas</td>
+                    </tr>
+                </table>
+                	
+                <p>🔥 Kalau 2.1 ini kamu kuasai, kamu sudah siap kerja backend beneran</p> <br> <br>
                 
                 <a href="2b-dml.html" class="btn-next">2b. DDL</a>
             </div>
