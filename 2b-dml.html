@@ -249,168 +249,202 @@
 
                 <br> <br>
 
-                2.2.2 UPDATE — Mengubah Data Tanpa Nyesel
-                A. Apa itu UPDATE?
+                <h2>2.2.2 UPDATE — Mengubah Data Tanpa Nyesel</h2>
+                <h3>A. Apa itu UPDATE?</h3>
 
-                UPDATE dipakai untuk mengubah data yang SUDAH ADA di tabel.
+                <div class="quote"><p>UPDATE dipakai untuk mengubah data yang SUDAH ADA di tabel.</p></div>
+<pre>
+    UPDATE nama_tabel <br>
+    SET kolom = nilai <br>
+    WHERE kondisi;
+</pre>
 
-                UPDATE nama_tabel
-                SET kolom = nilai
-                WHERE kondisi;
+                <p>⚠️ Tanpa WHERE = semua data berubah</p>
 
+                <br> <hr> <br>
 
-                ⚠️ Tanpa WHERE = semua data berubah
+                <h3>B. Contoh UPDATE Paling Dasar</h3>
+<pre>
+    UPDATE users <br>
+    SET name = 'Fany' <br>
+    WHERE id = 1;
+</pre>
 
-                B. Contoh UPDATE Paling Dasar
-                UPDATE users
-                SET name = 'Fany'
-                WHERE id = 1;
+                <p>Artinya:
+                <ul>
+                    <li>Cari user id = 1</li>
+                    <li>Ubah name</li>
+                </ul></p>
+                
+                <br> <hr> <br>
 
+                <h3>C. UPDATE Banyak Kolom Sekaligus</h3>
+<pre>
+    UPDATE users <br>
+    SET <br>
+        name = 'Fany Ganesta', <br>
+        is_active = 1 <br>
+    WHERE id = 1;
+</pre>
 
-                Artinya:
+                <br> <hr> <br>
 
-                Cari user id = 1
+                <h3>D. UPDATE Tanpa WHERE (INI DOSA BESAR)</h3>
+<pre>
+    UPDATE users <br>
+    SET is_active = 0;
+</pre>
 
-                Ubah name
+                <p>🔥 Semua user nonaktif <br>
+                🔥 Pernah kejadian di production dunia nyata <br> <br>
 
-                C. UPDATE Banyak Kolom Sekaligus
-                UPDATE users
-                SET
-                    name = 'Fany Ganesta',
-                    is_active = 1
-                WHERE id = 1;
+                Senior rule: <br>
+                SELECT dulu, baru UPDATE</p>
 
-                D. UPDATE Tanpa WHERE (INI DOSA BESAR)
-                UPDATE users
-                SET is_active = 0;
+                <br> <hr> <br>
 
+                <h3>E. Pola Aman UPDATE (WAJIB DIPAKAI)</h3>
+                <p>Step 1: SELECT dulu</p>
+<pre>
+    SELECT * FROM users WHERE id = 1;
+</pre>
 
-                🔥 Semua user nonaktif
-                🔥 Pernah kejadian di production dunia nyata
+                <p>Step 2: Kalau benar → UPDATE</p>
+<pre>
+    UPDATE users <br>
+    SET is_active = 0 <br>
+    WHERE id = 1;
+</pre>
 
-                Senior rule:
-                SELECT dulu, baru UPDATE
+                <br> <hr> <br>
 
-                E. Pola Aman UPDATE (WAJIB DIPAKAI)
-                Step 1: SELECT dulu
-                SELECT * FROM users WHERE id = 1;
+                <h3>F. UPDATE dengan Kondisi Kompleks</h3>
+<pre>
+    UPDATE orders <br>
+    SET status = 'cancelled' <br>
+    WHERE status = 'pending' <br>
+    AND created_at < NOW() - INTERVAL 7 DAY;
+</pre>
 
-                Step 2: Kalau benar → UPDATE
-                UPDATE users
-                SET is_active = 0
-                WHERE id = 1;
+                <p>Dipakai untuk:
+                <ul>
+                    <li>auto-cancel</li>
+                    <li>cleanup data</li>
+                </ul></p>
 
-                F. UPDATE dengan Kondisi Kompleks
-                UPDATE orders
-                SET status = 'cancelled'
-                WHERE status = 'pending'
-                AND created_at < NOW() - INTERVAL 7 DAY;
+                <br> <hr> <br>
 
+                <h3>G. UPDATE + LIMIT (MySQL Spesifik)</h3>
+<pre>
+    UPDATE users <br>
+    SET is_active = 0 <br>
+    ORDER BY created_at ASC <br>
+    LIMIT 10;
+</pre>
 
-                Dipakai untuk:
+                <p>⚠️ MySQL-only <br>
+                ⚠️ Hati-hati di production</p>
 
-                auto-cancel
+                <br> <hr> <br>
 
-                cleanup data
+                <h3>H. UPDATE Berdasarkan Tabel Lain (JOIN)</h3>
 
-                G. UPDATE + LIMIT (MySQL Spesifik)
-                UPDATE users
-                SET is_active = 0
-                ORDER BY created_at ASC
-                LIMIT 10;
+                <p>🔥 LEVEL PRO</p>
+<pre>
+    UPDATE orders o<br>
+    JOIN users u ON o.user_id = u.id <br>
+    SET o.status = 'blocked' <br>
+    WHERE u.is_active = 0;
+</pre>
 
+                <p>Dipakai untuk:
+                <ul>
+                    <li>sinkron status</li>
+                    <li>data cleanup</li>
+                </ul></p>
+                
+                <br> <hr> <br>
 
-                ⚠️ MySQL-only
-                ⚠️ Hati-hati di production
+                <h3>I. UPDATE + UNIQUE Constraint</h3>
+<pre>
+    UPDATE users <br>
+    SET email = 'a@b.com' <br>
+    WHERE id = 2;
+</pre>
 
-                H. UPDATE Berdasarkan Tabel Lain (JOIN)
+                <p>Jika email sudah ada: <br>
+                ❌ ERROR duplicate key <br> <br>
 
-                🔥 LEVEL PRO
+                👉 Database menjaga integritas</p>
 
-                UPDATE orders o
-                JOIN users u ON o.user_id = u.id
-                SET o.status = 'blocked'
-                WHERE u.is_active = 0;
+                <br> <hr> <br>
 
+                <h3>J. UPDATE + NULL</h3>
 
-                Dipakai untuk:
+                <p>Set ke NULL:</p>
+<pre>
+    UPDATE users <br>
+    SET phone = NULL <br>
+    WHERE id = 1;
+</pre>
 
-                sinkron status
+                <p>Kalau kolom NOT NULL: <br>
+                ❌ ERROR</p>
 
-                data cleanup
+                <br> <hr> <br>
 
-                I. UPDATE + UNIQUE Constraint
-                UPDATE users
-                SET email = 'a@b.com'
-                WHERE id = 2;
+                <h3>K. UPDATE dalam Transaction (LEVEL AMAN)</h3>
+<pre>
+    START TRANSACTION; <br> <br>
 
+    UPDATE users SET is_active = 0 WHERE id = 1; <br>
 
-                Jika email sudah ada:
-                ❌ ERROR duplicate key
+    -- cek dulu <br>
+    SELECT * FROM users WHERE id = 1; <br> <br>
 
-                👉 Database menjaga integritas
+    COMMIT;   -- simpan <br>
+    -- atau <br>
+    ROLLBACK; -- batal
+</pre>
 
-                J. UPDATE + NULL
+                <p>🔥 Ini kebiasaan senior</p>
 
-                Set ke NULL:
+                <br> <hr> <br>
 
-                UPDATE users
-                SET phone = NULL
-                WHERE id = 1;
+                <h3>L. Kesalahan Fatal Pemula ❌</h3>
 
+                <p>❌ UPDATE tanpa WHERE <br>
+                ❌ Salah kondisi WHERE <br>
+                ❌ Tidak cek data sebelum UPDATE <br>
+                ❌ UPDATE massal di jam sibuk</p>
 
-                Kalau kolom NOT NULL:
-                ❌ ERROR
+                <br> <hr> <br>
 
-                K. UPDATE dalam Transaction (LEVEL AMAN)
-                START TRANSACTION;
+                <h3>M. Checklist Aman UPDATE</h3>
 
-                UPDATE users SET is_active = 0 WHERE id = 1;
+                <p>Sebelum tekan Enter:
+                <ul>
+                    <li>Sudah SELECT dulu?</li>
+                    <li>WHERE spesifik?</li>
+                    <li>Pakai PK?</li>
+                    <li>Perlu transaction?</li>
+                </ul></p>
 
-                -- cek dulu
-                SELECT * FROM users WHERE id = 1;
+                <br> <hr> <br>
 
-                COMMIT;   -- simpan
-                -- atau
-                ROLLBACK; -- batal
+                <h3>N. Mini Latihan 🔥</h3>
 
-
-                🔥 Ini kebiasaan senior
-
-                L. Kesalahan Fatal Pemula ❌
-
-                ❌ UPDATE tanpa WHERE
-                ❌ Salah kondisi WHERE
-                ❌ Tidak cek data sebelum UPDATE
-                ❌ UPDATE massal di jam sibuk
-
-                M. Checklist Aman UPDATE
-
-                Sebelum tekan Enter:
-
-                Sudah SELECT dulu?
-
-                WHERE spesifik?
-
-                Pakai PK?
-
-                Perlu transaction?
-
-                N. Mini Latihan 🔥
-
-                Tabel products:
-
-                id, name, price, stock, is_active
-
-
-                Tugas:
-
-                Update harga produk id = 5
-
-                Nonaktifkan semua produk dengan stock = 0
-
-                Tambah stock +10 untuk produk tertentu
-
+                <p>Tabel products:</p>
+<pre>
+    id, name, price, stock, is_active
+</pre>
+                <p>Tugas:
+                <ul>
+                    <li>Update harga produk id = 5</li>
+                    <li>Nonaktifkan semua produk dengan stock = 0</li>
+                    <li>Tambah stock +10 untuk produk tertentu</li>
+                </ul></p>
+                
                 <br> <br>
 
                 <hr>
