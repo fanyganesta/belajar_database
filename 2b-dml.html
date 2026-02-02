@@ -19,200 +19,229 @@
             
             <div class="content">
                 
-                BAB 2.2 — DML (Data Manipulation Language)
-
-                Kalau:
-
-                DDL = bikin rumah
-
-                DML = ngisi, mindahin, dan beresin barang di rumah itu
-
-                Di sinilah kamu bakal paling sering ngetik SQL di dunia nyata.
-
-                A. Apa itu DML?
-
-                DML = perintah SQL untuk mengelola ISI data di tabel
-
-                Yang termasuk DML:
-
-                INSERT → masukin data
-
-                UPDATE → ubah data
-
-                DELETE → hapus data
-
-                SELECT → ambil data (query)
-
-                📌 DML tidak mengubah struktur, tapi mengubah data
-
-                B. Karakteristik DML (beda sama DDL)
-
-                Bisa kena banyak row
-
-                Bisa dibatasi pakai WHERE
-
-                Bisa di-rollback kalau pakai transaction
-
-                Paling rawan bug kalau WHERE salah
-
-                🔥 Kesalahan DML = data salah
-                Kesalahan DDL = sistem rusak
-
-                C. Urutan Logis DML
-
-                Di aplikasi nyata:
-
-                INSERT (data masuk)
-
-                SELECT (data ditampilkan)
-
-                UPDATE (data berubah)
-
-                DELETE (data dibersihkan)
-
-                Makanya kita mulai dari INSERT
-
-                2.2.1 INSERT — Memasukkan Data ke Tabel
-                A. Bentuk Dasar INSERT (WAJIB HAFAL)
-                INSERT INTO nama_tabel (kolom1, kolom2, kolom3)
-                VALUES (nilai1, nilai2, nilai3);
-
-
-                Contoh:
-
-                INSERT INTO users (email, name, password)
-                VALUES ('a@b.com', 'Fany', 'hashed_password');
-
-                B. INSERT Tanpa Sebut Kolom (⚠️ HATI-HATI)
-                INSERT INTO users
-                VALUES (1, 'a@b.com', 'Fany', 'hashed_password');
-
-
-                ❌ Tidak direkomendasikan, karena:
-
-                Bergantung urutan kolom
-
-                ALTER TABLE → error
-
-                Best practice: SELALU sebut kolom
-
-                C. INSERT Multiple Rows (lebih efisien)
-                INSERT INTO users (email, name)
-                VALUES
-                ('a@b.com', 'A'),
-                ('b@b.com', 'B'),
-                ('c@b.com', 'C');
-
-
-                Lebih cepat dari banyak INSERT satu-satu.
-
-                D. INSERT dengan DEFAULT Value
-
-                Jika kolom punya DEFAULT:
-
-                INSERT INTO users (email, name)
-                VALUES ('x@y.com', 'X');
-
-
-                Kolom lain otomatis:
-
-                created_at
-
-                is_active
-
-                dll
-
-                E. INSERT dengan AUTO_INCREMENT
-                INSERT INTO users (email, name)
-                VALUES ('c@d.com', 'C');
-
-
-                id akan otomatis diisi MySQL.
-
-                F. INSERT dari SELECT (LEVEL PRO)
-                INSERT INTO archived_users (email, name)
-                SELECT email, name
-                FROM users
-                WHERE is_active = 0;
-
-
-                Dipakai untuk:
-
-                Backup
-
-                Archiving
-
-                Migration data
-
-                G. INSERT + UNIQUE (error handling)
-
-                Jika kolom UNIQUE:
-
-                INSERT INTO users (email, name)
-                VALUES ('a@b.com', 'Duplicate');
-
-
-                👉 ERROR: duplicate key
-
-                Solusi 1: IGNORE
-                INSERT IGNORE INTO users (email, name)
-                VALUES ('a@b.com', 'Duplicate');
-
-
-                ⚠️ Data diabaikan diam-diam
-
-                Solusi 2: ON DUPLICATE KEY UPDATE
-                INSERT INTO users (email, name)
-                VALUES ('a@b.com', 'Updated')
-                ON DUPLICATE KEY UPDATE
-                name = VALUES(name);
-
-
-                🔥 Banyak dipakai di sistem sync
-
-                H. INSERT + FOREIGN KEY
-                INSERT INTO orders (user_id, total)
-                VALUES (999, 100000);
-
-
-                Jika user_id tidak ada di users:
-                ❌ ERROR (FK constraint)
-
-                👉 Integritas data terjaga
-
-                I. Kesalahan Fatal Pemula ❌
-
-                ❌ INSERT tanpa kolom
-                ❌ Nilai tidak sesuai tipe data
-                ❌ Lupa constraint UNIQUE / FK
-                ❌ Masukin data mentah tanpa validasi aplikasi
-
-                J. Checklist Aman INSERT
-
-                Sebelum INSERT:
-
-                Kolom wajib sudah diisi?
-
-                Tipe data sesuai?
-
-                UNIQUE aman?
-
-                FK valid?
-
-                K. Mini Latihan 🔥
-
-                Asumsi tabel products:
-
-                id, name, price, stock, is_active, created_at
-
-
-                Tugas:
-
-                INSERT 1 produk
-
-                INSERT 3 produk sekaligus
-
-                INSERT produk tanpa isi is_active & created_at
+                <h2>BAB 2.2 — DML (Data Manipulation Language)</h2>
+
+                <p>Kalau:
+                <ul>
+                    <li>DDL = bikin rumah</li>
+                    <li>DML = ngisi, mindahin, dan beresin barang di rumah itu</li>
+                </ul> <br>
+
+                Di sinilah kamu bakal paling sering ngetik SQL di dunia nyata.</p>
+
+                <br> <hr> <br>
+
+                <h3>A. Apa itu DML?</h3>
+
+                <div class="quote"><p>DML = perintah SQL untuk mengelola ISI data di tabel</p></div>
+
+                <br>
+
+                <p>Yang termasuk DML:
+                <ul>
+                    <li><code>INSERT</code> → masukin data</li>
+                    <li><code>UPDATE</code> → ubah data</li>
+                    <li><code>DELETE</code> → hapus data</li>
+                    <li><code>SELECT</code> → ambil data (query)</li>
+                </ul> <br>
+
+                📌 DML tidak mengubah struktur, tapi mengubah data</p>
+
+                <br> <hr> <br>
+
+                <h3>B. Karakteristik DML (beda sama DDL)</h3>
+                <ul>
+                    <li>Bisa kena banyak row</li>
+                    <li>Bisa dibatasi pakai WHERE</li>
+                    <li>Bisa di-rollback kalau pakai transaction</li>
+                    <li>Paling rawan bug kalau WHERE salah</li>
+                </ul>
+                
+                <p>Kesalahan DML = data salah <br>
+                Kesalahan DDL = sistem rusak</p>
+
+                <br> <hr> <br>
+
+                <h3>C. Urutan Logis DML</h3>
+
+                <p>Di aplikasi nyata:
+                <ul>
+                    <li><code>INSERT</code> (data masuk)</li>
+                    <li><code>SELECT</code> (data ditampilkan)</li>
+                    <li><code>UPDATE</code> (data berubah)</li>
+                    <li><code>DELETE</code> (data dibersihkan)</li>
+                </ul> <br>
+                
+                Makanya kita mulai dari INSERT</p>
+
+                <br> <hr> <br>
+
+                <h2>2.2.1 INSERT — Memasukkan Data ke Tabel</h2>
+                <h3>A. Bentuk Dasar INSERT (WAJIB HAFAL)</h3>
+<pre>
+    INSERT INTO nama_tabel (kolom1, kolom2, kolom3) <br>
+    VALUES (nilai1, nilai2, nilai3);
+</pre>
+
+                <p>Contoh:</p>
+<pre>
+    INSERT INTO users (email, name, password) <br>
+    VALUES ('a@b.com', 'Fany', 'hashed_password');
+</pre>
+
+                <br> <hr> <br>
+                
+                <h3>B. INSERT Tanpa Sebut Kolom (⚠️ HATI-HATI)</h3>
+<pre>
+    INSERT INTO users <br>
+    VALUES (1, 'a@b.com', 'Fany', 'hashed_password');
+</pre>
+
+                <p>❌ Tidak direkomendasikan, karena:
+                <ul>
+                    <li>Bergantung urutan kolom</li>
+                    <li>ALTER TABLE → error</li>
+                    <li>Best practice: SELALU sebut kolom</li>
+                </ul></p>
+
+                <br> <hr> <br>
+
+                <h3>C. INSERT Multiple Rows (lebih efisien)</h3>
+<pre>
+    INSERT INTO users (email, name) <br>
+    VALUES <br>
+    ('a@b.com', 'A'), <br>
+    ('b@b.com', 'B'), <br>
+    ('c@b.com', 'C');
+</pre>
+
+                <p>Lebih cepat dari banyak INSERT satu-satu.</p>
+
+                <br> <hr> <br>
+
+                <h3>D. INSERT dengan DEFAULT Value</h3>
+
+                <p>Jika kolom punya DEFAULT:</p>
+<pre>
+    INSERT INTO users (email, name) <br>
+    VALUES ('x@y.com', 'X');
+</pre>
+
+                <p>Kolom lain otomatis:
+                <ul>
+                    <li><code>created_at</code></li>
+                    <li><code>is_active</code></li>
+                    <li>dll</li>
+                </ul> </p>
+
+                <br> <hr> <br>
+
+                <h3>E. INSERT dengan AUTO_INCREMENT</h3>
+<pre>
+    INSERT INTO users (email, name) <br>
+    VALUES ('c@d.com', 'C');
+</pre>
+
+                <p>id akan otomatis diisi MySQL.</p>
+
+                <br> <hr> <br>
+
+                <h3>F. INSERT dari SELECT (LEVEL PRO)</h3>
+<pre>
+    INSERT INTO archived_users (email, name) <br>
+    SELECT email, name <br>
+    FROM users <br>
+    WHERE is_active = 0;
+</pre>
+
+                <p>Dipakai untuk:
+                <ul>
+                    <li>Backup</li>
+                    <li>Archiving</li>
+                    <li>Migration data</li>
+                </ul></p>
+                
+                <h3>G. INSERT + UNIQUE (error handling)</h3>
+
+                <p>Jika kolom <code>UNIQUE</code>:</p>
+<pre>
+    INSERT INTO users (email, name) <br>
+    VALUES ('a@b.com', 'Duplicate');
+</pre>
+
+                <p>👉 ERROR: duplicate key <br> <br>
+
+                Solusi 1: <code>IGNORE</code></p>
+<pre>
+    INSERT IGNORE INTO users (email, name) <br>
+    VALUES ('a@b.com', 'Duplicate');
+</pre>
+
+                <p>⚠️ Data diabaikan diam-diam <br> <br>
+
+                Solusi 2: <code>ON DUPLICATE KEY UPDATE</code></p>
+<pre>
+    INSERT INTO users (email, name) <br>
+    VALUES ('a@b.com', 'Updated') <br>
+    ON DUPLICATE KEY UPDATE <br>
+    name = VALUES(name);
+</pre>
+
+                <p>🔥 Banyak dipakai di sistem sync</p>
+
+                <br> <hr> <br>
+
+                <h3>H. INSERT + FOREIGN KEY</h3>
+<pre>
+    INSERT INTO orders (user_id, total) <br>
+    VALUES (999, 100000);
+</pre>
+
+                <p>Jika user_id tidak ada di users: <br>
+                ❌ ERROR (FK constraint) <br>
+                👉 Integritas data terjaga</p>
+
+                <br> <hr> <br>
+
+                <h3>I. Kesalahan Fatal Pemula ❌</h3>
+
+                <p>❌ INSERT tanpa kolom <br>
+                ❌ Nilai tidak sesuai tipe data <br>
+                ❌ Lupa constraint UNIQUE / FK <br>
+                ❌ Masukin data mentah tanpa validasi aplikasi</p>
+
+                <br> <hr> <br>
+
+                <h3>J. Checklist Aman INSERT</h3>
+
+                <p>Sebelum INSERT:
+                <ul>
+                    <li>Kolom wajib sudah diisi?</li>
+                    <li>Tipe data sesuai?</li>
+                    <li>UNIQUE aman?</li>
+                    <li>FK valid?</li>
+                </ul> </p>
+
+                <br> <hr> <br>
+
+                <h3>K. Mini Latihan 🔥</h3>
+
+                <p>Asumsi tabel products:</p>
+<pre>
+    id, name, price, stock, is_active, created_at
+</pre>
+
+                <p>Tugas:</p>
+                <ul>
+                    <li><code>INSERT</code> 1 produk</li>
+                    <li><code>INSERT</code> 3 produk sekaligus</li>
+                    <li><code>INSERT</code> produk tanpa isi is_active & created_at</li>
+                </ul>
+                
+
+                
+
+                
 
                 <br> <br>
 
