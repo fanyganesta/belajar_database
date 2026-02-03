@@ -19,184 +19,63 @@
             
             <div class="content">
 
-                2.3 Filtering & Sorting — Menyaring & Mengurutkan Data
-                A. Apa itu Filtering?
+                <h2>2.3 Filtering & Sorting — Menyaring & Mengurutkan Data</h2>
+                <h3>A. Apa itu Filtering?</h3>
 
-                Filtering = memilih data yang relevan dari banyak data.
+                <div class="quote"><p>Filtering = memilih data yang relevan dari banyak data.</p></div>
 
-                Tanpa filtering:
+                <p>Tanpa filtering:</p>
+<pre>
+    SELECT * FROM orders;
+</pre>
 
-                SELECT * FROM orders;
+                <p>Dengan filtering:</p>
+<pre>
+    SELECT * FROM orders WHERE status = 'paid';
+</pre>
 
+                <p>👉 dari ribuan data, kamu ambil yang kamu butuhkan saja</p>
 
-                Dengan filtering:
+                <br> <hr> <br>
 
-                SELECT * FROM orders WHERE status = 'paid';
+                <h3>B. Apa itu Sorting?</h3>
 
+                <div class="quote"><p>Sorting = mengurutkan hasil query</p></div>
 
-                👉 dari ribuan data, kamu ambil yang kamu butuhkan saja
+                <p>Contoh:</p>
+<pre>
+    ORDER BY created_at DESC;
+</pre>
 
-                B. Apa itu Sorting?
+                <p>Artinya:</p>
+                <ul>
+                    <li>data terbaru dulu</li>
+                    <li>atau termurah</li>
+                    <li>atau alfabet</li>
+                </ul>
+                
+                <p>📌 Sorting tidak mengubah data, cuma urutan tampilannya</p>
 
-                Sorting = mengurutkan hasil query
+                <br> <hr> <br>
 
-                Contoh:
+                <h3>C. Kenapa Filtering & Sorting Penting?</h3>
 
-                ORDER BY created_at DESC;
-
-
-                Artinya:
-
-                data terbaru dulu
-
-                atau termurah
-
-                atau alfabet
-
-                📌 Sorting tidak mengubah data, cuma urutan tampilannya
-
-                C. Kenapa Filtering & Sorting Penting?
-
-                Di aplikasi nyata:
-
-                halaman list
-
-                search
-
-                laporan
-
-                dashboard
+                <p>Di aplikasi nyata:
+                <ul>
+                    <li>halaman list</li>
+                    <li>search</li>
+                    <li>laporan</li>
+                    <li>dashboard</li>
+                </ul>
 
                 Semua pakai:
-
-                WHERE
-
-                ORDER BY
-
-                LIMIT
-
-                🔥 90% query bisnis = SELECT + WHERE + ORDER BY
-
-                2.3.1 WHERE — Pondasi Filtering
-                A. Apa itu WHERE?
-
-                WHERE digunakan untuk memfilter baris (row) berdasarkan kondisi.
-
-                SELECT kolom
-                FROM tabel
-                WHERE kondisi;
-
-                B. WHERE Paling Dasar
-                SELECT * FROM users
-                WHERE id = 1;
-
-
-                Ambil satu user spesifik.
-
-                C. Operator Dasar di WHERE
-                Operator	Arti
-                =	sama dengan
-                != / <>	tidak sama
-                >	lebih besar
-                <	lebih kecil
-                >=	lebih besar sama
-                <=	lebih kecil sama
-
-                Contoh:
-
-                SELECT * FROM products
-                WHERE price > 100000;
-
-                D. WHERE + String
-                SELECT * FROM users
-                WHERE email = 'a@b.com';
-
-
-                ⚠️ String harus pakai tanda petik
-
-                E. WHERE + NULL (⚠️ sering salah)
-
-                ❌ SALAH:
-
-                WHERE deleted_at = NULL;
-
-
-                ✅ BENAR:
-
-                WHERE deleted_at IS NULL;
-
-
-                Dan:
-
-                WHERE deleted_at IS NOT NULL;
-
-                F. WHERE + Boolean
-                SELECT * FROM users
-                WHERE is_active = 1;
-
-
-                atau:
-
-                WHERE is_active = TRUE;
-
-
-                (MySQL treat TRUE = 1)
-
-                G. WHERE + Index (penting!)
-                SELECT * FROM users
-                WHERE email = 'x@y.com';
-
-
-                🔥 Kalau email di-index → query super cepat
-
-                Makanya:
-
-                WHERE menentukan kebutuhan INDEX
-
-                H. WHERE + Perhitungan
-                SELECT * FROM products
-                WHERE price * stock > 1000000;
-
-
-                ⚠️ Ini tidak pakai index, karena ada kalkulasi
-
-                Better:
-
-                WHERE stock > 0 AND price > 100000;
-
-                I. Kesalahan Umum Pemula ❌
-
-                ❌ Lupa WHERE → semua data
-                ❌ Salah operator
-                ❌ Bandingin NULL pakai =
-                ❌ WHERE di kolom tanpa index (tabel besar)
-
-                J. Pola Aman Query Filtering
-
-                Selalu mulai dari:
-
-                SELECT *
-                FROM tabel
-                WHERE ...
-                LIMIT 10;
-
-
-                👉 Aman, tidak nyedot data besar
-
-                K. Mini Latihan 🔥
-
-                Tabel products:
-
-                id, name, price, stock, is_active, created_at
-
-
-                Tugas:
-
-                Ambil produk dengan price > 50000
-
-                Ambil produk yang masih aktif
-
-                Ambil produk yang stoknya habis
+                <ul>
+                    <li><code>WHERE</code></li>
+                    <li><code>ORDER BY</code></li>
+                    <li><code>LIMIT</code></li>
+                </ul> <br>
+                
+                🔥 90% query bisnis = SELECT + WHERE + ORDER BY</p>
 
                 <br> <br>
 
@@ -204,134 +83,360 @@
 
                 <br> <br>
 
-                2.3.2 AND / OR — Gabung Kondisi Biar Query Pintar
-                A. Kenapa Butuh AND / OR?
+                <h2>2.3.1 WHERE — Pondasi Filtering</h2>
+                <h3>A. Apa itu WHERE?</h3>
 
-                Satu kondisi jarang cukup.
+                <div class="quote"><p>WHERE digunakan untuk memfilter baris (row) berdasarkan kondisi.</p></div>
+<pre>
+    SELECT kolom <br>
+    FROM tabel <br>
+    WHERE kondisi;
+</pre>
+                <br> <hr> <br>
 
-                Contoh dunia nyata:
+                <h3>B. WHERE Paling Dasar</h3>
+<pre>
+    SELECT * FROM users <br>
+    WHERE id = 1;
+</pre>
 
-                produk aktif DAN stok ada
+                <p>Ambil satu user spesifik.</p>
 
-                user admin ATAU manager
+                <br> <hr> <br>
 
-                order paid DAN belum dikirim
+                <h3>C. Operator Dasar di WHERE</h3>
+                <table>
+                    <tr>
+                        <th>Operator</th>
+                        <th>Arti</th>
+                    </tr>
+                    <tr>
+                        <td class="ct">=</td>
+                        <td>sama dengan</td>
+                    </tr>
+                    <tr>
+                        <td class="ct">!= / &lt;></td>
+                        <td>tidak sama</td>
+                    </tr>
+                    <tr>
+                        <td class="ct">></td>
+                        <td>lebih besar</td>
+                    </tr>
+                    <tr>
+                        <td class="ct">&lt;</td>
+                        <td>lebih kecil</td>
+                    </tr>
+                    <tr>
+                        <td class="ct">>=</td>
+                        <td>lebih besar sama</td>
+                    </tr>
+                    <tr>
+                        <td class="ct">&lt;=</td>
+                        <td>lebih kecil sama</td>
+                    </tr>
+                </table>
 
-                👉 Di sinilah AND & OR dipakai.
+                <p>Contoh:</p>
+<pre>
+    SELECT * FROM products <br>
+    WHERE price > 100000;
+</pre>
 
-                B. AND — Semua Harus Benar
-                SELECT * FROM products
-                WHERE is_active = 1
-                AND stock > 0;
+                <br> <hr> <br>
 
+                <h3>D. WHERE + String</h3>
+<pre>
+    SELECT * FROM users <br>
+    WHERE email = 'a@b.com';
+</pre>
 
-                Artinya:
+                <p>⚠️ String harus pakai tanda petik</p>
 
-                aktif ✅
+                <br> <hr> <br>
 
-                stok ada ✅
+                <h3>E. WHERE + NULL (⚠️ sering salah)</h3>
 
-                Kalau salah satu false → tidak masuk hasil
+                <p>❌ SALAH:</p>
+<pre>
+    WHERE deleted_at = NULL;
+</pre>
 
-                C. OR — Salah Satu Benar Cukup
-                SELECT * FROM users
-                WHERE role = 'admin'
-                OR role = 'manager';
+                <p>✅ BENAR:</p>
+<pre>
+    WHERE deleted_at IS NULL;
+</pre>
 
+                <p>Dan:</p>
+<pre>
+    WHERE deleted_at IS NOT NULL;
+</pre>
 
-                Kalau salah satu cocok → masuk hasil
+                <br> <hr> <br>
 
-                D. AND vs OR (Logika Sederhana)
-                Kondisi A	Kondisi B	AND	OR
-                true	true	true	true
-                true	false	false	true
-                false	true	false	true
-                false	false	false	false
-                E. Kombinasi AND + OR (⚠️ WAJIB PAKAI KURUNG)
+                <h3>F. WHERE + Boolean</h3>
+<pre>
+    SELECT * FROM users <br>
+    WHERE is_active = 1;
+</pre>
 
-                ❌ SALAH (logika kacau):
+                <p>atau:</p>
+<pre>
+    WHERE is_active = TRUE;
+</pre>
 
-                WHERE role = 'admin'
-                OR role = 'manager'
-                AND is_active = 1;
+                <p>(MySQL treat TRUE = 1)</p>
 
+                <br> <hr> <br>
 
-                SQL baca sebagai:
+                <h3>G. WHERE + Index (penting!)</h3>
+<pre>
+    SELECT * FROM users <br>
+    WHERE email = 'x@y.com';
+</pre>
 
-                admin OR (manager AND aktif)
+                <p>🔥 Kalau email di-index → query super cepat <br> <br>
 
+                Makanya:</p>
+<pre>
+    WHERE menentukan kebutuhan INDEX
+</pre>
+                <br> <hr> <br>
 
-                ✅ BENAR (jelas maksudnya):
+                <h3>H. WHERE + Perhitungan</h3>
+<pre>
+    SELECT * FROM products <br>
+    WHERE price * stock > 1000000; 
+</pre>
 
-                WHERE (role = 'admin' OR role = 'manager')
-                AND is_active = 1;
+                <p>⚠️ Ini tidak pakai index, karena ada kalkulasi <br> <br>
 
+                Better:</p>
+<pre>
+    WHERE stock > 0 AND price > 100000;
+</pre>
+                <br> <hr> <br>
 
-                📌 Pakai tanda kurung = nyelametin hidup kamu
+                <h3>I. Kesalahan Umum Pemula ❌</h3>
 
-                F. Contoh Kasus Nyata
-                Produk siap dijual
-                SELECT * FROM products
-                WHERE is_active = 1
-                AND stock > 0
-                AND price >= 10000;
+                <p>❌ Lupa WHERE → semua data <br>
+                ❌ Salah operator <br>
+                ❌ Bandingin NULL pakai = <br>
+                ❌ WHERE di kolom tanpa index (tabel besar)</p>
 
-                User berhak akses
-                SELECT * FROM users
-                WHERE (role = 'admin' OR role = 'editor')
-                AND is_active = 1;
+                <br> <hr> <br>
 
-                G. AND / OR + Index (penting!)
+                <h3>J. Pola Aman Query Filtering</h3>
 
-                🔥 Paling optimal:
+                <p>Selalu mulai dari:</p>
+<pre>
+    SELECT * <br>
+    FROM tabel <br>
+    WHERE ... <br>
+    LIMIT 10;
+</pre>
 
-                WHERE email = 'x@y.com' AND is_active = 1;
+                <p>👉 Aman, tidak nyedot data besar</p>
 
+                <br> <hr> <br>
 
-                ⚠️ Kurang optimal:
+                <h3>K. Mini Latihan 🔥</h3>
 
-                WHERE price > 10000 OR stock > 0;
+                <p>Tabel products:</p>
+<pre>
+    id, name, price, stock, is_active, created_at
+</pre>
 
+                <p>Tugas:
+                <ul>
+                    <li>Ambil produk dengan price > 50000</li>
+                    <li>Ambil produk yang masih aktif</li>
+                    <li>Ambil produk yang stoknya habis</li>
+                </ul></p>
+                
 
-                Kenapa?
+                <br> <br>
 
-                OR sering bikin index tidak kepakai
+                <hr>
+
+                <br> <br>
+
+                <h2>2.3.2 AND / OR — Gabung Kondisi Biar Query Pintar</h2>
+                <h3>A. Kenapa Butuh AND / OR?</h3>
+
+                <div class="quote"><p>Satu kondisi jarang cukup.</p></div>
+
+                <p>Contoh dunia nyata:
+                <ul>
+                    <li>produk aktif DAN stok ada</li>
+                    <li>user admin ATAU manager</li>
+                    <li>order paid DAN belum dikirim</li>
+                </ul> <br>
+                
+                👉 Di sinilah AND & OR dipakai.</p>
+            
+                <br> <hr> <br>
+
+                <h3>B. AND — Semua Harus Benar</h3>
+<pre>
+    SELECT * FROM products <br>
+    WHERE is_active = 1 <br>
+    AND stock > 0;
+</pre>
+
+                <p>Artinya:
+                <ul>
+                    <li>aktif ✅</li>
+                    <li>stok ada ✅</li>
+                </ul></p>
+                
+                <p>Kalau salah satu false → tidak masuk hasil</p>
+            
+                <br> <hr> <br>
+
+                <h3>C. OR — Salah Satu Benar Cukup</h3>
+<pre>
+    SELECT * FROM users <br>
+    WHERE role = 'admin' <br>
+    OR role = 'manager';
+</pre>
+
+                <p>Kalau salah satu cocok → masuk hasil</p>
+            
+                <br> <hr> <br>
+
+                <h3>D. AND vs OR (Logika Sederhana)</h3>
+                <table>
+                    <tr>
+                        <th>Kondisi A</th>
+                        <th>Kondisi B</th>
+                        <th>AND</th>
+                        <th>OR</th>
+                    </tr>
+                    <tr>
+                        <td>true</td>
+                        <td>true</td>
+                        <td>true</td>
+                        <td>true</td>
+                    </tr>
+                    <tr>
+                        <td>true</td>
+                        <td>false</td>
+                        <td>false</td>
+                        <td>true</td>
+                    </tr>
+                    <tr>
+                        <td>false</td>
+                        <td>true</td>
+                        <td>false</td>
+                        <td>true</td>
+                    </tr>
+                    <tr>
+                        <td>false</td>
+                        <td>false</td>
+                        <td>false</td>
+                        <td>false</td>
+                    </tr>
+                </table>
+
+                <br> <hr> <br>
+
+                <h3>E. Kombinasi AND + OR (⚠️ WAJIB PAKAI KURUNG)</h3>
+
+                <p>❌ SALAH (logika kacau):</p>
+<pre>
+    WHERE role = 'admin' <br>
+    OR role = 'manager' <br>
+    AND is_active = 1;
+</pre>
+
+                <p>SQL baca sebagai:</p>
+<pre>
+    admin OR (manager AND aktif)
+</pre>
+
+                <p>✅ BENAR (jelas maksudnya):</p>
+<pre>
+    WHERE (role = 'admin' OR role = 'manager') <br>
+    AND is_active = 1;
+</pre>
+
+                <p>📌 Pakai tanda kurung = nyelametin hidup kamu</p>
+            
+                <br> <hr> <br>
+
+                <h3>F. Contoh Kasus Nyata</h3>
+                <p>Produk siap dijual</p>
+<pre>
+    SELECT * FROM products <br>
+    WHERE is_active = 1 <br>
+    AND stock > 0 <br>
+    AND price >= 10000;
+</pre>
+                <p>User berhak akses</p>
+<pre>
+    SELECT * FROM users <br>
+    WHERE (role = 'admin' OR role = 'editor') <br>
+    AND is_active = 1;
+</pre> 
+
+                <br> <hr> <br>
+
+                <h3>G. AND / OR + Index (penting!)</h3>
+
+                <p>🔥 Paling optimal:</p>
+<pre>
+    WHERE email = 'x@y.com' AND is_active = 1;
+</pre>
+
+                <p>⚠️ Kurang optimal:</p>
+<pre>
+    WHERE price > 10000 OR stock > 0;
+</pre>
+
+                <p></p>Kenapa? <br> <br>
+
+                OR sering bikin index tidak kepakai <br> <br>
 
                 📌 Rule:
+                <ul>
+                    <li>AND = ramah index</li>
+                    <li>OR = hati-hati di tabel besar</li>
+                </ul></p>
 
-                AND = ramah index
-                OR = hati-hati di tabel besar
+                <br> <hr> <br>
 
-                H. NOT (bonus dikit)
-                SELECT * FROM users
-                WHERE NOT is_active;
+                <h3>H. NOT (bonus dikit)</h3>
+<pre>
+    SELECT * FROM users <br>
+    WHERE NOT is_active;
+</pre>
 
+                <p>Atau:</p>
+<pre>
+    WHERE role != 'admin';
+</pre>
+                <h3>I. Kesalahan Umum ❌</h3>
 
-                Atau:
+                <p>❌ Lupa kurung <br>
+                ❌ OR berlebihan <br>
+                ❌ Logika kebalik <br>
+                ❌ Query lambat karena OR di kolom besar </p>
+            
+                <br> <hr> <br>
 
-                WHERE role != 'admin';
+                <h3>J. Mini Latihan 🔥</h3>
 
-                I. Kesalahan Umum ❌
+                <p>Tabel orders:</p>
+<pre>
+    id, status, payment_method, total, created_at
+</pre>
 
-                ❌ Lupa kurung
-                ❌ OR berlebihan
-                ❌ Logika kebalik
-                ❌ Query lambat karena OR di kolom besar
-
-                J. Mini Latihan 🔥
-
-                Tabel orders:
-
-                id, status, payment_method, total, created_at
-
-
-                Tugas:
-
-                Order paid DAN total > 100000
-
-                Order paid ATAU shipped
-
-                Order paid atau shipped yang total > 100000
+                <p>Tugas:
+                <ul>
+                    <li>Order paid DAN total > 100000</li>
+                    <li>Order paid ATAU shipped</li>
+                    <li>Order paid atau shipped yang total > 100000</li>
+                </ul></p>
 
                 <br> <br>
 
@@ -339,203 +444,247 @@
 
                 <br> <br>
 
-                2.3.3 LIKE
+                <h2>2.3.3 LIKE</h2>
 
-                LIKE dipakai buat pencarian berbasis pola (pattern matching).
-                Ini yang dipakai di fitur:
+                <div class="quote"><p><code>LIKE</code> dipakai buat pencarian berbasis pola (pattern matching).</p></div>
 
-                search produk
+                <p>Ini yang dipakai di fitur:
+                <ul>
+                    <li>search produk</li>
+                    <li>search user</li>
+                    <li>filter nama / email</li>
+                    <li>kolom “cari…” di aplikasi</li>
+                </ul> <br>
 
-                search user
+                Kalau = itu harus sama persis, <br>
+                LIKE itu lebih fleksibel.</p>
 
-                filter nama / email
+                <br> <hr> <br>
 
-                kolom “cari…” di aplikasi
+                <h3>Konsep Dasar LIKE</h3>
+<pre>
+    SELECT * FROM users <br>
+    WHERE name LIKE 'Ani';
+</pre>
 
-                Kalau = itu harus sama persis,
-                LIKE itu lebih fleksibel.
+                <p>⚠️ Ini sama saja dengan =, karena tidak ada wildcard. <br> <br>
 
-                Konsep Dasar LIKE
-                SELECT * FROM users
-                WHERE name LIKE 'Ani';
+                LIKE jadi berguna karena wildcard.</p>
 
+                <br> <hr> <br>
 
-                ⚠️ Ini sama saja dengan =, karena tidak ada wildcard.
-
-                LIKE jadi berguna karena wildcard.
-
-                Wildcard di LIKE
-                % → mewakili banyak karakter (0 atau lebih)
-                _ → mewakili 1 karakter saja
-                1️⃣ Paling umum: %kata% (contains)
-                SELECT * FROM products
-                WHERE name LIKE '%sepatu%';
-
-
-                Artinya:
-
-                mengandung kata sepatu
-
-                posisi bebas (awal, tengah, akhir)
-
+                <h3>A. Wildcard di LIKE</h3>
+                <ul>
+                    <li>% → mewakili banyak karakter (0 atau lebih)</li>
+                    <li>_ → mewakili 1 karakter saja</li>
+                </ul>
+                
+                
+                <h4>1️⃣ Paling umum: %kata% (contains)</h4>
+<pre>
+    SELECT * FROM products <br>
+    WHERE name LIKE '%sepatu%';
+</pre>
+                <p>Artinya:
+                <ul>
+                    <li>mengandung kata sepatu</li>
+                    <li>posisi bebas (awal, tengah, akhir)</li>
+                </ul> <br>
+                
                 📦 Contoh data yang lolos:
+                <ul>
+                    <li>Sepatu Lari</li>
+                    <li>Sepatu Casual Pria</li>
+                    <li>Tas + Sepatu Travel</li>
+                </ul> <br>
 
-                Sepatu Lari
+                🧠 Ini yang dipakai di search box aplikasi</p>
 
-                Sepatu Casual Pria
+                <br> <hr> <br>
 
-                Tas + Sepatu Travel
+                <h4>2️⃣ Awalan kata: kata%</h4>
+<pre>
+    SELECT * FROM users <br>
+    WHERE email LIKE 'admin%';
+</pre>
 
-                🧠 Ini yang dipakai di search box aplikasi
-
-                2️⃣ Awalan kata: kata%
-                SELECT * FROM users
-                WHERE email LIKE 'admin%';
-
-
-                Artinya:
-
-                dimulai dengan admin
-
+                <p>Artinya:
+                <ul>
+                    <li>dimulai dengan admin</li>
+                </ul>
+                
                 ✔️ cocok:
-
-                admin@gmail.com
-
-                admin123@company.com
-
+                <ul>
+                    <li>admin@gmail.com</li>
+                    <li>admin123@company.com</li>
+                </ul> <br>
+                
                 ❌ tidak cocok:
+                <ul>
+                    <li>superadmin@gmail.com</li>
+                </ul> <br>
+                
 
-                superadmin@gmail.com
+                📌 Cocok buat:  
+                <ul>
+                    <li>kode produk</li>
+                    <li>username prefix</li>
+                    <li>kategori</li>
+                </ul></p>
 
-                📌 Cocok buat:
+                <br> <hr> <br>
 
-                kode produk
+                <h4>3️⃣ Akhiran kata: %kata</h4>
+<pre>
+    SELECT * FROM users <br>
+    WHERE email LIKE '%@gmail.com';
+</pre>
 
-                username prefix
-
-                kategori
-
-                3️⃣ Akhiran kata: %kata
-                SELECT * FROM users
-                WHERE email LIKE '%@gmail.com';
-
-
-                Artinya:
-
-                diakhiri dengan @gmail.com
-
+                <p>Artinya:
+                <ul>
+                    <li>diakhiri dengan @gmail.com</li>
+                </ul> <br>
+                
                 🧠 Ini sering dipakai buat:
+                <ul>
+                    <li>filter domain email</li>
+                    <li>tipe file (%.pdf, %.jpg)</li>
+                </ul></p>
 
-                filter domain email
+                <br> <hr> <br>
 
-                tipe file (%.pdf, %.jpg)
+                <h4>4️⃣ Single character wildcard _</h4>
+<pre>
+    SELECT * FROM users <br>
+    WHERE username LIKE 'adm_n';
+</pre>
 
-                4️⃣ Single character wildcard _
-                SELECT * FROM users
-                WHERE username LIKE 'adm_n';
+                <p>Artinya:</p>
+<pre>
+    adm + 1 karakter + n
+</pre>
+                <p>✔️ cocok:</p>
+                <ul>
+                    <li>admin</li>
+                    <li>adm1n</li>
+                </ul> <br>
 
+                <p>❌ tidak cocok:</p>
+                <ul>
+                    <li>admiiin</li>
+                    <li>admmn</li>
+                </ul>
 
-                Artinya:
+                <br>
 
-                adm + 1 karakter + n
+                <p>📌 Jarang dipakai, tapi penting buat:</p>
+                <ul>
+                    <li>kode tetap</li>
+                    <li>format tertentu</li>
+                </ul>
 
-                ✔️ cocok:
+                <br> <hr> <br>
 
-                admin
+                <h3>B. LIKE + AND / OR (Real Case)</h3>
+<pre>
+    SELECT * FROM products <br>
+    WHERE name LIKE '%sepatu%' <br>
+    AND price BETWEEN 100000 AND 300000;
+</pre>
 
-                adm1n
+                <p>Artinya:
+                <ul>
+                    <li>nama mengandung sepatu</li>
+                    <li>harga di range tertentu</li>
+                </ul> <br>
+                
+                🧠 Ini search + filter harga → khas e-commerce.</p>
 
-                ❌ tidak cocok:
+                <br> <hr> <br>
 
-                admiiin
+                <h3>C. LIKE + WHERE Status</h3>
+<pre>
+    SELECT * FROM users <br>
+    WHERE name LIKE '%fan%' <br>
+    AND status = 'active';
+</pre>
 
-                admmn
+                <p>Artinya:
+                <ul>
+                    <li>nama mengandung "fan"</li>
+                    <li>user masih aktif</li>
+                </ul> <br>
 
-                📌 Jarang dipakai, tapi penting buat:
+                Case Sensitivity (PENTING!) <br> <br>
 
-                kode tetap
+                Di MySQL:</p>
+<pre>
+    LIKE biasanya case-insensitive
+</pre>
+                <p>tergantung collation <br> <br>
 
-                format tertentu
+                Contoh:</p>
+<pre>
+    'Fany' LIKE '%fan%'  → TRUE
+</pre>
 
-                LIKE + AND / OR (Real Case)
-                SELECT * FROM products
-                WHERE name LIKE '%sepatu%'
-                AND price BETWEEN 100000 AND 300000;
+                <p>Kalau mau case-sensitive:</p>
+<pre>
+    WHERE BINARY name LIKE '%fan%';
+</pre>
+                <br> <hr> <br>
 
+                <h3>D. LIKE vs = (perbandingan cepat)</h3>
+                <table>
+                    <tr>
+                        <th>Operator</th>
+                        <th>Kapan Dipakai</th>
+                    </tr>
+                    <tr>
+                        <td class="ct">=</td>
+                        <td>exact match</td>
+                    </tr>
+                    <tr>
+                        <td class="ct"><code>LIKE</code></td>
+                        <td>search / partial</td>
+                    </tr>
+                    <tr>
+                        <td class="ct"><code>IN</code></td>
+                        <td>beberapa nilai tetap</td>
+                    </tr>
+                </table>
 
-                Artinya:
+                <p>⚠️ Performa Warning (WAJIB TAHU)</p>
+<pre>
+    WHERE name LIKE '%sepatu%'
+</pre>
 
-                nama mengandung sepatu
+                <p>❌ TIDAK BISA pakai index <br>
+                karena % di depan. <br> <br>
 
-                harga di range tertentu
+                Lebih aman:</p>
+<pre>
+    WHERE name LIKE 'sepatu%'
+</pre>
 
-                🧠 Ini search + filter harga → khas e-commerce.
+                <p>✔️ masih bisa pakai index <br> <br>
 
-                LIKE + WHERE Status
-                SELECT * FROM users
-                WHERE name LIKE '%fan%'
-                AND status = 'active';
+                🧠 Jadi:</p>
 
+                <div class="quote"><p>search besar → butuh FULLTEXT (nanti level lanjut)</p></div>
 
-                Artinya:
+                <p>data kecil → <code>LIKE</code> aman</p>
 
-                nama mengandung "fan"
+                <br> <hr> <br>
 
-                user masih aktif
-
-                Case Sensitivity (PENTING!)
-
-                Di MySQL:
-
-                LIKE biasanya case-insensitive
-
-                tergantung collation
-
-                Contoh:
-
-                'Fany' LIKE '%fan%'  → TRUE
-
-
-                Kalau mau case-sensitive:
-
-                WHERE BINARY name LIKE '%fan%';
-
-                LIKE vs = (perbandingan cepat)
-                Operator	Kapan Dipakai
-                =	exact match
-                LIKE	search / partial
-                IN	beberapa nilai tetap
-                ⚠️ Performa Warning (WAJIB TAHU)
-                WHERE name LIKE '%sepatu%'
-
-
-                ❌ TIDAK BISA pakai index
-                karena % di depan.
-
-                Lebih aman:
-
-                WHERE name LIKE 'sepatu%'
-
-
-                ✔️ masih bisa pakai index
-
-                🧠 Jadi:
-
-                search besar → butuh FULLTEXT (nanti level lanjut)
-
-                data kecil → LIKE aman
-
-                Mental Model (biar nempel)
-
-                LIKE = cari pola teks, bukan bandingin nilai
-
-                %kata% → mengandung
-
-                kata% → awalan
-
-                %kata → akhiran
-
-                _ → satu karakter
+                <h3>E. Mental Model (biar nempel)</h3>
+                <ul>
+                    <li>LIKE = cari pola teks, bukan bandingin nilai</li>
+                    <li>%kata% → mengandung</li>
+                    <li>kata% → awalan</li>
+                    <li>%kata → akhiran</li>
+                    <li>_ → satu karakter</li>
+                </ul>
 
                 <br> <br>
 
@@ -543,172 +692,221 @@
 
                 <br> <br>
 
-                2.3.4 IN
+                <h2>2.3.4 IN</h2>
 
-                IN dipakai kalau kita mau filter berdasarkan beberapa nilai sekaligus
-                tanpa nulis OR panjang-panjang.
+                <div class="quote"><p>IN dipakai kalau kita mau filter berdasarkan beberapa nilai <br> sekaligus tanpa nulis OR panjang-panjang.</p></div>
 
-                Kalau di aplikasi:
+                <p>Kalau di aplikasi:
+                <ul>
+                    <li>filter status</li>
+                    <li>filter kategori</li>
+                    <li>filter role user</li>
+                    <li>filter beberapa ID</li>
+                </ul></p>
+                
+                <br> <hr> <br>
 
-                filter status
+                <h3>A. Masalah Kalau Tanpa IN (OR Hell 😵)</h3>
+<pre>
+    SELECT * FROM orders <br>
+    WHERE status = 'pending' <br>
+    OR status = 'paid' <br>
+    OR status = 'shipped';
+</pre>
 
-                filter kategori
+                <p>✔️ benar <br>
+                ❌ tapi ribet, panjang, rawan typo</p>
+<pre>
+    Solusi: IN ✨ <br>
+    SELECT * FROM orders <br>
+    WHERE status IN ('pending', 'paid', 'shipped');
+</pre>
 
-                filter role user
+                <p>🎯 Lebih:
+                <ul>
+                    <li>ringkas</li>
+                    <li>enak dibaca</li>
+                    <li>gampang di-maintain</li>
+                </ul></p>
 
-                filter beberapa ID
+                <br> <hr> <br>
 
-                Masalah Kalau Tanpa IN (OR Hell 😵)
-                SELECT * FROM orders
-                WHERE status = 'pending'
-                OR status = 'paid'
-                OR status = 'shipped';
+                <h3>B. Cara Kerja IN (Konsep)</h3>
+<pre>
+    column IN (value1, value2, value3)
+</pre>
 
+                <p>Artinya:
+                <ul>
+                    <li>ambil data kalau column sama dengan salah satu nilai di dalam kurung</li>
+                </ul></p>
 
-                ✔️ benar
-                ❌ tapi ribet, panjang, rawan typo
+                <br> <hr> <br>
 
-                Solusi: IN ✨
-                SELECT * FROM orders
-                WHERE status IN ('pending', 'paid', 'shipped');
+                <h3>D. Contoh Kasus Nyata</h3>
+                <h4>1️⃣ Filter status pesanan</h4>
+<pre>
+    SELECT * FROM orders <br>
+    WHERE status IN ('pending', 'processing');
+</pre>
 
+                <p>📦 Artinya:
+                <ul>
+                    <li>pesanan yang belum selesai</li>
+                </ul></p>
 
-                🎯 Lebih:
+                <br> <hr> <br>
 
-                ringkas
+                <h4>2️⃣ Filter role user</h4>
+<pre>
+    SELECT * FROM users <br>
+    WHERE role IN ('admin', 'staff');
+</pre>
 
-                enak dibaca
+                <p>🧠 Cocok buat:
+                <ul>
+                    <li>dashboard admin</li>
+                    <li>akses internal</li>
+                </ul></p>
 
-                gampang di-maintain
+                <br> <hr> <br>
 
-                Cara Kerja IN (Konsep)
-                column IN (value1, value2, value3)
+                <h4>3️⃣ Filter kategori produk</h4>
+<pre>
+    SELECT * FROM products <br>
+    WHERE category_id IN (1, 3, 5);
+</pre>
 
+                <p>📌 Biasanya hasil dari:
+                <ul>
+                    <li>checkbox filter</li>
+                    <li>multi select</li>
+                </ul></p>
+                
+                <br> <hr> <br>
 
-                Artinya:
+                <h3>E. IN vs AND (INI PENTING!)</h3>
 
-                ambil data kalau column sama dengan salah satu nilai di dalam kurung
+                <p>❌ SALAH:</p>
+<pre>
+    WHERE status = 'pending'
+    AND status = 'paid';
+</pre>
 
-                Contoh Kasus Nyata
-                1️⃣ Filter status pesanan
-                SELECT * FROM orders
-                WHERE status IN ('pending', 'processing');
+                <p>😵 tidak mungkin, status cuma satu. <br> <br>
 
+                ✔️ BENAR:</p>
+<pre>
+    WHERE status IN ('pending', 'paid');
+</pre>
 
-                📦 Artinya:
+                <p>🧠 Rule:</p>
+                <ul>
+                    <li><code>OR</code> logic → <code>IN</code></li>
+                    <li><code>AND</code> logic → kondisi beda kolom</li>
+                </ul>
+                
+                <br> <hr> <br>
 
-                pesanan yang belum selesai
+                <h3>F. IN + AND (Kombinasi Umum)</h3>
+<pre>
+    SELECT * FROM orders <br>
+    WHERE status IN ('paid', 'shipped') <br>
+    AND total_price > 500000;
+</pre>
 
-                2️⃣ Filter role user
-                SELECT * FROM users
-                WHERE role IN ('admin', 'staff');
+                <p>Artinya:
+                <ul>
+                    <li>status tertentu</li>
+                    <li>nilai transaksi besar</li>
+                </ul> <br>
+                
+                🔥 ini real banget di laporan.</p>
 
+                <br> <hr> <br>
 
-                🧠 Cocok buat:
+                <h3>G. NOT IN (Kebalikannya)</h3>
+<pre>
+    SELECT * FROM users <br>
+    WHERE status NOT IN ('banned', 'deleted');
+</pre>
 
-                dashboard admin
-
-                akses internal
-
-                3️⃣ Filter kategori produk
-                SELECT * FROM products
-                WHERE category_id IN (1, 3, 5);
-
-
-                📌 Biasanya hasil dari:
-
-                checkbox filter
-
-                multi select
-
-                IN vs AND (INI PENTING!)
-
-                ❌ SALAH:
-
-                WHERE status = 'pending'
-                AND status = 'paid';
-
-
-                😵 tidak mungkin, status cuma satu.
-
-                ✔️ BENAR:
-
-                WHERE status IN ('pending', 'paid');
-
-
-                🧠 Rule:
-
-                OR logic → IN
-
-                AND logic → kondisi beda kolom
-
-                IN + AND (Kombinasi Umum)
-                SELECT * FROM orders
-                WHERE status IN ('paid', 'shipped')
-                AND total_price > 500000;
-
-
-                Artinya:
-
-                status tertentu
-
-                nilai transaksi besar
-
-                🔥 ini real banget di laporan.
-
-                NOT IN (Kebalikannya)
-                SELECT * FROM users
-                WHERE status NOT IN ('banned', 'deleted');
-
-
-                Artinya:
-
-                ambil semua kecuali status tersebut
+                <p>Artinya:
+                <ul>
+                    <li>ambil semua kecuali status tersebut</li>
+                </ul> <br>
+                
 
                 📌 Cocok buat:
+                <ul>
+                    <li>data aktif</li>
+                    <li>hide data rusak</li>
+                </ul></p>
 
-                data aktif
+                <br> <hr> <br>
 
-                hide data rusak
+                <h3>H. IN dengan Subquery (Level Naik dikit 🚀)</h3>
+<pre>
+    SELECT * FROM products <br>
+    WHERE category_id IN ( <br>
+        SELECT id FROM categories <br>
+        WHERE is_active = 1 <br>
+    );
+</pre>
 
-                IN dengan Subquery (Level Naik dikit 🚀)
-                SELECT * FROM products
-                WHERE category_id IN (
-                    SELECT id FROM categories
-                    WHERE is_active = 1
-                );
+                <p>🧠 Artinya:
+                <ul>
+                    <li>produk yang kategorinya masih aktif</li>
+                    <li>ini fondasi sebelum JOIN & RELATION 🔑</li>
+                </ul></p>
 
+                <br> <hr> <br>
 
-                🧠 Artinya:
+                <h3>I. IN vs BETWEEN vs LIKE</h3>
+                <table>
+                    <tr>
+                        <th>Kebutuhan</th>
+                        <th>Pakai</th>
+                    </tr>
+                    <tr>
+                        <td>beberapa nilai tetap</td>
+                        <td class="ct"><code>IN/code></td>
+                    </tr>
+                    <tr>
+                        <td>rentang angka/tanggal</td>
+                        <td class="ct"><code>BETWEEN</code></td>
+                    </tr>
+                    <tr>
+                        <td>search teks</td>
+                        <td class="ct"><code>LIKE</code></td>
+                    </tr>
+                </table>
 
-                produk yang kategorinya masih aktif
+                <br> <hr> <br>
 
-                ini fondasi sebelum JOIN & RELATION 🔑
+                <h3>J. Performa Catatan (Santai tapi Penting)</h3>
+                <ul>
+                    <li><code>IN</code> aman & cepat untuk list kecil–menengah</li>
+                    <li><code>IN</code> pakai index → OK</li>
+                </ul> <br>
+                
+                <p>list ratusan/ribuan → mending <code>JOIN</code> / temp table</p>
 
-                IN vs BETWEEN vs LIKE
-                Kebutuhan	Pakai
-                beberapa nilai tetap	IN
-                rentang angka/tanggal	BETWEEN
-                search teks	LIKE
-                Performa Catatan (Santai tapi Penting)
+                <br> <hr> <br>
 
-                IN aman & cepat untuk list kecil–menengah
+                <h3>K. Mental Model biar nempel 🧠</h3>
+                <ul>
+                    <li>IN = OR versi rapi</li>
+                </ul>
+                
 
-                IN pakai index → OK
+                <p>Kalau kamu mulai ngetik:
+                <ul>
+                    <li>col = A OR col = B OR col = C</li>
+                </ul> <br>
 
-                list ratusan/ribuan → mending JOIN / temp table
-
-                Mental Model biar nempel 🧠
-
-                IN = OR versi rapi
-
-                Kalau kamu mulai ngetik:
-
-                col = A OR col = B OR col = C
-
-
-                ⛔ STOP
-                ➡️ ganti ke IN
+                ⛔ STOP <br>
+                ➡️ ganti ke <code>IN</code></p>
 
                 <br> <br>
 

@@ -451,164 +451,209 @@
 
                 <br> <br>
 
-                2.2.3 DELETE — Menghapus Data Tanpa Bikin Kuburan Massal
-                A. Apa itu DELETE?
+                <h2>2.2.3 DELETE — Menghapus Data Tanpa Bikin Kuburan Massal</h2>
+                <h3>A. Apa itu DELETE?</h3>
 
-                DELETE digunakan untuk menghapus data (row) dari tabel.
+                <div class="quote"><p>DELETE digunakan untuk menghapus data (row) dari tabel.</p></div>
+<pre>
+    DELETE FROM nama_tabel <br>
+    WHERE kondisi;
+</pre>
 
-                DELETE FROM nama_tabel
-                WHERE kondisi;
+                <p>📌 Struktur tabel tetap ada <br>
+                📌 Yang hilang cuma datanya</p>
 
+                <br> <hr> <br>
 
-                📌 Struktur tabel tetap ada
-                📌 Yang hilang cuma datanya
+                <h3>B. DELETE vs DROP vs TRUNCATE (recap cepat)</h3>
+                <table>
+                    <tr>
+                        <th>Perintah</th>
+                        <th>Efek</th>
+                        <th>Bisa Rollback</th>
+                    </tr>
+                    <tr>
+                        <td>DELETE<code></code></td>
+                        <td>Hapus row tertentu</td>
+                        <td class="ct">✅ (transaction)</td>
+                    </tr>
+                    <tr>
+                        <td><code>TRUNCATE</code></td>
+                        <td>Hapus semua row</td>
+                        <td class="ct">❌</td>
+                    </tr>
+                    <tr>
+                        <td><code>DROP</code></td>
+                        <td>Hapus tabel</td>
+                        <td class="ct">❌</td>
+                    </tr>
+                </table>
 
-                B. DELETE vs DROP vs TRUNCATE (recap cepat)
-                Perintah	Efek	Bisa Rollback
-                DELETE	Hapus row tertentu	✅ (transaction)
-                TRUNCATE	Hapus semua row	❌
-                DROP	Hapus tabel	❌
-                C. DELETE Paling Dasar
-                DELETE FROM users
-                WHERE id = 10;
+                <br> <hr> <br>
 
+                <h3>C. DELETE Paling Dasar</h3>
+<pre>
+    DELETE FROM users <br>
+    WHERE id = 10;
+</pre>
+                <p>Hapus 1 baris spesifik</p>
 
-                Hapus 1 baris spesifik
+                <br> <hr> <br>
 
-                D. DELETE Tanpa WHERE = Bencana
-                DELETE FROM users;
+                <h3>D. DELETE Tanpa WHERE = Bencana</h3>
+<pre>
+    DELETE FROM users;
+</pre>
 
+                <p>🔥 Semua data hilang <br>
+                🔥 Pernah bikin startup rollback database <br> <br>
 
-                🔥 Semua data hilang
-                🔥 Pernah bikin startup rollback database
+                Rule emas: <br></p>
+                <div class="quote"><p>DELETE TANPA WHERE = SALAH BESAR</p></div>
 
-                Rule emas:
-                DELETE TANPA WHERE = SALAH BESAR
+                <br> <hr> <br>
 
-                E. Pola Aman DELETE (WAJIB)
-                Step 1: SELECT dulu
-                SELECT * FROM users WHERE is_active = 0;
+                <h3>E. Pola Aman DELETE (WAJIB)</h3>
+                <p>Step 1: SELECT dulu</p>
+<pre>
+    SELECT * FROM users WHERE is_active = 0;
+</pre>
+                <p>Step 2: DELETE kalau yakin</p>
+<pre>
+    DELETE FROM users WHERE is_active = 0;
+</pre>
+                <br> <hr> <br>
 
-                Step 2: DELETE kalau yakin
-                DELETE FROM users WHERE is_active = 0;
+                <h3>F. DELETE dengan Kondisi Kompleks</h3>
+<pre>
+    DELETE FROM orders <br> 
+    WHERE status = 'cancelled' <br> 
+    AND created_at < NOW() - INTERVAL 1 YEAR;
+</pre>
+                <p>Dipakai untuk:
+                <ul>
+                    <li>data cleanup</li>
+                    <li>archiving</li>
+                </ul></p>
+                
+                <br> <hr> <br>
 
-                F. DELETE dengan Kondisi Kompleks
-                DELETE FROM orders
-                WHERE status = 'cancelled'
-                AND created_at < NOW() - INTERVAL 1 YEAR;
+                <h3>G. DELETE + LIMIT (MySQL Spesifik)</h3>
+<pre>
+    DELETE FROM logs <br> 
+    ORDER BY created_at ASC <br>
+    LIMIT 1000;
+</pre>
 
+                <p>Dipakai untuk:
+                <ul>
+                    <li>hapus bertahap</li>
+                    <li>hindari lock besar</li>
+                </ul></p>
+                <br> <hr> <br>
 
-                Dipakai untuk:
+                <h3>H. DELETE dengan JOIN (LEVEL PRO)</h3>
+<pre>
+    DELETE o <br>
+    FROM orders o <br>
+    JOIN users u ON o.user_id = u.id <br>
+    WHERE u.is_active = 0;
+</pre>
 
-                data cleanup
+                <p>Hapus order milik user nonaktif. <br> <br>
 
-                archiving
+                ⚠️ Sangat powerful → sangat berbahaya</p>
 
-                G. DELETE + LIMIT (MySQL Spesifik)
-                DELETE FROM logs
-                ORDER BY created_at ASC
-                LIMIT 1000;
+                <br> <hr> <br>
 
+                <h3>I. DELETE + FOREIGN KEY</h3>
 
-                Dipakai untuk:
+                <p>Jika tabel direferensikan:</p>
+<pre>
+    DELETE FROM users WHERE id = 1;
+</pre>
 
-                hapus bertahap
-
-                hindari lock besar
-
-                H. DELETE dengan JOIN (LEVEL PRO)
-                DELETE o
-                FROM orders o
-                JOIN users u ON o.user_id = u.id
-                WHERE u.is_active = 0;
-
-
-                Hapus order milik user nonaktif.
-
-                ⚠️ Sangat powerful → sangat berbahaya
-
-                I. DELETE + FOREIGN KEY
-
-                Jika tabel direferensikan:
-
-                DELETE FROM users WHERE id = 1;
-
-
-                Jika ada order milik user tsb:
+                <p>Jika ada order milik user tsb: <br> <br>
 
                 ❌ ERROR (default)
 
                 atau:
+                <ul>
+                    <li>ON DELETE CASCADE</li>
+                    <li>ON DELETE SET NULL</li>
+                </ul> <br>
 
-                ON DELETE CASCADE
+                📌 FK rules menentukan perilaku</p>
 
-                ON DELETE SET NULL
+                <br> <hr> <br>
 
-                📌 FK rules menentukan perilaku
+                <h3>J. Soft Delete (BEST PRACTICE)</h3>
 
-                J. Soft Delete (BEST PRACTICE)
+                <p>🔥 Di aplikasi nyata, jarang pakai DELETE langsung <br> <br>
 
-                🔥 Di aplikasi nyata, jarang pakai DELETE langsung
+                Pola soft delete</p>
+<pre>
+    UPDATE users
+    SET deleted_at = NOW()
+    WHERE id = 1;
+</pre>
 
-                Pola soft delete
-                UPDATE users
-                SET deleted_at = NOW()
-                WHERE id = 1;
+                <p>Keuntungan:
+                <ul>
+                    <li>Data aman</li>
+                    <li>Bisa restore</li>
+                    <li>Audit trail</li>
+                </ul> <br>
 
+                Framework seperti Laravel pakai ini.</p>
 
-                Keuntungan:
+                <br> <hr> <br>
 
-                Data aman
+                <h3>K. DELETE dalam Transaction (SUPER AMAN)</h3>
+<pre>
+    START TRANSACTION; <br> <br>
 
-                Bisa restore
+    DELETE FROM users WHERE id = 5; <br> <br>
 
-                Audit trail
+    SELECT * FROM users WHERE id = 5; <br> <br>
 
-                Framework seperti Laravel pakai ini.
+    ROLLBACK; -- kalau salah <br>
+    -- COMMIT; -- kalau yakin
+</pre>
+                <br> <hr> <br>
 
-                K. DELETE dalam Transaction (SUPER AMAN)
-                START TRANSACTION;
+                <h3>L. Kesalahan Fatal Pemula ❌</h3>
 
-                DELETE FROM users WHERE id = 5;
+                <p>❌ DELETE tanpa WHERE <br>
+                ❌ Salah kondisi WHERE <br>
+                ❌ Tidak cek FK <br>
+                ❌ Hapus data bisnis penting permanen</p>
 
-                SELECT * FROM users WHERE id = 5;
+                <h3>M. Checklist Aman DELETE</h3>
 
-                ROLLBACK; -- kalau salah
-                -- COMMIT; -- kalau yakin
+                <p>Sebelum execute:
+                <ul>
+                    <li>Sudah SELECT dulu?</li>
+                    <li>WHERE spesifik?</li>
+                    <li>FK aman?</li>
+                    <li>Lebih baik soft delete?</li>
+                </ul></p>
+                
+                <br> <hr> <br>
 
-                L. Kesalahan Fatal Pemula ❌
+                <h3>N. Mini Latihan 🔥</h3>
 
-                ❌ DELETE tanpa WHERE
-                ❌ Salah kondisi WHERE
-                ❌ Tidak cek FK
-                ❌ Hapus data bisnis penting permanen
-
-                M. Checklist Aman DELETE
-
-                Sebelum execute:
-
-                Sudah SELECT dulu?
-
-                WHERE spesifik?
-
-                FK aman?
-
-                Lebih baik soft delete?
-
-                N. Mini Latihan 🔥
-
-                Tabel products:
-
-                id, name, stock, is_active, deleted_at
-
-
-                Tugas:
-
-                Soft delete produk id = 3
-
-                Hapus permanen produk yang deleted_at lebih dari 2 tahun
-
-                Hapus 100 data log terlama
+                <p>Tabel products:</p>
+<pre>
+    id, name, stock, is_active, deleted_at
+</pre>
+                <p>Tugas:
+                <ul>
+                    <li>Soft delete produk id = 3</li>
+                    <li>Hapus permanen produk yang deleted_at lebih dari 2 tahun</li>
+                    <li>Hapus 100 data log terlama</li>
+                </ul></p>
+                
 
                 <br> <br>
 
@@ -616,159 +661,184 @@
 
                 <br> <br>
 
-                2.2.4 SELECT — Mengambil Data (Inti SQL)
-                A. Apa itu SELECT?
+                <h2>2.2.4 SELECT — Mengambil Data (Inti SQL)</h2>
+                <h3>A. Apa itu SELECT?</h3>
+
+                <div class="quote"><p>SELECT dipakai untuk mengambil / membaca data dari database.</p></div>
+<pre>
+    SELECT kolom <br>
+    FROM tabel;
+</pre>
+
+                <p>📌 SELECT tidak mengubah data <br>
+                📌 80% waktu kamu di SQL = SELECT </p>
+
+                <br> <hr> <br>
+
+                <h3>B. SELECT Paling Dasar</h3>
+<pre>
+    SELECT * FROM users;
+</pre>
+
+                <p>Artinya:
+                <ul>
+                    <li>Ambil semua kolom</li>
+                    <li>Dari semua baris</li>
+                </ul> <br>
+
+                ⚠️ Di production: <br> <br>
+
+                hindari <code>SELECT *</code></p>
+
+                <br> <hr> <br>
+
+                <h3>C. SELECT Kolom Tertentu (BEST PRACTICE)</h3>
+<pre>
+    SELECT id, name, email <br>
+    FROM users;
+</pre>
+
+                <p>Lebih:
+                <ul>
+                    <li>cepat</li>
+                    <li>aman</li>
+                    <li>jelas</li>
+                </ul></p>
+                
+                <br> <hr> <br>
+
+                <h3>D. Alias Kolom & Tabel</h3>
+                <p>Alias kolom</p>
+<pre>
+    SELECT name AS full_name <br>
+    FROM users;
+</pre>
+                <p>Alias tabel</p>
+<pre>
+    SELECT u.name, u.email <br>
+    FROM users u;
+</pre>
+
+                <p>Dipakai saat:</p>
+                <ul>
+                    <li>JOIN</li>
+                    <li>query panjang</li>
+                </ul>
+
+                <br> <hr> <br>
+
+                <h3>E. SELECT + Perhitungan</h3>
+<pre>
+    SELECT <br>
+        name, <br>
+        price, <br>
+        price * stock AS total_value <br>
+    FROM products;
+</pre>
+
+                <p>📌 Query bisa olah data sederhana</p>
+
+                <br> <hr> <br>
+
+                <h3>F. SELECT DISTINCT</h3>
+<pre>
+    SELECT DISTINCT status   <br>
+    FROM orders;
+</pre>
+
+                <p>Ambil nilai unik (tanpa duplikasi). <br> <br>
+
+                ⚠️ <code>DISTINCT</code> mahal kalau data besar</p>
+
+                <br> <hr> <br>
+
+                <h3>G. SELECT + LIMIT</h3>
+<pre>
+    SELECT id, name <br>
+    FROM users <br>
+    LIMIT 10;
+</pre>
+
+                <p>Ambil 10 data pertama.</p>
+
+                <br> <hr> <br>
 
-                SELECT dipakai untuk mengambil / membaca data dari database.
+                <h3>H. SELECT + OFFSET (pagination)</h3>
+<pre>
+    SELECT id, name <br>
+    FROM users <br>
+    LIMIT 10 OFFSET 20;
+</pre>
 
-                SELECT kolom
-                FROM tabel;
+                <p>Artinya: <br> <br>
 
+                page ke-3 (0–9, 10–19, 20–29)</p>
 
-                📌 SELECT tidak mengubah data
-                📌 80% waktu kamu di SQL = SELECT
+                <br> <hr> <br>
 
-                B. SELECT Paling Dasar
-                SELECT * FROM users;
+                <h3>I. Urutan Eksekusi SELECT (WAJIB PAHAM)</h3>
 
+                <p>Secara logika:
+                <ul>
+                    <li><code>FROM</code></li>
+                    <li><code>WHERE</code></li>
+                    <li><code>SELECT</code></li>
+                    <li><code>ORDER BY</code></li>
+                    <li><code>LIMIT</code></li>
+                </ul> <br>
 
-                Artinya:
+                Ini penting saat query kompleks.</p>
 
-                Ambil semua kolom
+                <br> <hr> <br>
 
-                Dari semua baris
+                <h3>J. Kesalahan Umum Pemula ❌</h3>
 
-                ⚠️ Di production:
+                <p>❌ SELECT * di tabel besar <br>
+                ❌ Ambil kolom yang tidak dipakai <br>
+                ❌ Tidak pakai LIMIT <br>
+                ❌ Query tanpa alias saat JOIN</p>
 
-                hindari SELECT *
+                <br> <hr> <br>
 
-                C. SELECT Kolom Tertentu (BEST PRACTICE)
-                SELECT id, name, email
-                FROM users;
+                <h3>K. Contoh Query Nyata</h3>
+<pre>
+    SELECT id, email, created_at <br>
+    FROM users <br>
+    LIMIT 50;
+</pre>
 
+                <p>Simple, aman, efisien.</p>
 
-                Lebih:
+                <br> <hr> <br>
 
-                cepat
+                <h3>L. SELECT itu fondasi ke mana-mana</h3>
 
-                aman
+                <p>Dari sini kamu akan lanjut ke:
+                <ul>
+                    <li><code>WHERE</code></li>
+                    <li><code>JOIN</code></li>
+                    <li><code>GROUP BY</code></li>
+                    <li><code>HAVING</code></li>
+                    <li><code>Subquery</code></li>
+                </ul> <br>
+                
+                SELECT = bahasa berpikir SQL</p>
 
-                jelas
+                <br> <hr> <br>
 
-                D. Alias Kolom & Tabel
-                Alias kolom
-                SELECT name AS full_name
-                FROM users;
+                <h3>M. Mini Latihan 🔥</h3>
 
-                Alias tabel
-                SELECT u.name, u.email
-                FROM users u;
+                <p>Tabel products:</p>
+<pre>
+    id, name, price, stock
+</pre>
 
-
-                Dipakai saat:
-
-                JOIN
-
-                query panjang
-
-                E. SELECT + Perhitungan
-                SELECT
-                    name,
-                    price,
-                    price * stock AS total_value
-                FROM products;
-
-
-                📌 Query bisa olah data sederhana
-
-                F. SELECT DISTINCT
-                SELECT DISTINCT status
-                FROM orders;
-
-
-                Ambil nilai unik (tanpa duplikasi).
-
-                ⚠️ DISTINCT mahal kalau data besar
-
-                G. SELECT + LIMIT
-                SELECT id, name
-                FROM users
-                LIMIT 10;
-
-
-                Ambil 10 data pertama.
-
-                H. SELECT + OFFSET (pagination)
-                SELECT id, name
-                FROM users
-                LIMIT 10 OFFSET 20;
-
-
-                Artinya:
-
-                page ke-3 (0–9, 10–19, 20–29)
-
-                I. Urutan Eksekusi SELECT (WAJIB PAHAM)
-
-                Secara logika:
-
-                FROM
-
-                WHERE
-
-                SELECT
-
-                ORDER BY
-
-                LIMIT
-
-                Ini penting saat query kompleks.
-
-                J. Kesalahan Umum Pemula ❌
-
-                ❌ SELECT * di tabel besar
-                ❌ Ambil kolom yang tidak dipakai
-                ❌ Tidak pakai LIMIT
-                ❌ Query tanpa alias saat JOIN
-
-                K. Contoh Query Nyata
-                SELECT id, email, created_at
-                FROM users
-                LIMIT 50;
-
-
-                Simple, aman, efisien.
-
-                L. SELECT itu fondasi ke mana-mana
-
-                Dari sini kamu akan lanjut ke:
-
-                WHERE
-
-                JOIN
-
-                GROUP BY
-
-                HAVING
-
-                Subquery
-
-                SELECT = bahasa berpikir SQL
-
-                M. Mini Latihan 🔥
-
-                Tabel products:
-
-                id, name, price, stock
-
-
-                Tugas:
-
-                Ambil name & price
-
-                Ambil produk dengan total_value = price * stock
-
-                Ambil 5 produk pertama
+                <p>Tugas:
+                <ul>
+                    <li>Ambil name & price</li>
+                    <li>Ambil produk dengan total_value = price * stock</li>
+                    <li>Ambil 5 produk pertama</li>
+                </ul></p>
                 
                 <a href="2b-dml.html" class="btn-next">2b. DDL</a>
             </div>
