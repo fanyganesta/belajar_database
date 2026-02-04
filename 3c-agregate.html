@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Type</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+
+        <main>
+            <header>
+                
+            </header>
+            
+            <div class="content">
+                <h2>.3 APA ITU AGGREGATE FUNCTION?</h2>
+
+                <p>Aggregate function itu fungsi SQL yang:</p>
+
+                <div class="quote"><p>mengambil banyak baris → menghasilkan 1 nilai ringkasan</p></div>
+
+                <p>Kalau SELECT biasa itu:
+                <ul>
+                    <li>fokus ke baris per baris</li>
+                </ul> <br>
+                
+
+                Kalau aggregate:
+                <ul>
+                    <li>fokus ke keseluruhan data / kelompok data</li>
+                </ul> <br>
+                
+
+                Contoh dunia nyata:
+
+                <div class="quote"><p>Bukan “ini transaksi apa”</p></div> <br>
+
+                Tapi:
+                <ul>
+                    <li>berapa jumlah transaksi</li>
+                    <li>total uang masuk</li>
+                    <li>rata-rata penjualan</li>
+                    <li>berapa transaksi per user</li>
+                </ul></p>
+
+                <br> <hr> <br>
+
+                <h3>A. 🔧 Fungsi Aggregate Utama</h3>
+
+                <p>Yang akan kita bahas di 3.3:
+                <ul>
+                    <li><code>COUNT()</code> → menghitung jumlah</li>
+                    <li><code>SUM()</code> → menjumlahkan nilai</li>
+                    <li><code>AVG()</code> → rata-rata</li>
+                    <li><code>GROUP BY</code> → mengelompokkan data</li>
+                    <li><code>HAVING</code> → filter hasil aggregate</li>
+                </ul> <br>
+
+                Hari ini kita fokus dulu ke pondasinya: <code>COUNT()</code></p>
+
+                <br> <hr> <br>
+
+                <h3>B. 🧠 CARA BERPIKIR AGGREGATE (PENTING!)</h3>
+
+                <p>Biasanya flow berpikirnya begini:</p>
+
+                <div class="quote"><p>“Dari sekumpulan data ini, aku pengen tahu ringkasannya apa?”</p></div>
+
+                <p>Contoh: <br> <br>
+
+                Dari tabel orders:
+                <ul>
+                    <li>ada berapa order</li>
+                    <li>tiap user punya berapa order</li>
+                    <li>tiap produk terjual berapa kali</li>
+                </ul> <br> <br>
+                
+
+                Nah… begitu kamu mikir “berapa”, “total”, “rata-rata” <br>
+                ➡️ itu alarm aggregate 🚨</p>
+
+                <br> <hr> <br>
+
+                <h2>3.3.1 COUNT() — MENGHITUNG DATA</h2>
+                <h3>A. 🔹 Fungsi dasar</h3>
+<pre>       
+    COUNT()
+</pre>     
+
+                <p>Digunakan untuk:
+                <ul>
+                    <li>menghitung jumlah baris</li>
+                    <li>menghitung jumlah data yang tidak NULL</li>
+                </ul></p>
+
+                <br> <hr> <br>
+
+                <h3>B. ✅ CONTOH TABEL</h3>
+
+                <p>Misal tabel orders:</p>
+
+                <table>
+                    <tr>
+                        <th>id</th>
+                        <th>user_id</th>
+                        <th>total</th>
+                        <th>status</th>
+                    </tr>
+                    <tr>
+                        <td class="ct">1</td>
+                        <td class="ct">1</td>
+                        <td>100000</td>
+                        <td class="ct">paid</td>
+                    </tr>
+                    <tr>
+                        <td class="ct">2</td>
+                        <td class="ct">1</td>
+                        <td>150000</td>
+                        <td class="ct">paid</td>
+                    </tr>
+                    <tr>
+                        <td class="ct">3</td>
+                        <td class="ct">2</td>
+                        <td>200000</td>
+                        <td class="ct">unpaid</td>
+                    </tr>
+                    <tr>
+                        <td class="ct">4</td>
+                        <td class="ct">3</td>
+                        <td><code>NULL</code></td>
+                        <td class="ct">paid</td>
+                    </tr>
+                </table>
+
+                <br> <hr> <br>
+                
+                <h4>🔹 1. COUNT(*) — hitung semua baris</h4>
+<pre>            
+    SELECT COUNT(*) FROM orders;
+</pre>
+
+                <p>🧠 Artinya:</p>
+
+                <div class="quote"><p>“Ada berapa baris di tabel orders?”</p></div>
+
+                <p>📌 Hasil:</p>
+<pre>
+    4
+</pre>
+
+                <p>➡️ <code>COUNT(*)</code> TIDAK PEDULI <code>NULL</code></p>
+
+                <br> <hr> <br>
+
+                <h4>🔹 2. COUNT(nama_kolom)</h4>
+<pre>
+    SELECT COUNT(total) FROM orders;
+</pre>
+
+                <p>🧠 Artinya:</p>
+
+                <div class="quote"><p>“Ada berapa baris yang kolom total-nya tidak <code>NULL</code>?”</p></div>
+
+                <p>📌 Hasil:</p>
+<pre>
+    3
+</pre>
+
+                <p>(baris ke-4 total = NULL, jadi tidak dihitung)</p>
+
+                <br> <hr> <br>
+
+                <h4>⚠️ PERBEDAAN </h4>
+                <table>
+                    <tr>
+                        <th>Query</th>
+                        <th>Menghitung</th>
+                    </tr>
+                    <tr>
+                        <td><code>COUNT(*)</code></td>
+                        <td>Semua baris</td>
+                    </tr>
+                    <tr>
+                        <td><code>COUNT(kolom)</code></td>
+                        <td>Baris yang kolomnya tidak <code>NULL</code></td>
+                    </tr>
+                </table> <br>
+
+                <p>Ini sering jadi jebakan Batman 🦇 di dunia kerja.</p>
+
+                <br> <hr> <br>
+
+                <h4>🔹 3. COUNT dengan WHERE</h4>
+<pre>
+    SELECT COUNT(*)  <br>
+    FROM orders <br>
+    WHERE status = 'paid';
+</pre>
+
+                <p>🧠 Artinya:</p>
+
+                <div class="quote"><p>“Ada berapa order yang statusnya paid?”</p></div>
+
+                <p>📌 Hasil:</p>
+<pre>
+    3
+</pre>
+
+                <p>➡️ WHERE jalan dulu, baru COUNT</p>
+
+                <br> <hr> <br>
+
+                <h4>🔹 4. COUNT + JOIN (real world banget)</h4>
+<pre>
+    SELECT COUNT(orders.id)  <br>
+    FROM users <br>
+    LEFT JOIN orders ON users.id = orders.user_id;
+</pre>
+
+                <p>Dipakai buat:
+                <ul>
+                    <li>hitung jumlah order</li>
+                    <li>hitung relasi antar tabel</li>
+                </ul> <br>
+                
+                Nanti ini bakal makin cakep pas digabung GROUP BY 🔥</p>
+
+                <br> <hr> <br>
+
+                <h3>C. 🧪 USE CASE NYATA COUNT()</h3>
+
+                <p>Contoh pertanyaan bisnis:
+                <ul>
+                    <li>Berapa total user?</li>
+                    <li>Berapa order hari ini?</li>
+                    <li>Berapa produk terjual?</li>
+                    <li>Berapa transaksi per user?</li>
+                </ul> <br>
+
+                ➡️ Jawabannya selalu mulai dari COUNT</p>
+
+                <br> <hr> <br>
+
+                <h3>D. 🧠 RANGKUMAN COUNT()</h3>
+                <ul>
+                    <li><code>COUNT(*)</code> → hitung baris</li>
+                    <li><code>COUNT(kolom)</code> → hitung data tidak NULL</li>
+                </ul> <br>
+                
+                <p>Bisa digabung:
+                <ul>
+                    <li><code>WHERE</code></li>
+                    <li><code>JOIN</code></li>
+                    <li>(sebentar lagi) GROUP BY</li>
+                </ul></p>
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                APA ITU SUM()?
+
+                SUM() adalah aggregate function buat:
+
+                menjumlahkan nilai numerik dari banyak baris
+
+                Kalau COUNT() jawab:
+
+                “ada berapa?”
+
+                Maka SUM() jawab:
+
+                “totalnya berapa?”
+
+                🧠 CARA BERPIKIR SUM()
+
+                Biasanya kepake kalau kamu mikir:
+
+                total penjualan
+
+                total pengeluaran
+
+                total stok
+
+                total nilai transaksi
+
+                Begitu ada kata total / jumlah uang / akumulasi
+                ➡️ SUM() langsung kepikiran
+
+                🔧 SINTAKS DASAR
+                SUM(nama_kolom)
+
+
+                📌 Catatan:
+
+                kolom HARUS numerik
+
+                nilai NULL diabaikan
+
+                ✅ CONTOH TABEL (orders)
+                id	user_id	total	status
+                1	1	100000	paid
+                2	1	150000	paid
+                3	2	200000	unpaid
+                4	3	NULL	paid
+                🔹 1. SUM dasar
+                SELECT SUM(total) FROM orders;
+
+
+                🧠 Artinya:
+
+                “Total nilai semua order?”
+
+                📌 Hasil:
+
+                450000
+
+
+                (NULL tidak dihitung)
+
+                🔹 2. SUM + WHERE (paling sering)
+                SELECT SUM(total)
+                FROM orders
+                WHERE status = 'paid';
+
+
+                🧠 Artinya:
+
+                “Total uang dari order yang sudah dibayar?”
+
+                📌 Hasil:
+
+                250000
+
+
+                ➡️ WHERE dulu → baru SUM
+
+                🔹 3. SUM + JOIN (real project)
+
+                Misal:
+
+                users
+
+                orders
+
+                SELECT users.name, SUM(orders.total) AS total_belanja
+                FROM users
+                JOIN orders ON users.id = orders.user_id
+                GROUP BY users.id;
+
+
+                📌 Output:
+
+                name	total_belanja
+                Andi	250000
+                Budi	200000
+
+                ⚠️ Perhatikan:
+
+                Begitu ada SUM()
+
+                kolom lain WAJIB GROUP BY
+
+                (ini jembatan ke materi berikutnya 👀)
+
+                🔹 4. SUM kolom hasil perhitungan
+                SELECT SUM(price * qty) AS total_penjualan
+                FROM order_items;
+
+
+                🧠 Artinya:
+
+                “Total omzet dari semua item?”
+
+                🔥 Ini sering dipakai di:
+
+                invoice
+
+                laporan penjualan
+
+                laporan keuangan
+
+                ⚠️ HAL PENTING TENTANG SUM()
+                ❌ SALAH
+                SELECT name, SUM(total)
+                FROM orders;
+
+
+                ➡️ Error (karena name tidak di GROUP BY)
+
+                ✅ BENAR
+                SELECT user_id, SUM(total)
+                FROM orders
+                GROUP BY user_id;
+
+                🧪 USE CASE NYATA SUM()
+
+                Total omzet per hari
+
+                Total pengeluaran per bulan
+
+                Total stok per gudang
+
+                Total penjualan per produk
+
+                🧠 RANGKUMAN SUM()
+
+                SUM() → menjumlahkan nilai numerik
+
+                NULL diabaikan
+
+                Hampir selalu dipakai barengan:
+
+                WHERE
+
+                JOIN
+
+                GROUP BY
+            </div>
+        </main>
+    </div>
+
+    <script>
+        fetch('layout/aside.html').then(response => response.text()).then(data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop();
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
