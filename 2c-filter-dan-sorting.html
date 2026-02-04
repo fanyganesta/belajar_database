@@ -914,155 +914,200 @@
 
                 <br> <br>
 
-                2.3.5 BETWEEN
-
-                BETWEEN dipakai buat filter data dalam rentang tertentu.
-
-                Biasanya buat:
-
-                tanggal (harian, bulanan)
-
-                harga
-
-                umur
-
-                nilai
-
-                saldo
-
-                Sintaks Dasar
-                WHERE column BETWEEN nilai_awal AND nilai_akhir;
-
-
-                ⚠️ INCLUSIVE
-
-                nilai_awal DAN nilai_akhir ikut terhitung
-
-                BETWEEN untuk Angka
-                Contoh: harga produk
-                SELECT * FROM products
-                WHERE price BETWEEN 100000 AND 300000;
-
-
-                Artinya:
-
-                harga ≥ 100.000
-
-                harga ≤ 300.000
-
-                Contoh: umur user
-                SELECT * FROM users
-                WHERE age BETWEEN 18 AND 25;
-
-
-                📌 Cocok buat:
-
-                segmentasi user
-
-                validasi data
-
-                BETWEEN untuk Tanggal (INI PALING SERING DIPAKAI)
-                Contoh: transaksi di bulan tertentu
-                SELECT * FROM orders
-                WHERE created_at BETWEEN '2025-01-01' AND '2025-01-31';
-
-
-                🧠 Ambil transaksi selama Januari 2025
-
-                ⚠️ Jebakan BETWEEN + DATETIME (PENTING)
-
-                Kalau created_at bertipe DATETIME:
-
-                '2025-01-31' = '2025-01-31 00:00:00'
-
-
-                ❌ Artinya tanggal 31 siang–malam KELEWAT
-
-                Solusi Aman untuk DATETIME
-                ✅ Cara 1 (Recommended)
-                WHERE created_at >= '2025-01-01'
-                AND created_at < '2025-02-01';
-
-
-                📌 Aman untuk:
-
-                laporan bulanan
-
-                index optimal
-
-                timezone friendly
-
-                ❌ Cara 2 (Kurang disarankan)
-                WHERE created_at BETWEEN
-                '2025-01-01 00:00:00'
-                AND '2025-01-31 23:59:59';
-
-
-                Bisa error kalau:
-
-                precision microsecond
-
-                timezone beda
-
-                BETWEEN + DATE Column
-
-                Kalau kolom DATE (bukan DATETIME):
-
-                WHERE order_date BETWEEN '2025-01-01' AND '2025-01-31';
-
-
-                ✔️ Aman
-                ✔️ Simpel
-
-                NOT BETWEEN (Kebalikannya)
-                SELECT * FROM products
-                WHERE price NOT BETWEEN 100000 AND 300000;
-
-
-                Artinya:
-
-                harga di luar range
-
-                BETWEEN vs IN vs LIKE
-                Kebutuhan	Pakai
-                rentang nilai	BETWEEN
-                beberapa nilai tertentu	IN
-                teks mengandung	LIKE
-                BETWEEN + AND (Kombinasi Real Life)
-                SELECT * FROM orders
-                WHERE status = 'paid'
-                AND created_at >= '2025-01-01'
-                AND created_at < '2025-02-01';
-
-
-                🔥 Ini query laporan bulanan standar industri.
-
-                Kesalahan Umum ❌
-
-                ❌ Pakai BETWEEN untuk DATETIME tanpa mikir jam
-                ❌ Rentang terbalik (BETWEEN 300 AND 100)
-                ❌ Pakai fungsi di kolom (bikin index mati)
-
-                Mental Model biar nempel 🧠
-
-                BETWEEN = pagar awal & akhir
-
-                Kalau mikir:
-
-                “ambil data dari X sampai Y”
-
-                ➡️ BETWEEN (atau >= & < kalau datetime)
-
-                Mini Latihan 🔥
-
-                Tabel payments:
-
-                id, amount, paid_at
-
-
-                1️⃣ Ambil pembayaran 1jt – 5jt
-                2️⃣ Ambil pembayaran bulan Februari 2025
-                3️⃣ Ambil pembayaran di luar range 2024
+                <h2>2.3.5 BETWEEN</h2>
+
+                <div class="quote"><p>BETWEEN dipakai buat filter data dalam rentang tertentu.</p></div>
+
+                <p>Biasanya buat:
+                <ul>
+                    <li>tanggal (harian, bulanan)</li>
+                    <li>harga</li>
+                    <li>umur</li>
+                    <li>nilai</li>
+                    <li>saldo</li>
+                </ul></p>
+                
+                <h3>A. Sintaks Dasar</h3>
+<pre>
+    WHERE column BETWEEN nilai_awal AND nilai_akhir;
+</pre>
+
+                <p>⚠️ INCLUSIVE
+                <ul>
+                    <li>nilai_awal DAN nilai_akhir ikut terhitung</li>
+                </ul></p>
+                
+                
+                <br> <hr> <br>
+
+                <h3>B. BETWEEN untuk Angka</h3>
+                <p>Contoh: harga produk</p>
+<pre>
+    SELECT * FROM products <br>
+    WHERE price BETWEEN 100000 AND 300000;
+</pre>
+
+                <p>Artinya:
+                <ul>
+                    <li>harga ≥ 100.000</li>
+                    <li>harga ≤ 300.000</li>
+                </ul> <br>
+                
+                Contoh: umur user</p>
+<pre>
+    SELECT * FROM users <br>
+    WHERE age BETWEEN 18 AND 25;
+</pre>
+
+                <p>📌 Cocok buat:
+                <ul>
+                    <li>segmentasi user</li>
+                    <li>validasi data</li>
+                </ul></p>
+
+                <br> <hr> <br>
+
+                <h3>C. BETWEEN untuk Tanggal (INI PALING SERING DIPAKAI)</h3>
+                <p>Contoh: transaksi di bulan tertentu</p>
+<pre>
+    SELECT * FROM orders <br>
+    WHERE created_at BETWEEN '2025-01-01' AND '2025-01-31';
+</pre>
+
+                <p>🧠 Ambil transaksi selama Januari 2025</p>
+                
+                <br> <hr> <br>
+
+                <p>⚠️ Jebakan BETWEEN + DATETIME (PENTING) <br> <br>
+
+                Kalau created_at bertipe DATETIME:</p>
+<pre>
+    '2025-01-31' = '2025-01-31 00:00:00'
+</pre>
+
+                <p>❌ Artinya tanggal 31 siang–malam KELEWAT</p>
+
+                <br> <hr> <br>
+
+                <p>Solusi Aman untuk DATETIME <br> 
+                ✅ Cara 1 (Recommended)</p>
+<pre>
+    WHERE created_at >= '2025-01-01' <br>
+    AND created_at < '2025-02-01';
+</pre>
+
+                <p>📌 Aman untuk:
+                <ul>
+                    <li>laporan bulanan</li>
+                    <li>index optimal</li>
+                    <li>timezone friendly</li>
+                </ul></p>
+                
+                <br> <hr> <br>
+
+                <p>❌ Cara 2 (Kurang disarankan)</p>
+<pre>
+    WHERE created_at BETWEEN <br>
+    '2025-01-01 00:00:00' <br>
+    AND '2025-01-31 23:59:59';
+</pre>
+
+                <p>Bisa error kalau:
+                <ul>
+                    <li>precision microsecond</li>
+                    <li>timezone beda</li>
+                </ul></p>
+                
+                <br> <hr> <br>
+
+                <h3>D. BETWEEN + DATE Column</h3>
+
+                <p>Kalau kolom DATE (bukan DATETIME):</p>
+<pre>
+    WHERE order_date BETWEEN '2025-01-01' AND '2025-01-31';
+</pre>
+
+                <p>✔️ Aman <br>
+                ✔️ Simpel</p>
+
+                <h3>E. NOT BETWEEN (Kebalikannya)</h3>
+<pre>
+    SELECT * FROM products <br>
+    WHERE price NOT BETWEEN 100000 AND 300000;
+</pre>
+
+                <p>Artinya:
+                <ul>
+                    <li>harga di luar range</li>
+                </ul></p>
+                
+                
+                <br> <hr> <br>
+
+                <h3>F. BETWEEN vs IN vs LIKE</h3>
+                <table>
+                    <tr>
+                        <th>Kebutuhan</th>
+                        <th>Pakai</th>
+                    </tr>
+                    <tr>
+                        <td>rentang nilai</td>
+                        <td class="ct"><code>BETWEEN</code></td>
+                    </tr>
+                    <tr>
+                        <td>beberapa nilai tertentu</td>
+                        <td class="ct"><code></code>IN</td>
+                    </tr>
+                    <tr>
+                        <td>teks mengandung</td>
+                        <td class="ct"><code></code>LIKE</td>
+                    </tr>
+                </table>
+                	
+                <br> <hr> <br>
+
+                <h3>G. BETWEEN + AND (Kombinasi Real Life)</h3>
+<pre>
+    SELECT * FROM orders <br>
+    WHERE status = 'paid' <br>
+    AND created_at >= '2025-01-01' <br>
+    AND created_at < '2025-02-01';
+</pre>
+
+                <p>🔥 Ini query laporan bulanan standar industri.</p>
+                
+                <br> <hr> <br>
+
+                <h3>H. Kesalahan Umum ❌</h3>
+
+                <p>❌ Pakai BETWEEN untuk DATETIME tanpa mikir jam <br>
+                ❌ Rentang terbalik (BETWEEN 300 AND 100) <br>
+                ❌ Pakai fungsi di kolom (bikin index mati) <br> <br>
+
+                Mental Model biar nempel 🧠</p>
+                
+                <br> <hr> <br>
+
+                <h3>I. BETWEEN = pagar awal & akhir</h3>
+
+                <p>Kalau mikir:</p>
+
+                <div class="quote"><p>“ambil data dari X sampai Y”</p></div>
+
+                <p>➡️ BETWEEN (atau >= & &lt; kalau datetime)</p>
+                
+                <br> <hr> <br>
+
+                <h3>J. Mini Latihan 🔥</h3>
+
+                <p>Tabel payments:</p>
+<pre>
+    id, amount, paid_at
+</pre>
+
+                <p>1️⃣ Ambil pembayaran 1jt – 5jt <br>
+                2️⃣ Ambil pembayaran bulan Februari 2025 <br>
+                3️⃣ Ambil pembayaran di luar range 2024</p>
                 
 
                 <br> <br>
@@ -1071,156 +1116,195 @@
 
                 <br> <br>
 
-                2.3.6 ORDER BY
+                <h2>2.3.6 ORDER BY</h2>
 
-                ORDER BY dipakai untuk mengurutkan hasil SELECT.
+                <div class="quote"><p>ORDER BY dipakai untuk mengurutkan hasil SELECT.</p></div>
+<pre>
+    SELECT kolom <br>
+    FROM tabel <br>
+    ORDER BY kolom;
+</pre>
 
-                SELECT kolom
-                FROM tabel
-                ORDER BY kolom;
+                <p>Default:
+                <ul>
+                    <li>ASC (ascending / naik)</li>
+                </ul></p>
+                
+                
+                <br> <hr> <br>
+
+                <h3>A. ORDER BY ASC vs DESC</h3>
+                <p>🔼 ASC (kecil → besar)</p>
+<pre>
+    ORDER BY price ASC;
+</pre>
+
+<br>
+
+                <p>🔽 DESC (besar → kecil)</p>
+<pre>
+    ORDER BY price DESC;
+</pre>
+                <br> <hr> <br>
+
+                <h3>B. Contoh Nyata (WAJIB PAHAM)</h3>
+                <p>1️⃣ Produk termurah ke termahal</p>
+<pre>
+    SELECT name, price <br>
+    FROM products <br>
+    ORDER BY price ASC;
+</pre> <br> <br>
+                <p>2️⃣ Produk terbaru (PALING SERING)</p>
+<pre>
+    SELECT id, name, created_at <br>
+    FROM products <br>
+    ORDER BY created_at DESC;
+</pre>
+
+                <p>📌 Ini default:
+                <ul>
+                    <li>listing admin</li>
+                    <li>feed</li>
+                    <li>dashboard</li>
+                </ul></p>
+                
+                <br> <hr> <br>
+
+                <h3>C. ORDER BY Lebih dari Satu Kolom</h3>
+<pre>
+    SELECT * FROM users <br>
+    ORDER BY role ASC, created_at DESC; 
+</pre>
+
+                <p>Artinya:
+                <ul>
+                    <li>urutkan berdasarkan role</li>
+                    <li>kalau role sama → urutkan by tanggal</li>
+                </ul></p>
+                
+                <br> <hr> <br>
+
+                <h3>D. ORDER BY Berdasarkan Kolom SELECT</h3>
+<pre>
+    SELECT <br>
+        name,  <br>
+        price, <br>
+        price * stock AS total_value <br>
+    FROM products
+</pre>
+                <br> <hr> <br>
+
+                <h3>E. ORDER BY total_value DESC;</h3>
 
 
-                Default:
+                <p>🔥 Berguna buat:
+                <ul>
+                    <li>ranking</li>
+                    <li>leaderboard</li>
+                    <li>laporan nilai tertinggi</li>
+                </ul></p>
+                
+                <br> <hr> <br>
 
-                ASC (ascending / naik)
+                <h3>F. ORDER BY Angka Kolom (⚠️ Hindari)</h3>
+<pre>
+    SELECT name, price FROM products <br>
+    ORDER BY 2 DESC;
+</pre>
 
-                ORDER BY ASC vs DESC
-                🔼 ASC (kecil → besar)
-                ORDER BY price ASC;
-
-                🔽 DESC (besar → kecil)
-                ORDER BY price DESC;
-
-                Contoh Nyata (WAJIB PAHAM)
-                1️⃣ Produk termurah ke termahal
-                SELECT name, price
-                FROM products
-                ORDER BY price ASC;
-
-                2️⃣ Produk terbaru (PALING SERING)
-                SELECT id, name, created_at
-                FROM products
-                ORDER BY created_at DESC;
-
-
-                📌 Ini default:
-
-                listing admin
-
-                feed
-
-                dashboard
-
-                ORDER BY Lebih dari Satu Kolom
-                SELECT * FROM users
-                ORDER BY role ASC, created_at DESC;
-
-
-                Artinya:
-
-                urutkan berdasarkan role
-
-                kalau role sama → urutkan by tanggal
-
-                ORDER BY Berdasarkan Kolom SELECT
-                SELECT
-                    name,
-                    price,
-                    price * stock AS total_value
-                FROM products
-                ORDER BY total_value DESC;
-
-
-                🔥 Berguna buat:
-
-                ranking
-
-                leaderboard
-
-                laporan nilai tertinggi
-
-                ORDER BY Angka Kolom (⚠️ Hindari)
-                SELECT name, price FROM products
-                ORDER BY 2 DESC;
-
-
-                Artinya:
-
-                urutkan kolom ke-2 (price)
+                <p>Artinya:
+                <ul>
+                    <li>urutkan kolom ke-2 (price)</li>
+                </ul> <br> <br>
+                
 
                 ❌ Tidak disarankan:
+                <ul>
+                    <li>rawan error</li>
+                    <li>susah dibaca</li>
+                </ul></p>
+                
+                <br> <hr> <br>
 
-                rawan error
+                <h3>G. ORDER BY + WHERE (Combo Wajib)</h3>
+<pre>
+    SELECT * FROM orders <br>
+    WHERE status = 'paid'  <br>
+    ORDER BY created_at DESC;
+</pre>
 
-                susah dibaca
+                <p>🧠 Filter dulu, baru urutkan.</p>
+                
+                <br> <hr> <br>
 
-                ORDER BY + WHERE (Combo Wajib)
-                SELECT * FROM orders
-                WHERE status = 'paid'
-                ORDER BY created_at DESC;
+                <h3>H. ORDER BY + LIMIT (Top / Latest Data)</h3>
+<pre>
+    SELECT * FROM products <br>
+    ORDER BY sold DESC <br>
+    LIMIT 5;
+</pre>
 
+                <p>🔥 Contoh:
+                <ul>
+                    <li>5 produk terlaris</li>
+                    <li>5 user terbaru</li>
+                    <li>10 transaksi terakhir</li>
+                </ul></p>
+                
+                <br> <hr> <br>
 
-                🧠 Filter dulu, baru urutkan.
+                <h3>I. ORDER BY Random (Jarang tapi Ada)</h3>
+<pre>
+    ORDER BY RAND();
+</pre>
 
-                ORDER BY + LIMIT (Top / Latest Data)
-                SELECT * FROM products
-                ORDER BY sold DESC
-                LIMIT 5;
-
-
-                🔥 Contoh:
-
-                5 produk terlaris
-
-                5 user terbaru
-
-                10 transaksi terakhir
-
-                ORDER BY Random (Jarang tapi Ada)
-                ORDER BY RAND();
-
-
-                ⚠️ BERAT untuk data besar
+                <p>⚠️ BERAT untuk data besar <br>
                 Cocok:
+                <ul>
+                    <li>sample kecil</li>
+                    <li>demo</li>
+                    <li>quiz</li>
+                    <li></li>
+                </ul></p>
+                
 
-                sample kecil
+                <h3>J. Performa & Index (Penting dikit)</h3>
+                <ul>
+                    <li><code>ORDER BY</code>kolom ber-index → cepat</li>
+                    <li><code>ORDER BY</code>kolom tanpa index → full scan</li>
+                    <li><code>ORDER BY + LIMIT</code> → sangat efektif</li>
+                </ul>
+                 
+                <p>📌 Index di created_at itu investasi 💎</p>
+                
+                <br> <hr> <br>
 
-                demo
+                <h3>K. Kesalahan Umum ❌</h3>
 
-                quiz
+                <p>❌ Lupa DESC untuk data terbaru <br>
+                ❌ ORDER BY sebelum WHERE (salah urutan SQL) <br>
+                ❌ ORDER BY kolom yang nggak perlu</p>
+                
+                <br> <hr> <br>
 
-                Performa & Index (Penting dikit)
+                <h3>L. Mental Model biar nempel 🧠</h3>
+                
+                <div class="quote"><p><code>ORDER BY</code> = cara data disajikan, bukan cara disimpan <br>
 
-                ORDER BY kolom ber-index → cepat
+                pData di DB tidak punya urutan sampai kamu tentukan.</p></div>
+                
+                <br> <hr> <br>
 
-                ORDER BY kolom tanpa index → full scan
+                <h3>M. Mini Latihan 🔥</h3>
 
-                ORDER BY + LIMIT → sangat efektif
+                <p>Tabel posts:</p>
+<pre>
+    id, title, views, created_at
+</pre>
 
-                📌 Index di created_at itu investasi 💎
-
-                Kesalahan Umum ❌
-
-                ❌ Lupa DESC untuk data terbaru
-                ❌ ORDER BY sebelum WHERE (salah urutan SQL)
-                ❌ ORDER BY kolom yang nggak perlu
-
-                Mental Model biar nempel 🧠
-
-                ORDER BY = cara data disajikan, bukan cara disimpan
-
-                Data di DB tidak punya urutan sampai kamu tentukan.
-
-                Mini Latihan 🔥
-
-                Tabel posts:
-
-                id, title, views, created_at
-
-
-                1️⃣ Urutkan dari view terbanyak
-                2️⃣ Ambil 3 post terbaru
-                3️⃣ Urutkan berdasarkan views, lalu created_at
+                <p>1️⃣ Urutkan dari view terbanyak <br>
+                2️⃣ Ambil 3 post terbaru <br>
+                3️⃣ Urutkan berdasarkan views, lalu created_at</p>
 
                 <br> <br>
 
@@ -1228,156 +1312,181 @@
 
                 <br> <br>
 
-                2.3.7 LIMIT / OFFSET — Pagination & Kontrol Data
+                <h2>2.3.7 LIMIT / OFFSET — Pagination & Kontrol Data</h2>
+
+                <div class="quote"><p>Kalau nggak ada LIMIT, database kamu bisa batuk darah 😅 <br>
+                Ini fitur wajib buat aplikasi nyata.</p></div>
+
+                <br> <hr> <br>
+
+                <h3>A. Apa itu LIMIT?</h3>
+
+                <div class="quote"><p><code>LIMIT</code> membatasi jumlah baris yang dikembalikan oleh query.</p></div>
+<pre>
+    SELECT * FROM users <br>
+    LIMIT 10;
+</pre>
+
+                <p>Artinya:
+                <ul>
+                    <li>ambil 10 data pertama</li>
+                </ul>
+
+                📌 Hampir semua query produksi HARUS pakai LIMIT</p>
+
+                <br> <hr> <br>
+
+                <h3>B. LIMIT + ORDER BY (WAJIB BARENG)</h3>
+
+                <p>❌ Salah (tidak deterministik):</p>
+<pre>
+    SELECT * FROM users <br>
+    LIMIT 10;
+</pre>
+
+                <p>✔️ Benar:</p>
+<pre>
+    SELECT * FROM users <br>
+    ORDER BY created_at DESC <br>
+    LIMIT 10;
+</pre>
+
+                <p>🧠 Urutan dulu → baru dibatasi.</p>
+
+                <br> <hr> <br>
+
+                <h3>C. Apa itu OFFSET?</h3>
+
+                <div class="quote"><p><code>OFFSET</code> = jumlah data yang dilewati.</p></div>
+<pre>
+    SELECT * FROM users <br>
+    LIMIT 10 OFFSET 20;
+</pre>
+
+                <p>Artinya:
+                <ul>
+                    <li>lewati 20 data</li>
+                    <li>ambil 10 berikutnya</li>
+                </ul> <br>
+
+                📌 Ini pagination halaman ke-3 (0–9, 10–19, 20–29)</p>
+
+                <br> <hr> <br>
+
+                <h3>D. Pagination Standar (Page-based)</h3>
+
+                <p>Rumus:</p>
+<pre>
+    OFFSET = (page - 1) * limit
+</pre>
+
+                <p>Contoh:</p>
+<pre>
+    -- page 2 <br>
+    SELECT * FROM products <br>
+    ORDER BY created_at DESC <br>
+    LIMIT 10 OFFSET 10;
+</pre>
+                <br> <hr> <br>
+
+                <h3>E. Sintaks Singkat MySQL</h3>
+<pre>
+    LIMIT offset, jumlah;
+</pre>
+
+                <p>Contoh:</p>
+<pre>
+    SELECT * FROM products <br>
+    LIMIT 20, 10;
+</pre>
+
+                <p>Artinya:
+                <ul> 
+                    <li>skip 20</li>
+                    <li>ambil 10</li>
+                </ul> <br> <br>
+                
+                📌 Sama dengan:</p>
+<pre>
+    LIMIT 10 OFFSET 20;
+</pre>
+                <br> <hr> <br>
+
+                <h3>F. LIMIT untuk Top Data</h3>
+<pre>
+    SELECT * FROM products <br>
+    ORDER BY sold DESC <br>
+    LIMIT 5;
+</pre>
+
+                <p>🔥 Top 5 produk terlaris.</p>
+
+                <h3>G. Masalah OFFSET (Level Naik Dikiiit 🚨)</h3>
+
+                <p>Kalau data besar:</p>
+<pre>
+    OFFSET 100000
+</pre>
+
+                <p>❌ Lambat <br>
+                ❌ Database tetap scan data awal</p>
+
+                <br> <hr> <br>
+
+                <h3>H. Solusi Lebih Advanced: Cursor Pagination (Preview)</h3>
+<pre>
+    SELECT * FROM orders <br>
+    WHERE id > 500 <br>
+    ORDER BY id ASC <br>
+    LIMIT 10;
+</pre>
+
+                <p>✔️ Lebih cepat <br>
+                ✔️ Dipakai di feed besar <br> <br>
+
+                📌 Kita bahas detail di bab lanjut.</p>
+
+                <br> <hr> <br>
+
+                <h3>I. LIMIT 1 (Validasi Data)</h3>
+<pre>
+    SELECT * FROM users <br>
+    WHERE email = 'test@mail.com' <br>
+    LIMIT 1;
+</pre>
+
+                <p>🔥 Sangat umum buat:
+                <ul>
+                    <li>login</li>
+                    <li>validasi unik</li>
+                </ul></p>
+
+                <br> <hr> <br>
+
+                <h3>J. Kesalahan Umum ❌</h3>
+
+                <p>❌ Pagination tanpa ORDER BY <br>
+                ❌ OFFSET besar di tabel besar <br>
+                ❌ Query tanpa LIMIT di API <br>
+                ❌ Ambil ribuan data padahal cuma butuh 10</p>
+
+                <h3>K. Mental Model biar nempel 🧠</h3>
+                <ul>
+                    <li><code>LIMIT</code> = rem</li>
+                    <li><code>OFFSET</code> = pindah gigi</li>
+                </ul>
+                 
+                <h3>L. Mini Latihan Penutup 🔥</h3>
+
+                <p>Tabel orders:</p>
+<pre>
+    id, total, created_at
+</pre>
+
+                <p>1️⃣ Ambil 10 order terbaru <br>
+                2️⃣ Page ke-3 (limit 10) <br>
+                3️⃣ Ambil order terbesar tapi cuma 1</p>
 
-                Kalau nggak ada LIMIT, database kamu bisa batuk darah 😅
-                Ini fitur wajib buat aplikasi nyata.
-
-                A. Apa itu LIMIT?
-
-                LIMIT membatasi jumlah baris yang dikembalikan oleh query.
-
-                SELECT * FROM users
-                LIMIT 10;
-
-
-                Artinya:
-
-                ambil 10 data pertama
-
-                📌 Hampir semua query produksi HARUS pakai LIMIT
-
-                B. LIMIT + ORDER BY (WAJIB BARENG)
-
-                ❌ Salah (tidak deterministik):
-
-                SELECT * FROM users
-                LIMIT 10;
-
-
-                ✔️ Benar:
-
-                SELECT * FROM users
-                ORDER BY created_at DESC
-                LIMIT 10;
-
-
-                🧠 Urutan dulu → baru dibatasi.
-
-                C. Apa itu OFFSET?
-
-                OFFSET = jumlah data yang dilewati.
-
-                SELECT * FROM users
-                LIMIT 10 OFFSET 20;
-
-
-                Artinya:
-
-                lewati 20 data
-
-                ambil 10 berikutnya
-
-                📌 Ini pagination halaman ke-3 (0–9, 10–19, 20–29)
-
-                D. Pagination Standar (Page-based)
-
-                Rumus:
-
-                OFFSET = (page - 1) * limit
-
-
-                Contoh:
-
-                -- page 2
-                SELECT * FROM products
-                ORDER BY created_at DESC
-                LIMIT 10 OFFSET 10;
-
-                E. Sintaks Singkat MySQL
-                LIMIT offset, jumlah;
-
-
-                Contoh:
-
-                SELECT * FROM products
-                LIMIT 20, 10;
-
-
-                Artinya:
-
-                skip 20
-
-                ambil 10
-
-                📌 Sama dengan:
-
-                LIMIT 10 OFFSET 20;
-
-                F. LIMIT untuk Top Data
-                SELECT * FROM products
-                ORDER BY sold DESC
-                LIMIT 5;
-
-
-                🔥 Top 5 produk terlaris.
-
-                G. Masalah OFFSET (Level Naik Dikiiit 🚨)
-
-                Kalau data besar:
-
-                OFFSET 100000
-
-
-                ❌ Lambat
-                ❌ Database tetap scan data awal
-
-                H. Solusi Lebih Advanced: Cursor Pagination (Preview)
-                SELECT * FROM orders
-                WHERE id > 500
-                ORDER BY id ASC
-                LIMIT 10;
-
-
-                ✔️ Lebih cepat
-                ✔️ Dipakai di feed besar
-
-                📌 Kita bahas detail di bab lanjut.
-
-                I. LIMIT 1 (Validasi Data)
-                SELECT * FROM users
-                WHERE email = 'test@mail.com'
-                LIMIT 1;
-
-
-                🔥 Sangat umum buat:
-
-                login
-
-                validasi unik
-
-                J. Kesalahan Umum ❌
-
-                ❌ Pagination tanpa ORDER BY
-                ❌ OFFSET besar di tabel besar
-                ❌ Query tanpa LIMIT di API
-                ❌ Ambil ribuan data padahal cuma butuh 10
-
-                Mental Model biar nempel 🧠
-
-                LIMIT = rem
-                OFFSET = pindah gigi
-
-                Mini Latihan Penutup 🔥
-
-                Tabel orders:
-
-                id, total, created_at
-
-
-                1️⃣ Ambil 10 order terbaru
-                2️⃣ Page ke-3 (limit 10)
-                3️⃣ Ambil order terbesar tapi cuma 1
                 <a href="3a-relasi-data.html" class="btn-next">3a Relasi Data</a>
             </div>
         </main>
