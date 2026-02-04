@@ -18,6 +18,918 @@
             </header>
             
             <div class="content">
+                <h2>BAB 3: Relasi & JOIN</h2>
+
+                <div class="quote"><p>🎯 Ini Titik Naik Level</p></div>
+
+                <p>Bab ini ngajarin kamu:
+                <ul>
+                    <li>bagaimana data saling terhubung</li>
+                    <li>bagaimana membaca realitas bisnis lewat tabel</li>
+                    <li>bagaimana ngambil insight, bukan sekadar baris</li>
+                </ul> <br>
+                
+                Hampir semua aplikasi nyata hidup di Bab 3</p>
+
+                <h3>Kenapa Bab 3 Krusial?</h3>
+
+                <p>Di dunia nyata:
+                <ul>
+                    <li>data nggak pernah satu tabel</li>
+                    <li>satu entitas punya hubungan</li>
+                    <li>laporan & dashboard butuh gabungan data</li>
+                </ul> <br> <br>
+                
+                Contoh:
+                <ul>
+                    <li>user → orders → payments</li>
+                    <li>products → categories → sales</li>
+                    <li>companies → users → roles</li>
+                </ul> <br> <br>
+                
+
+                Tanpa relasi & JOIN: <br> 
+                ❌ data terpisah <br>
+                ❌ query dangkal <br>
+                ❌ kamu mentok di level junior</p>
+
+                <h3>Struktur Besar Bab 3 (Big Picture)</h3>
+                <h4>🧠 3.1 Relasi Data</h4>
+
+                <div class="quote"><p>Cara berpikir database</p></div>
+
+                <p>Ini menjawab:</p>
+
+                <div class="quote"><p>“hubungan antar data harus disimpan seperti apa?”</p></div>
+                <p><ul>
+                    <li>One-to-One → detail tambahan</li>
+                    <li>One-to-Many → relasi paling umum</li>
+                    <li>Many-to-Many → relasi kompleks</li>
+                    <li>Pivot Table → penghubung many-to-many</li>
+                </ul> <br>
+                
+                📌 Ini desain data, bukan sekadar query.</p>
+
+                <h4>🔗 3.2 JOIN Mendalam</h4>
+
+                <div class="quote"><p>Cara menggabungkan data</p></div>
+
+                <p>Ini menjawab:
+
+                <div class="quote"><p>“bagaimana cara baca data yang saling berhubungan?”</p></div>
+                <ul>
+                    <li>INNER JOIN → data yang cocok</li>
+                    <li>LEFT JOIN → data utama + relasi opsional</li>
+                    <li>RIGHT JOIN → kebalikannya</li>
+                    <li>Self Join → tabel relasi ke dirinya sendiri</li>
+                </ul> <br> 
+                
+                📌 JOIN = membaca cerita dari tabel-tabel</p>
+
+                <h4>📊 3.3 Aggregate</h4>
+
+                <div class="quote"><p>Cara mengambil makna dari data</p></div>
+
+                <p>Ini menjawab:</p>
+
+                <div class="quote"><p>“berapa?”, “totalnya berapa?”, “rata-ratanya?”</p></div>
+                <ul>
+                    <li><code>COUNT</code> → berapa data</li>
+                    <li><code>SUM</code> → total nilai</li>
+                    <li><code>AVG</code> → rata-rata</li>
+                    <li><code>GROUP BY</code> → pengelompokan</li>
+                    <li><code>HAVING</code> → filter hasil agregasi</li>
+                </ul> <br>
+
+                <p>📌 Aggregate = laporan & dashboard</p>
+
+                <h3>Perubahan Pola Pikir (PENTING)</h3>
+
+                <p>Sebelum Bab 3:
+
+                <div class="quote"><p>“Ambil data dari tabel ini”</p></div>
+
+
+                Setelah Bab 3:</p>
+
+                <div class="quote"><p>“Hubungkan data → kelompokkan → ambil insight”</p></div>
+
+                <h3>Contoh Kasus Nyata (Biar Kebayang)</h3>
+                <p>Tanpa Bab 3 ❌
+                <ul>
+                    <li>list user</li>
+                    <li>list order</li>
+                    <li>list produk</li>
+                </ul> <br>
+                
+                Dengan Bab 3 ✅
+                <ul>
+                    <li>total transaksi per user</li>
+                    <li>produk terlaris per kategori</li>
+                    <li>omzet per bulan</li>
+                    <li>user tanpa transaksi</li>
+                </ul> <br>
+                
+                🔥 ini yang dicari bisnis</p>
+
+                <h3>Kenapa Banyak Orang Takut JOIN?</h3>
+
+                <p>Karena:
+                <ul>
+                    <li>mental model tabel belum kuat</li>
+                    <li>salah paham relasi</li>
+                    <li>JOIN dipelajari cuma sintaks, bukan konsep</li>
+                </ul> <br> <br>
+                
+                Makanya:
+                <ul>
+                    <li>Kita akan pelan tapi dalam</li>
+                </ul></p>
+
+                <h3>Urutan Belajar yang Benar (Kita Ikuti Ini)</h3> 
+
+                <p>1️⃣ Relasi dulu (3.1) <br>
+                2️⃣ JOIN baru (3.2) <br>
+                3️⃣ Aggregate terakhir (3.3) <br> <br>
+
+                ❌ Jangan lompat langsung ke JOIN tanpa ngerti relasi.</p>
+
+                <h3>Tanda Kamu “Naik Level” Setelah Bab 3</h3>
+
+                <p>✔️ Bisa desain tabel yang rapi <br>
+                ✔️ Bisa baca query JOIN orang lain <br>
+                ✔️ Bisa bikin laporan sendiri <br>
+                ✔️ SQL mulai “bercerita”</p>
+
+                <h3>Analoginya Biar Nempel 🧠</h3>
+                <ul>
+                    <li><code>Relasi</code> = hubungan antar manusia</li>
+                    <li><code>JOIN</code> = ngobrolin hubungan itu</li>
+                    <li>Aggregate = rangkuman ceritanya</li>
+                </ul>
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>3.1.1 One-to-One (1 : 1)</h2>
+                <h3>A. Apa itu One-to-One?</h3>
+
+                <div class="quote"><p>Satu data di tabel A hanya punya satu pasangan di tabel B
+
+                Dan sebaliknya.</p></div>
+                
+                <br> <hr> <br>
+
+                <h3>B. Contoh Nyata (Biar Kebayang)</h3>
+                <p>User & Profile
+                <ul>
+                    <li>1 user → 1 profile</li>
+                    <li>1 profile → 1 user</li>
+                </ul> <br> <br>
+            
+                📌 Profile berisi data tambahan:
+                <ul>
+                    <li>alamat</li>
+                    <li>no KTP</li>
+                    <li>tanggal lahir</li>
+                    <li>bio panjang</li>
+                </ul></p>
+                
+                <br> <hr> <br>
+
+                <h3>C. Kenapa Tidak Digabung Satu Tabel?</h3>
+
+                <p>❌ Semua kolom dimasukin ke users <br> <br>
+
+                Masalah:
+                <ul>
+                    <li>tabel jadi gemuk</li>
+                    <li>banyak kolom kosong</li>
+                    <li>performa & keamanan jelek</li>
+                </ul> <br> <br>
+
+                ✔️ Solusi:
+                <ul>
+                    <li>pisahkan data opsional / sensitif</li>
+                </ul></p>
+                
+                
+                <br> <hr> <br>
+
+                <h3>D. Struktur Tabel One-to-One</h3>
+                <p>Tabel users</p>
+<pre>
+    id (PK) <br>
+    name <br>
+    email <br>
+    password
+</pre>
+                <p>Tabel user_profiles</p>
+<pre>
+    id (PK) <br>
+    user_id (FK, UNIQUE) <br>
+    address <br>
+    phone <br>
+    birth_date
+</pre>
+
+                <p>📌 Kunci penting:</p>
+                <ul>
+                    <li>user_id → foreign key</li>
+                    <li>UNIQUE → memastikan 1:1</li>
+                </ul>
+                
+                <br> <hr> <br>
+
+                <h3>E. Kenapa FK Harus UNIQUE?</h3>
+
+                <p>Tanpa <code>UNIQUE</code>:
+                <ul>
+                    <li>1 user bisa punya banyak profile ❌</li>
+                </ul> <br> <br>
+                
+                Dengan <code>UNIQUE</code>:
+                <ul>
+                    <li>1 user = 1 profile ✔️</li>
+                </ul></p>
+                
+                <br> <hr> <br>
+
+                <h3>F. Implementasi SQL</h3>
+<pre>
+    CREATE TABLE user_profiles ( <br>
+        id INT AUTO_INCREMENT PRIMARY KEY, <br>
+        user_id INT UNIQUE, <br>
+        address TEXT, <br>
+        phone VARCHAR(20), <br>
+        birth_date DATE, <br>
+        FOREIGN KEY (user_id) REFERENCES users(id) <br>
+    );
+</pre>
+
+                <p>🔥 Ini one-to-one yang benar</p>
+                
+                <br> <hr> <br>
+
+                <h3>G. Alternatif Desain One-to-One</h3>
+<pre>
+    PK = FK (Advanced Tapi Elegan) <br>
+    CREATE TABLE user_profiles ( <br>
+        user_id INT PRIMARY KEY, <br>
+        address TEXT, <br>
+        phone VARCHAR(20), <br>
+        birth_date DATE, <br>
+        FOREIGN KEY (user_id) REFERENCES users(id) <br>
+    );
+</pre>
+
+                <p>📌 Artinya:
+                <ul>
+                    <li>user_id adalah PK sekaligus FK</li>
+                    <li>dijamin 100% one-to-one</li>
+                </ul></p>
+                
+                <br> <hr> <br>
+
+                <h3>H. Kapan Pakai One-to-One?</h3>
+
+                <p>✅ Data opsional <br>
+                ✅ Data jarang dipakai <br>
+                ✅ Data sensitif <br>
+                ❌ Jangan buat 1:1 tanpa alasan</p>
+                
+                <br> <hr> <br>
+
+                <h3>I. Kesalahan Umum ❌</h3>
+
+                <p>❌ One-to-one tapi FK tidak UNIQUE <br>
+                ❌ Data seharusnya one-to-many <br>
+                ❌ Join padahal datanya selalu ada</p>
+                
+                <br> <hr> <br>
+
+                <h3>J. Mental Model biar nempel 🧠</h3>
+                
+                <div class="quote"><p>One-to-One = satu identitas, dua wajah</p></div>
+                
+                <br> <hr> <br>
+
+                <h3> L. Mini Latihan 🔥</h3>
+
+                <p>1️⃣ Buat skema:
+                <ul>
+                    <li>employees</li>
+                    <li>employee_details</li>
+                </ul> <br> <br>
+                
+                2️⃣ Tentukan:
+                <ul>
+                    <li>kolom mana FK</li>
+                    <li>cara menjamin 1:1</li>
+                </ul></p>
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>3.1.2 One-to-Many (1 : N)</h2>
+                <p>Relasi Paling Sering Dipakai</p>
+
+                <div class="quote"><p>One-to-Many = satu data di tabel A bisa punya banyak data di tabel B</p></div>
+
+                <p>Tapi:</p>
+
+                <div class="quote"><p>data di tabel B hanya milik satu di tabel A.</p></div>
+
+                <br> <hr> <br>
+
+                <h3>A. Contoh Nyata (WAJIB KEBAYANG)</h3>
+                <ul>
+                    <li>1 user → banyak orders</li>
+                    <li>1 kategori → banyak produk</li>
+                    <li>1 perusahaan → banyak karyawan</li>
+                    <li>1 invoice → banyak item</li>
+                </ul> <br>
+                <p>📌 90% kasus aplikasi = ini</p>
+
+                <br> <hr> <br>
+
+                <h3>B. Cara Berpikir One-to-Many</h3>
+
+                <p>❓ Di mana foreign key ditaruh?
+                <ul>
+                    <li>Selalu di sisi MANY</li>
+                </ul> <br> <br>
+                
+
+                Contoh: User & Orders <br>
+                Relasi</p>
+                <ul>
+                    <li>users (ONE)</li>
+                    <li>orders (MANY)</li>
+                </ul>
+                
+                <br> <hr> <br>
+
+                <h3>C. Struktur Tabel</h3>
+                <p>users</p>
+<pre>
+    id (PK) <br>
+    name <br>
+    email
+</pre>
+                <p>orders</p>
+<pre>
+    id (PK) <br>
+    user_id (FK) <br>
+    order_date <br>
+    total
+</pre>
+                <ul>
+                    <li><code>user_id</code> ada di orders</li>
+                    <li>karena orders = banyak</li>
+                </ul>
+                
+
+                <br> <hr> <br>
+
+                <h3>D. Kenapa FK Tidak di Tabel ONE?</h3>
+
+                <p>Kalau FK di users:
+                <ul>
+                    <li>1 user cuma bisa simpan 1 order ❌</li>
+                    <li>harus bikin kolom order_1, order_2 ❌❌</li>
+                    <li>⛔ anti-scalable</li>
+                </ul></p>
+
+                <br> <hr> <br>
+
+                <h3>E. Implementasi SQL</h3>
+<pre>
+    CREATE TABLE orders ( <br>
+        id INT AUTO_INCREMENT PRIMARY KEY, <br>
+        user_id INT NOT NULL, <br>
+        order_date DATE, <br>
+        total DECIMAL(12,2), <br>
+        FOREIGN KEY (user_id) REFERENCES users(id) <br>
+    );
+</pre>
+
+                <p>🔥 Done. One-to-many valid.</p>
+
+                <br> <hr> <br>
+
+                <h3>F. Apakah FK Harus UNIQUE?</h3>
+
+                <p>❌ TIDAK <br> <br>
+
+                Kalau UNIQUE:</p>
+
+                <div class="quote"><p>1 user cuma bisa punya 1 order ❌</p></div> 
+
+                <br>
+
+
+                <p>📌 Ingat:
+                <ul>
+                    <li>One-to-One → FK UNIQUE</li>
+                    <li>One-to-Many → FK BIASA</li>
+                </ul></p>
+                
+                <br> <hr> <br>
+
+                <h3>G. Contoh Lain (Biar Nempel)</h3>
+                <p>Produk & Kategori</p>
+<pre>
+    categories (1) <br>
+    products (N)
+</pre>
+<br>
+<pre>
+    products.category_id → categories.id
+</pre>
+<br>
+                <p>Invoice & Items</p>
+<pre>
+    invoices (1) <br>
+    invoice_items (N)
+</pre>
+<br>
+<pre>
+    invoice_items.invoice_id → invoices.id
+</pre>
+
+                <p>📌 Ini pola wajib di sistem keuangan (kamu pasti kepake 👀)</p>
+
+                <br> <hr> <br>
+
+                <h3>H. Relasi Wajib vs Opsional</h3>
+                <p>Wajib</p>
+<pre>
+    user_id INT NOT NULL
+</pre>
+
+                <p>Order harus punya user <br> <br>
+
+                Opsional</p>
+<pre>
+    manager_id INT NULL
+</pre>
+
+                <p>Karyawan boleh belum punya manager</p>
+
+                <br> <hr> <br>
+
+                <h3>I. Kesalahan Umum ❌</h3>
+
+                <p>❌ FK ditaruh di tabel ONE <br>
+                ❌ FK dikasih UNIQUE <br>
+                ❌ Duplikasi data parent <br>
+                ❌ Tidak pakai foreign key constraint</p>
+
+                <br> <hr> <br>
+
+                <h3>J. Mental Model biar nempel 🧠</h3>
+
+                <p><code>One-to-Many</code> = satu induk, banyak anak <br> <br>
+
+                FK selalu ada di anak.</p>
+
+                <br> <hr> <br>
+
+                <h3>K. Mini Latihan 🔥</h3>
+
+                <p>Desain tabel: <br>
+                1️⃣ Blog & Posts <br>
+                2️⃣ Customer & Payments <br> <br>
+
+                Tentukan:   
+                <ul>
+                    <li>tabel <code>ONE</code></li>
+                    <li>tabel <code>MANY</code></li>
+                    <li>posisi <code>FK</code></li>
+                </ul></p>
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>3.1.3 Many-to-Many (M : N)</h2>
+                <p>Relasi Paling “Tricky” tapi Powerful</p>
+
+                <div class="quote"><p>Many-to-Many :
+                    <ul>
+                        <li>satu data di tabel A bisa berhubungan dengan banyak data di tabel B</li>
+                        <li>satu data di tabel B juga bisa berhubungan dengan banyak data di tabel A</li>
+                    </ul>
+                </p></div>
+                
+                <br> <hr> <br>
+
+                <h3>A. Contoh Dunia Nyata (WAJIB KEBAYANG)</h3>
+                <ul>
+                    <li>Produk ↔ Kategori</li>
+                        <ul>
+                            <li>1 produk bisa punya banyak kategori</li>
+                            <li>1 kategori bisa punya banyak produk</li>
+                        </ul>
+                    <li>User ↔ Role</li>
+                    <li>Student ↔ Course</li>
+                    <li>Order ↔ Product</li>
+                </ul> <br>
+                
+                <p>📌 Relasi ini TIDAK bisa langsung pakai FK satu kolom</p>
+                
+                <br> <hr> <br>
+
+                <h3>B. Kesalahan Pemula ❌ (Paling Umum)</h3>
+
+                <p>❌ Simpan banyak ID dalam satu kolom:</p>
+<pre>
+    products.category_ids = "1,3,5"
+</pre> <br>
+
+                <p>KENAPA SALAH?
+                <ul>
+                    <li>susah query</li>
+                    <li>susah index</li>
+                    <li>melanggar normalisasi</li>
+                </ul> <br>
+                
+                bikin SQL kamu nangis 😭</p>
+                
+                <br> <hr> <br>
+
+                <h3>C. SOLUSI RESMI: Pivot Table 🔥</h3>
+
+                <div class="quote"><p>Many-to-Many SELALU pakai tabel perantara</p></div>
+
+                <p>Struktur Dasar Many-to-Many <br> <br>
+                Contoh: Products ↔ Categories</p>
+<pre>
+    products <br>
+    id (PK) <br>
+    name <br>
+    price
+</pre>
+<br>
+                <p>categories</p>
+<pre>
+    id (PK) <br>
+    name
+</pre>
+<br>
+                <p>category_product (Pivot Table)</p>
+<pre>
+    product_id (FK) <br>
+    category_id (FK)
+</pre>
+<br>
+                <p>📌 Pivot table:</p>
+                <ul>
+                    <li>isinya hanya relasi</li>
+                    <li>tidak ada data utama</li>
+                </ul>
+                
+                <br> <hr> <br>
+
+                <h3>D. Kenapa Disebut Pivot?</h3>
+
+                <p>Karena:
+                <ul>
+                    <li>jadi poros penghubung</li>
+                    <li>memutar relasi M:N jadi 1:N + 1:N</li>
+                </ul></p>
+                
+                <br> <hr> <br>
+
+                <h3>E. Implementasi SQL Pivot Table</h3>
+<pre>
+    CREATE TABLE category_product ( <br>
+        product_id INT NOT NULL, <br>
+        category_id INT NOT NULL, <br>
+        PRIMARY KEY (product_id, category_id), <br>
+        FOREIGN KEY (product_id) REFERENCES products(id), <br>
+        FOREIGN KEY (category_id) REFERENCES categories(id) <br>
+    );
+</pre>
+
+                <p>🔥 Ini best practice industri</p>
+                
+                <br> <hr> <br>
+
+                <h3>F. Kenapa Pakai Composite Primary Key?</h3>
+<pre>
+    PRIMARY KEY (product_id, category_id)
+</pre>
+
+                <p>Artinya:
+                <ul>
+                    <li>kombinasi harus unik</li>
+                    <li>produk yang sama tidak bisa masuk kategori yang sama dua kali</li>
+                </ul>
+                
+                📌 Anti duplikasi relasi.</p>
+                
+                <br> <hr> <br>
+
+                <h3>G. Pivot Table Bisa Punya Kolom Tambahan 👀</h3>
+
+                <p>Contoh: Student ↔ Course</p>
+<pre>
+    student_course <br>
+    - student_id <br>
+    - course_id <br>
+    - enrolled_at <br>
+    - grade
+</pre>
+
+                <p>🔥 Ini sering banget di dunia nyata</p>
+                
+                <br> <hr> <br>
+
+                <h3>H. Cara Membaca Relasi Many-to-Many</h3>
+                <ul>
+                    <li>“Satu produk bisa muncul di banyak baris pivot”</li>
+                    <li>“Satu kategori bisa muncul di banyak baris pivot”</li>
+                </ul>
+                
+                <br> <hr> <br>
+
+                <h3>I. Mental Model biar Nempel 🧠</h3>
+                <ul>
+                    <li>Many-to-Many = relasi harus dijadikan objek</li>
+                    <li>Relasinya bukan sekadar hubungan, tapi entitas sendiri</li>
+                </ul>
+                
+                <br> <hr> <br>
+
+                <h3>J. Kesalahan Umum ❌</h3>
+
+                <p>❌ Tidak pakai pivot table <br>
+                ❌ Pivot table tanpa primary key <br>
+                ❌ Nama pivot tidak jelas <br>
+                ❌ Simpan data utama di pivot</p>
+                
+                <br> <hr> <br>
+
+                <h3>K. Naming Convention Pivot Table</h3>
+
+                <p>Umum:</p>
+<pre>
+    tableA_tableB
+</pre> <br> <br>
+
+                <p>Contoh:</p>
+                <ul>
+                    <li>category_product</li>
+                    <li>role_user</li>
+                    <li>course_student</li>
+                </ul>
+                <br> <br>
+
+                <p>Urutan:
+                <ul>
+                    <li>alfabet</li>
+                    <li>atau konsisten versi tim</li>
+                </ul></p>
+                
+
+                
+                <br> <hr> <br>
+
+                <h3>L. Mini Latihan 🔥</h3>
+
+                <p>1️⃣ Desain relasi: <br> <br>
+
+                users ↔ projects <br>
+                2️⃣ Buat pivot table-nya <br>
+                3️⃣ Tentukan:
+                <ul>
+                    <li>PK</li>
+                    <li>FK</li>
+                </ul></p>
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>3.1.4 Pivot Table</h2>
+                <h3>A. Jantung Relasi Many-to-Many</h3>
+
+                <p>Kalau kamu paham pivot table:
+                <ul>
+                    <li><code>JOIN</code> jadi natural</li>
+                    <li>query jadi masuk akal</li>
+                    <li>desain DB kamu naik kelas</li>
+                </ul></p>
+                
+                <br> <hr> <br>
+
+                <h3>B. Apa Itu Pivot Table (Rekap Cepat)</h3>
+
+                <div class="quote"><p>Pivot table = tabel khusus untuk menyimpan hubungan antar dua tabel</p></div>
+
+                <p>📌 Dipakai hanya untuk:</p>
+                <ul>
+                    <li>Many-to-Many</li>
+                    <li>atau relasi yang punya atribut sendiri</li>
+                </ul>
+                
+                <br> <hr> <br>
+
+                <h3>C. Kapan Pivot Table WAJIB?</h3>
+
+                <p>✔️ Satu A bisa ke banyak B <br>
+                ✔️ Satu B bisa ke banyak A <br> <br>
+
+                Contoh:
+                <ul>
+                    <li>user ↔ role</li>
+                    <li>product ↔ category</li>
+                    <li>student ↔ course</li>
+                </ul> <br>
+
+                ❌ BUKAN untuk one-to-many</p>
+
+                <br> <hr> <br>
+
+                <h3>D. Struktur Pivot Table Minimal</h3>
+
+                <p>Contoh: role_user</p>
+<pre>
+    role_id INT NOT NULL, <br>
+    user_id INT NOT NULL, <br>
+    PRIMARY KEY (role_id, user_id)
+</pre>
+                <p>🔥 Simpel, bersih, efektif.</p>
+
+                <br> <hr> <br>
+
+                <h3>E. Pivot Table dengan Data Tambahan (REAL LIFE)</h3>
+
+                <p>Pivot table boleh & sering punya kolom tambahan. <br> <br>
+
+                Contoh: order_items</p>
+<pre>
+    order_id INT <br>
+    product_id INT <br>
+    qty INT <br>
+    price DECIMAL(12,2)
+</pre>
+
+                <p>📌 Ini:
+                <ul>
+                    <li>pivot (order ↔ product)</li>
+                    <li>sekaligus menyimpan snapshot transaksi</li>
+                </ul></p>
+
+                <br> <hr> <br>
+
+                <h3>F. Bedain Pivot vs Detail Table (PENTING!)</h3>
+                <table>
+                    <tr>
+                        <th>Ciri</th>
+                        <th>Pivot</th>
+                    </tr>
+                    <tr>
+                        <td>Menghubungkan 2 entitas</td>
+                        <td class="ct">✅</td>
+                    </tr>
+                    <tr>
+                        <td>FK ke 2 tabel</td>
+                        <td class="ct">✅</td>
+                    </tr>
+                    <tr>
+                        <td>Banyak baris per parent</td>
+                        <td class="ct">✅</td>
+                    </tr>
+                    <tr>
+                        <td>Menyimpan histori relasi</td>
+                        <td class="ct">✅</td>
+                    </tr>
+                </table>
+
+                <br> <hr> <br>
+
+                <h3>G. Composite Primary Key (Wajib?)</h3>
+                <p>Default</p>
+<pre>
+    PRIMARY KEY (a_id, b_id)
+</pre>
+
+                <p>Kelebihan:
+                <ul>
+                    <li>anti duplikasi</li>
+                    <li>simpel</li>
+                    <li>natural</li>
+                </ul></p>
+
+                <br> <hr> <br>
+
+                <h3>H. Alternatif (Kalau Butuh ID)</h3>
+<pre>
+    id INT AUTO_INCREMENT PRIMARY KEY, <br>
+    a_id INT, <br>
+    b_id INT, <br>
+    UNIQUE (a_id, b_id)
+</pre>
+
+                <p>Dipakai kalau:
+                <ul>
+                    <li>pivot sering direferensi tabel lain</li>
+                    <li>butuh soft delete</li>
+                    <li>ORM tertentu</li>
+                </ul></p>
+                
+                <br> <hr> <br>
+
+                <h3>I. Indexing Pivot Table (IMPORTANT)</h3>
+
+                <p>Minimal:</p>
+<pre>
+    INDEX (a_id)
+    INDEX (b_id)
+</pre>
+
+                <p>Kalau tidak:
+                <ul>
+                    <li><code>JOIN</code> lambat</li>
+                    <li>query berat</li>
+                </ul></p>
+                
+                <br> <hr> <br>
+
+                <h3>J. Naming Convention</h3>
+
+                <p>Umum:</p>
+<pre>
+    singular_singular
+</pre>
+
+                <p>Contoh:
+                <ul>
+                    <li>role_user</li>
+                    <li>category_product</li>
+                    <li>course_student</li>
+                </ul>
+
+                📌 Konsistensi > gaya.</p>
+
+                <br> <hr> <br>
+
+                <h3>K. Kesalahan Fatal ❌</h3>
+
+                <p>❌ Menyimpan data utama di pivot <br>
+                ❌ Pivot tanpa PK / UNIQUE <br>
+                ❌ Menyimpan list ID di satu kolom <br>
+                ❌ Salah pakai pivot untuk 1:N </p>
+
+                <h3>L. Mental Model biar Nempel 🧠</h3>
+
+                <div class="quote"><p>Pivot table = buku catatan hubungan</p></div>
+
+                <p>Bukan orangnya, bukan barangnya <br>
+                tapi siapa berhubungan dengan siapa</p>
+
+                <br> <hr> <br>
+
+                <h3>M. Mini Latihan 🔥</h3>
+
+                <p>1️⃣ Relasi:</p>
+<pre>
+    teachers ↔ subjects
+</pre>
+                
+                <p>2️⃣ Buat pivot table <br>
+                3️⃣ Tambahkan:</p>
+<pre>
+    assigned_at
+</pre>
+                <br> <hr> <br>
+
+                <h3>N. 🎯 Penutup Relasi Data (3.1)</h3>
+
+                <p>Sekarang kamu: <br>
+                ✔️ paham One-to-One <br>
+                ✔️ paham One-to-Many <br>
+                ✔️ paham Many-to-Many <br>
+                ✔️ ngerti kenapa pivot itu penting <br> <br>
+
+                🔥 Ini fondasi JOIN.</p>
+
+                <br> <br>
+
+                <a href="3b-join-mendalam.html" class="btn-next">3b. Join Mendalam</a>
 
             </div>
         </main>

@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Type</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+
+        <main>
+            <header>
+                
+            </header>
+            
+            <div class="content">
+                <h2>3.2 JOIN Mendalam</h2>
+                <h3>Cara Menggabungkan Data Antar Tabel</h3>
+
+                <p>JOIN itu menjawab pertanyaan:</p>
+
+                <div class="quote"><p>“Data di tabel A dan tabel B, kalau digabung, jadinya cerita apa?”</p></div>
+
+                <p>Tanpa JOIN:
+                <ul>
+                    <li>tabel cuma potongan-potongan</li>
+                    <li>insight kepisah</li>
+                    <li>laporan mustahil</li>
+                </ul> <br> <br>
+
+                Dengan <code>JOIN</code>:
+                <ul>
+                    <li>data saling nyambung</li>
+                    <li>konteks kebaca</li>
+                    <li>aplikasi terasa “pintar”</li>
+                </ul></p>
+                
+                <br> <hr> <br>
+
+                <h3>Konsep Dasar JOIN (WAJIB NANCEP)</h3>
+
+                <p>JOIN TIDAK mengubah data <br>
+                JOIN hanya menggabungkan hasil baca <br> <br>
+
+                📌 JOIN terjadi saat SELECT, bukan saat CREATE TABLE</p>
+
+                <br> <hr> <br>
+
+                <h3>JOIN Selalu Berdasarkan Apa?</h3>
+
+                <div class="quote"><p>👉 Primary Key ↔ Foreign Key</p></div>
+
+                <p>Contoh:</p>
+<pre>
+    users.id = orders.user_id
+</pre>
+
+                <p>Ini urat nadi JOIN</p>
+
+                <br> <hr> <br>
+
+                <h3>Bentuk Umum JOIN</h3>
+<pre>
+    SELECT kolom <br>
+    FROM tabel_a <br>
+    JOIN tabel_b <br>
+        ON kondisi_relasi;
+</pre>
+
+                <p>📌 ON = aturan kecocokan baris</p>
+
+                <br> <hr> <br>
+
+                <h3>Jenis JOIN (Preview)</h3>
+                <table>
+                    <tr>
+                        <th>JOIN</th>
+                        <th>Ambil Data</th>
+                    </tr>
+                    <tr>
+                        <td><code>INNER JOIN</code></td>
+                        <td>yang cocok di kedua tabel</td>
+                    </tr>
+                    <tr>
+                        <td><code>LEFT JOIN</code></td>
+                        <td>semua kiri + cocok kanan</td>
+                    </tr>
+                    <tr>
+                        <td><code>RIGHT JOIN</code></td>
+                        <td>semua kanan + cocok kiri</td>
+                    </tr>
+                    <tr>
+                        <td><code>SELF JOIN</code></td>
+                        <td>tabel gabung ke dirinya sendiri</td>
+                    </tr>
+                </table>
+                	
+                <br>
+
+                <p>Sekarang kita mulai dari yang paling aman & paling sering:</p>
+
+                <h2>3.2.1 INNER JOIN</h2>
+                
+                <div class="quote"><p>Ambil Data yang Punya Pasangan</p></div>
+
+                <br> <hr> <br>
+                <h3>Apa itu INNER JOIN?</h3>
+
+                <div class="quote"><p>INNER JOIN hanya mengembalikan data yang cocok di kedua tabel</p></div>
+
+                <p>Kalau salah satu tidak punya pasangan: <br> <br>
+
+                ❌ tidak ikut tampil</p>
+
+                <br> <hr> <br>
+
+                <h3>Visualisasi Mental 🧠</h3>
+<pre>       
+    A ∩ B
+</pre>     
+
+                <p>Irisan.</p>
+
+                <br> <hr> <br>
+
+                <h3>Contoh Nyata: Users & Orders</h3>
+                <p>Relasi</p>
+<pre>
+    users.id = orders.user_id
+</pre>
+<br>
+
+                <p>Query</p>
+<pre>
+    SELECT <br>
+        users.name, <br>
+        orders.id AS order_id, <br>
+        orders.total <br>
+    FROM users <br>
+    INNER JOIN orders <br>
+        ON users.id = orders.user_id;
+</pre>
+
+                <p>Artinya:
+                <ul>
+                    <li>hanya user yang punya order</li>
+                    <li>order yang punya user</li>
+                </ul></p>
+                
+                <br> <hr> <br>
+
+                <h3>INNER JOIN Tanpa Kata INNER</h3>
+<pre>
+    SELECT ... <br>
+    FROM users <br>
+    JOIN orders <br>
+        ON users.id = orders.user_id;
+</pre>
+
+                <p>📌 Default JOIN = INNER JOIN</p>
+
+                <br> <hr> <br>
+
+                <h3>INNER JOIN Multiple Tables</h3>
+<pre>
+    SELECT <br>
+        users.name, <br>
+        products.name AS product_name <br>
+    FROM users <br>
+    JOIN orders ON users.id = orders.user_id <br>
+    JOIN order_items ON orders.id = order_items.order_id <br>
+    JOIN products ON order_items.product_id = products.id;
+</pre>
+
+                <p>🔥 Ini query e-commerce beneran</p>
+
+                <br> <hr> <br>
+
+                <h3>INNER JOIN + WHERE</h3>
+<pre>
+    SELECT * <br>
+    FROM orders <br>
+    JOIN users ON users.id = orders.user_id <br>
+    WHERE orders.total > 500000;
+</pre>
+
+                <p>📌 JOIN dulu, filter kemudian.</p>
+
+                <br> <hr> <br>
+
+                <h3>Kapan INNER JOIN Tepat?</h3>
+
+                <p>✔️ data wajib punya pasangan  <br>
+                ✔️ laporan transaksi <br>
+                ✔️ relasi yang harus ada <br> <br>
+
+                ❌ jangan pakai kalau relasi opsional</p>
+
+                <br> <hr> <br>
+
+                <h3>Kesalahan Umum ❌</h3>
+
+                <p>❌ JOIN tanpa ON (cartesian product 😱) <br>
+                ❌ Salah kolom relasi <br>
+                ❌ JOIN padahal harusnya LEFT JOIN</p>
+
+                <br> <hr> <br>
+
+                <h3>Mental Model biar Nempel 🧠</h3>
+                <ul>
+                    <li><code>INNER JOIN</code> = “yang jadian aja”</li>
+                </ul> <br> <br>
+                
+
+                <p>Kalau nggak saling cocok:
+                <ul>
+                    <li>nggak ditampilkan</li>
+                </ul></p>
+                
+
+                <br> <hr> <br>
+
+                <h3>Mini Latihan 🔥</h3>
+
+                <p>Tabel:</p>
+<pre>
+    students <br>
+    courses <br>
+    student_course
+</pre>
+
+                <p>1️⃣ Ambil nama student + course <br> 
+                2️⃣ Pastikan hanya student yang terdaftar</p>
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>3.2.2 LEFT JOIN</h2>
+                <div class="quote"><p>Ambil Semua Data Utama, Relasi Opsional</p></div>
+
+                <br> <hr> <br>
+
+                <h3>Apa itu LEFT JOIN?</h3>
+
+                <p>LEFT JOIN mengambil: <br> <br>
+
+                ✅ semua data dari tabel KIRI <br>
+
+                ➕ data dari tabel KANAN kalau ada <br>
+
+                ❌ kalau tidak ada pasangan → NULL</p>
+
+                <br> <hr> <br>
+
+                <h3>Visualisasi Mental 🧠</h3>
+<pre>
+    A ⟕ B
+</pre>
+                <ul>
+                    <li>A = tabel kiri (FROM)</li>
+                    <li>B = tabel kanan (JOIN)</li>
+                </ul>
+                
+                <br> <hr> <br>
+
+                <h3>Contoh Nyata (SUPER PENTING)</h3>
+                <p>Kasus: Users & Orders</p>
+
+                <div class="quote"><p>“Tampilkan semua user, walaupun belum pernah order”</p></div>
+<pre>
+    SELECT <br>
+        users.name, <br>
+        orders.id AS order_id, <br>
+        orders.total <br>
+    FROM users <br>
+    LEFT JOIN orders <br>
+        ON users.id = orders.user_id;
+</pre>
+
+                <p>Hasil:
+                <ul>
+                    <li>user tanpa order → order_id = NULL</li>
+                    <li>user dengan order → data muncul</li>
+                </ul> <br>
+                
+                🔥 INNER JOIN tidak bisa ini</p>
+
+                <br> <hr> <br>
+
+                <h3>LEFT JOIN vs INNER JOIN (Ringkas Tapi Penting)</h3>
+                <table>
+                    <tr>
+                        <th>Kasus</th>
+                        <th><code>INNER</code></th>
+                        <th><code>LEFT</code></th>
+                    </tr>
+                    <tr>
+                        <td>User tanpa order</td>
+                        <td class="ct">❌</td>
+                        <td class="ct">✅</td>
+                    </tr>
+                    <tr>
+                        <td>Data wajib</td>
+                        <td class="ct">✅</td>
+                        <td class="ct">✅</td>
+                    </tr>
+                    <tr>
+                        <td>Data opsional</td>
+                        <td class="ct">❌</td>
+                        <td class="ct">✅</td>
+                    </tr>
+                </table>
+
+                <br> <hr> <br>
+
+                <h3>LEFT JOIN + WHERE (JEBakan UMUM)</h3>
+
+                <p>❌ SALAH:</p>
+<pre>
+    SELECT * <br>
+    FROM users <br>
+    LEFT JOIN orders ON users.id = orders.user_id <br>
+    WHERE orders.total > 100000;
+</pre>
+
+                <p>😵 Ini berubah jadi INNER JOIN terselubung</p>
+
+                <br> <hr> <br>
+
+                <h3>Cara BENAR: Kondisi di ON</h3>
+<pre>
+    SELECT * <br>
+    FROM users <br>
+    LEFT JOIN orders <br>
+        ON users.id = orders.user_id <br>
+        AND orders.total > 100000;
+</pre>
+
+                <p>📌 User tanpa order tetap muncul.</p>
+
+                <br> <hr> <br>
+
+                <h3>Menemukan Data yang TIDAK PUNYA Relasi (POWER MOVE 🔥)</h3>
+                User tanpa order
+<pre>
+    SELECT users.* <br>
+    FROM users <br>
+    LEFT JOIN orders ON users.id = orders.user_id <br>
+    WHERE orders.id IS NULL;
+</pre>
+
+                <p>💎 Ini sering banget dipakai buat:
+                <ul>
+                    <li>user pasif</li>
+                    <li>data belum lengkap</li>
+                    <li>follow-up bisnis</li>
+                </ul></p>
+
+                <br> <hr> <br>
+
+                <h3>LEFT JOIN Banyak Tabel</h3>
+<pre>
+    SELECT <br>
+        users.name, <br>
+        orders.id, <br>
+        payments.amount <br>
+    FROM users <br>
+    LEFT JOIN orders ON users.id = orders.user_id <br>
+    LEFT JOIN payments ON orders.id = payments.order_id;
+</pre>
+
+                <p>📌 Relasi berantai:
+                <ul>
+                    <li>user → order → payment</li>
+                </ul></p>
+                
+
+                <br> <hr> <br>
+
+                <h3>Kapan Pakai LEFT JOIN?</h3>
+
+                <p>✔️ data utama HARUS tampil <br>
+                ✔️ relasi opsional <br>
+                ✔️ mau cari data “kosong” <br>
+                ✔️ audit & monitoring</p>
+
+                <br> <hr> <br>
+
+                <h3>Kesalahan Umum ❌</h3>
+
+                <p>❌ Filter di WHERE untuk tabel kanan <br>
+                ❌ Salah urutan tabel (kiri/kanan) <br>
+                ❌ Pakai INNER padahal data opsional</p>
+
+                <br> <hr> <br>
+
+                <h3>Mental Model biar Nempel 🧠</h3>
+
+                <div class="quote"><p>LEFT JOIN = “yang penting semua kiri tampil dulu”</p></div>
+
+                <br> <hr> <br>
+
+                <h3>Mini Latihan 🔥</h3>
+
+                <p>Tabel:</p>
+<pre>
+    products <br>
+    reviews
+</pre>
+
+                <p>1️⃣ Tampilkan semua produk + review <br>
+                2️⃣ Cari produk yang belum punya review</p>
+
+                <br> <br> 
+
+                <hr>
+
+                <br> <br>
+
+                <h2><code>3.2.3 RIGHT JOIN</code></h2>
+                
+                <div class="quote"><p>Kebalikan <code>LEFT JOIN</code> (Jarang Dipakai, Tapi Wajib Paham)</p></div>
+
+                <br> <hr> <br>
+
+                <h3>A. Apa itu <code>RIGHT JOIN</code>?</h3>
+
+                <p><code>RIGHT JOIN</code> mengambil: <br> <br>
+                
+                ✅ semua data dari tabel KANAN <br>
+
+                ➕ data dari tabel KIRI kalau ada <br>
+
+                ❌ kalau tidak ada pasangan → NULL <br> <br>
+
+                Secara konsep:</p>
+<pre>
+    A ⟖ B
+</pre>
+                <br> <hr> <br>
+
+                <h3>B. Contoh Sederhana</h3>
+                <p>Kasus: Users & Orders</p>
+
+                <div class="quote"><p>“Tampilkan semua order, walaupun user-nya bermasalah / tidak ada”</p></div>
+<pre>
+    SELECT <br>
+            users.name, <br>
+            orders.id, <br>
+            orders.total <br>
+        FROM users <br>
+        RIGHT JOIN orders <br>
+            ON users.id = orders.user_id;
+</pre>
+
+                <p>📌 Order tetap tampil <br>
+                📌 Kalau user hilang → users.name = NULL</p>
+
+                <br> <hr> <br>
+
+                <h3>C. Tapi… Kenyataan di Dunia Nyata 😅</h3>
+
+                <div class="quote"><p>👉 90% RIGHT JOIN bisa ditulis ulang pakai <code>LEFT JOIN</code></p></div>
+
+                <p>Contoh di atas bisa jadi:</p>
+<pre>
+    SELECT <br>
+        users.name, <br>
+        orders.id, <br>
+        orders.total <br>
+    FROM orders <br>
+    LEFT JOIN users <br>
+        ON users.id = orders.user_id;
+</pre>
+
+                <p>💡 Lebih readable, lebih umum</p>
+
+                <br> <hr> <br>
+
+                <h3>D. Kapan RIGHT JOIN Dipakai?</h3>
+
+                <p>✔️ Kalau kamu baca query orang lain <br>
+                ✔️ Legacy code <br>
+                ✔️ Reporting tertentu <br> <br>
+
+                ❌ Jarang dipakai di codebase modern</p>
+
+                <br> <hr> <br>
+
+                <h3>E. Mental Note 🧠</h3>
+
+                <div class="quote"><p>RIGHT JOIN = LEFT JOIN tapi sudut pandangnya dibalik</p></div>
+
+                <p>Kalau bingung: <br>
+                ➡️ tukar posisi tabel → pakai LEFT JOIN</p>
+
+                <h2>. 3.2.4 SELF JOIN</h2>
+                
+                <div class="quote"><p><code>JOIN</code> ke Diri Sendiri (Ini Keren 🧠🔥)</p></div>
+
+                <br> <hr> <br>
+
+                <h3>A. Apa itu SELF JOIN?</h3>
+
+                <div class="quote"><p><code>SELF JOIN</code> = satu tabel <code>JOIN</code> ke tabel itu sendiri</p></div>
+
+                <p>Dipakai saat:
+                <ul>
+                    <li>data punya hierarki</li>
+                    <li>relasi antar baris dalam tabel yang sama</li>
+                </ul></p>
+                
+                <br> <hr> <br>
+
+                <h3>B. Contoh Nyata (PALING SERING)</h3>
+                <p>Employee & Manager</p>
+<pre>
+    Satu tabel employees: <br> <br>
+
+    id | name | manager_id <br> <br> <br>
+
+
+    manager_id → employees.id
+</pre>
+                <br> <hr> <br>
+
+                <h3>C. Query SELF JOIN</h3>
+<pre>
+    SELECT <br>
+        e.name AS employee_name, <br>
+        m.name AS manager_name <br>
+    FROM employees e <br>
+    LEFT JOIN employees m <br>
+        ON e.manager_id = m.id;
+</pre>
+
+                <p>🔥 Mind blown pertama kali biasanya di sini.</p>
+
+                <br> <hr> <br>
+
+                <h3>D. Kenapa Harus Alias?</h3>
+
+                <p>Karena:
+                <ul>
+                    <li>tabelnya sama</li>
+                    <li>tapi perannya beda</li>
+                </ul>
+                <br>
+                <ul>
+                    <li>e = employee</li>
+                    <li>m = manager</li>
+                </ul> <br>
+                
+                Tanpa alias → SQL bingung ❌</p>
+
+                <br> <hr> <br>
+
+                <h3>E. Contoh Lain SELF JOIN</h3>
+                <p>Kategori Bertingkat</p>
+<pre>
+    categories <br>
+    - id <br>
+    - name <br>
+    - parent_id
+</pre>
+<br>
+<pre>
+    SELECT <br>
+        c.name AS category, <br>
+        p.name AS parent_category <br>
+    FROM categories c <br>
+    LEFT JOIN categories p <br>
+        ON c.parent_id = p.id;
+</pre>
+
+                <p>📌 Dipakai di:
+                <ul>
+                    <li>menu</li>
+                    <li>tree</li>
+                    <li>nested category</li>
+                </ul></p>
+                
+                <br> <hr> <br>
+
+                <h3>F. Kapan Pakai SELF JOIN?</h3>
+
+                <p>✔️ struktur hirarki <br>
+                ✔️ data bertingkat <br>
+                ✔️ relasi internal</p>
+
+                <br> <hr> <br>
+
+                <h3>G. Kesalahan Umum ❌</h3>
+
+                <p>❌ Tidak pakai alias <br>
+                ❌ Salah FK internal <br>
+                ❌ Pakai INNER padahal root tidak punya parent</p>
+
+                <br> <hr> <br>
+
+                <h3>H. Mental Model biar Nempel 🧠</h3>
+
+                <div class="quote"><p>SELF JOIN = satu tabel, dua peran</p></div>
+
+                <br> <hr> <br>
+
+                <h3>I. 🎯 Penutup JOIN Mendalam</h3>
+
+                <p>Sekarang kamu sudah: <br>
+                ✔️ INNER JOIN → data wajib <br>
+                ✔️ LEFT JOIN → data opsional <br>
+                ✔️ RIGHT JOIN → kebalikan perspektif <br>
+                ✔️ SELF JOIN → hirarki <br> <br>
+
+                🔥 Ini senjata utama SQL</p>
+
+                <br> <br>
+
+                <a href="3c-agregate.html" class="btn-next">3c. Aggregate</a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        fetch('layout/aside.html').then(response => response.text()).then(data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop();
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
