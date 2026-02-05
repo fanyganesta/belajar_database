@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Type</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+
+        <main>
+            <header>
+                
+            </header>
+            
+            <div class="content">
+                <h2>BAB 4: DATABASE DESIGN</h2>
+
+                <div class="quote"><p>Berpikir sebelum ngoding, supaya database kuat jangka panjang</p></div>
+
+                <p>Kalau BAB 1–3 itu:
+                <ul>
+                    <li>BAB 1 → fondasi konsep</li>
+                    <li>BAB 2 → operasional SQL</li>
+                    <li>BAB 3 → baca & analisis data</li>
+                </ul> <br> <br>
+
+                🔥 BAB 4 ini mindset shift <br>
+                dari:</p>
+
+                <div class="quote"><p>“gimana query-nya jalan?”</p></div>
+
+                <p>ke:</p>
+
+                <div class="quote"><p>“gimana database-nya nggak nyusahin 2 tahun ke depan?”</p></div>
+
+                <br> <hr> <br>
+
+                <h3>🎯 TUJUAN BAB 4</h3>
+
+                <p>Di bab ini kamu belajar:
+                <ul>
+                    <li>mencegah data duplikat & inkonsisten</li>
+                    <li>bikin struktur tabel mudah dikembangkan</li>
+                    <li>ngurangin query ribet</li>
+                    <li>siap scale (fit buat aplikasi nyata)</li>
+                </ul> <br>
+                
+                Ini yang ngebedain:
+                <ul>
+                    <li>tukang CRUD vs arsitek sistem</li>
+                </ul></p>
+
+                <br> <hr> <br>
+
+                <h3>🧠 3 PILAR BAB 4</h3>
+                <ul>
+                    <li>Normalisasi → struktur data yang sehat</li>
+                    <li>Naming Convention → database enak dibaca manusia</li>
+                    <li>Soft vs Hard Delete → data aman & laporan masuk akal</li>
+                </ul>
+
+                <br> <hr> <br>
+
+                <h2>4.1 NORMALISASI</h2>
+
+                <div class="quote"><p>Membersihkan struktur data biar nggak berantakan</p></div>
+
+                <br> <hr> <br>
+
+                <h3>A. 🔰 APA ITU NORMALISASI?</h3>
+
+                <p>Normalisasi adalah proses:</p>
+
+                <div class="quote"><p>memecah data ke dalam tabel-tabel yang tepat <br>
+                agar tidak terjadi duplikasi & inkonsistensi</p></div> <br> <br>
+
+                <p>Bahasa kasarnya:</p>
+
+                <div class="quote"><p>“Jangan taruh semua di satu meja”</p></div>
+
+                <br> <hr> <br>
+
+                <h3>B. 🧠 MASALAH TANPA NORMALISASI</h3>
+                <p>❌ Tabel jelek (belum normalisasi)</p>
+<pre>
+    orders
+    -------------------------------------------------
+    id | user_name | user_email | product | price
+</pre> <br> <br>
+
+                <p>Masalah:</p>
+                <ul>
+                    <li>nama & email user diulang</li>
+                    <li>kalau user ganti email → update banyak row</li>
+                    <li>rawan typo</li>
+                    <li>data bengkak</li>
+                </ul>
+
+                <br> <hr> <br>
+
+                <h3>C. ✅ Tabel setelah normalisasi</h3>
+<pre>
+    users <br>
+    - id <br>
+    - name <br>
+    - email <br> <br>
+
+    orders <br>
+    - id <br>
+    - user_id <br> <br>
+
+    products <br>
+    - id <br>
+    - name <br>
+    - price <br> <br>
+
+    order_items <br>
+    - order_id <br>
+    - product_id <br>
+    - qty
+</pre>
+
+                <p>🔥 Ini database sehat</p>
+
+                <br> <hr> <br>
+
+                <h3>D. 🎯 TUJUAN NORMALISASI</h3>
+                <ul>
+                    <li>menghindari data ganda</li>
+                    <li>menjaga konsistensi</li>
+                    <li>memudahkan update</li>
+                    <li>struktur scalable</li>
+                </ul>
+
+                <br> <hr> <br>
+
+                <h3>E. 🔢 LEVEL NORMALISASI</h3>
+
+                <p>Biasanya dipakai di dunia nyata:
+                <ul>
+                    <li>1NF</li>
+                    <li>2NF</li>
+                    <li>3NF</li>
+                </ul> <br>
+
+                Kita bahas pelan tapi ngena</p>
+
+                <br> <hr> <br>
+
+                <h4>4.1.1 FIRST NORMAL FORM (1NF)</h4>
+                <p>📌 ATURAN 1NF
+                <ul>
+                    <li>Tidak ada kolom berisi banyak nilai</li>
+                    <li>Setiap field bersifat atomic</li>
+                    <li>Tidak ada repeating group</li>
+                </ul>
+
+                <br> <hr> <br>
+
+                ❌ Melanggar 1NF</p>
+<pre>
+    orders
+    --------------------------------
+    id | products
+    1  | Laptop, Mouse, Keyboard
+</pre> <br> <br>
+
+                <p>Masalah:
+                <ul>
+                    <li>susah search</li>
+                    <li>susah count</li>
+                    <li>susah join</li>
+                </ul>
+
+                <br> <hr> <br>
+
+                ✅ Memenuhi 1NF</p>
+<pre>
+    order_items
+    ---------------------------
+    id | order_id | product
+    1  | 1        | Laptop
+    2  | 1        | Mouse
+    3  | 1        | Keyboard
+</pre>
+
+                <p>🔥 1 baris = 1 nilai
+
+                <br> <hr> <br>
+
+                🧠 Prinsip 1NF</p>
+
+                <div class="quote"><p>“Satu kolom, satu nilai, satu fakta”</p></div>
+
+                <h4>4.1.2 SECOND NORMAL FORM (2NF)</h4>
+
+                <p>📌 Syarat masuk 2NF:
+                <ul>
+                    <li>Sudah 1NF</li>
+                    <li>Tidak ada partial dependency</li>
+                </ul>
+
+                <br> <hr> <br>
+
+                🧠 APA ITU PARTIAL DEPENDENCY? <br> <br>
+
+                Ketika:
+                <ul>
+                    <li>tabel punya composite primary key</li>
+                    <li>tapi ada kolom yang hanya tergantung sebagian key</li>
+                </ul>
+
+                <br> <hr> <br>
+
+                ❌ Contoh melanggar 2NF</p>
+<pre>
+    order_items <br>
+    ----------------------------------------- <br>
+    order_id | product_id | product_name | price
+</pre>
+
+                <p>Masalah:
+                <ul>
+                    <li>product_name & price tidak tergantung order_id</li>
+                    <li>tergantung product_id saja</li>
+                </ul>
+
+                <br> <hr> <br>
+
+                ✅ Solusi (2NF)</p>
+<pre>
+    products <br>
+    ---------------- <br>
+    id | name | price <br> <br>
+
+    order_items <br>
+    ------------------------- <br>
+    order_id | product_id | qty
+</pre>
+
+                <p>🔥 Data produk disimpan di tempatnya
+
+                <br> <hr> <br>
+
+                🧠 Prinsip 2NF</p>
+
+                <div class="quote"><p>“Data harus tergantung seluruh primary key, bukan sebagian”</p></div>
+
+                <br> <hr> <br>
+
+                <h4>4.1.3 THIRD NORMAL FORM (3NF)</h4>
+
+                <p>📌 Syarat masuk 3NF:
+                <ul>
+                    <li>Sudah 2NF</li>
+                    <li>Tidak ada transitive dependency</li>
+                </ul>
+
+                <br> <hr> <br>
+
+                🧠 APA ITU TRANSITIVE DEPENDENCY?</p>
+<pre>
+    Kolom A → Kolom B → Kolom C
+</pre>
+
+                <p>padahal:
+                <ul>
+                    <li>primary key seharusnya langsung menentukan semua kolom</li>
+                </ul>
+                
+
+                <br> <hr> <br>
+
+                ❌ Contoh melanggar 3NF</p>
+<pre>
+    users <br>
+    -------------------------------- <br>
+    id | name | city | postal_code
+</pre>
+
+                <p>Masalah:
+                <ul>
+                    <li>postal_code tergantung city</li>
+                    <li>bukan langsung ke id</li>
+                </ul>
+
+                <br> <hr> <br>
+
+                ✅ Solusi (3NF)</p>
+<pre>
+    cities <br>
+    ---------------- <br>
+    id | name | postal_code <br> <br>
+
+    users <br>
+    ---------------- <br>
+    id | name | city_id <br>
+</pre>
+
+                <p>🔥 Lebih rapi & konsisten</p>
+
+                <br> <hr> <br>
+
+                <h3>F. 🧠 Prinsip 3NF</h3>
+
+                <div class="quote"><p>“Tidak boleh ada ketergantungan tidak langsung”</p></div>
+
+                <br> <hr> <br>
+
+                <h3>G. 🧩 RANGKUMAN NORMALISASI</h3>
+                <table>
+                    <tr>
+                        <th>Level</th>
+                        <th>Fokus</th>
+                    </tr>
+                    <tr>
+                        <td class="ct">1NF</td>
+                        <td>Nilai atomic</td>
+                    </tr>
+                    <tr>
+                        <td class="ct">2NF</td>
+                        <td>Tidak ada partial dependency</td>
+                    </tr>
+                    <tr>
+                        <td class="ct">3NF</td>
+                        <td>Tidak ada transitive dependency</td>
+                    </tr>
+                </table>
+
+                <br> <hr> <br>
+
+                <h3>H. 🎯 CATATAN DUNIA NYATA</h3>
+                <ul>
+                    <li>3NF = standar emas</li>
+                    <li>Tidak perlu over-normalize</li>
+                </ul> <br> <br>
+
+                <p>Fokus ke:
+                <ul>
+                    <li>konsistensi</li>
+                    <li>kemudahan query</li>
+                    <li>performa</li>
+                </ul></p>
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>4.1.2 — Kapan TIDAK perlu normalisasi (Denormalisasi)</h2>
+
+                <h3>A. 🔰 APA ITU DENORMALISASI?</h3>
+
+                <div class="quote"><p>Denormalisasi adalah: <br> <br>
+
+                <P>dengan sengaja MELANGGAR normalisasi <br>
+                demi performa, kemudahan query, atau kebutuhan bisnis</p></div> <br> <br>
+
+                📌 Penting:
+                <ul>
+                    <li>ini bukan kesalahan</li>
+                    <li>ini keputusan sadar</li>
+                    <li>dilakukan setelah kamu paham normalisasi</li>
+                </ul></P>
+
+                <br> <hr> <br>
+
+                <h3>B. 🧠 NORMALISASI vs DENORMALISASI</h3>
+                <table>
+                    <tr>
+                        <th>Normalisasi</th>
+                        <th>Denormalisasi</th>
+                    </tr>
+                    <tr>
+                        <td>Data rapi</td>
+                        <td>Query cepat</td>
+                    </tr>
+                    <tr>
+                        <td>Banyak <code>JOIN</code></td>
+                        <td>Minim <code>JOIN</code></td>
+                    </tr>
+                    <tr>
+                        <td>Konsistensi tinggi</td>
+                        <td>Risiko duplikasi</td>
+                    </tr>
+                    <tr>
+                        <td>Cocok OLTP</td>
+                        <td>Cocok reporting</td>
+                    </tr>
+                </table>
+                	
+                <br> <hr> <br>
+
+                <h3>C. 🔥 KAPAN DENORMALISASI ITU BOLEH?</h3>
+                <h4>1️⃣ Data jarang berubah, sering dibaca</h4>
+
+                <P>Contoh:
+                <ul>
+                    <li>nama kategori</li>
+                    <li>nama role</li>
+                    <li>nama cabang</li>
+                </ul> <br> <br>
+                
+                ❌ Normalisasi murni</P>
+<pre>
+    products → category_id → categories.name
+</pre> <br> <br>
+
+                <P>✅ Denormalisasi ringan</P>
+<pre>
+    products <br>
+    - category_id <br>
+    - category_name
+</pre>
+
+                <P>📌 Kalau kategori jarang berubah, ini OK</P>
+
+                <br> <hr> <br>
+
+                <h4>2️⃣ Query laporan berat & sering dipakai</h4>
+
+                <P>Misal:
+                <ul>
+                    <li>dashboard</li>
+                    <li>KPI</li>
+                    <li>laporan keuangan</li>
+                </ul> <br> <br>
+
+                ❌ Normal</P>
+<pre>
+    orders <br>
+    JOIN users <br>
+    JOIN order_items <br>
+    JOIN products <br>
+    JOIN categories
+</pre> <br> <br>
+
+                <P>✅ Denormalisasi</P>
+<pre>
+    sales_reports <br>
+    - order_date <br>
+    - user_name <br>
+    - total_amount <br>
+    - category_name
+</pre>
+
+                <P>🔥 Ini read-optimized table</P>
+
+                <br> <hr> <br>
+
+                <h4>3️⃣ Performa JOIN sudah jadi bottleneck</h4>
+
+                <p>Kalau:
+                <ul>
+                    <li>tabel besar (jutaan row)</li>
+                    <li><code>JOIN</code> 4–5 tabel</li>
+                    <li>query lambat walau sudah pakai index</li>
+                </ul> <br>
+                
+                ➡️ denormalisasi lebih murah daripada scaling server</p>
+
+                <br> <hr> <br>
+
+                <h4>4️⃣ Data historis / snapshot</h4>
+
+                <p>Contoh:
+                <ul>
+                    <li>invoice</li>
+                    <li>laporan pajak</li>
+                    <li>histori transaksi</li>
+                </ul></p>
+                
+<pre>
+                invoices <br>
+                - customer_name <br>
+                - customer_address <br>
+                - tax_percentage
+</pre>
+
+                <p>📌 Walaupun:
+                <ul>
+                    <li>customer bisa ganti alamat</li>
+                    <li>pajak bisa berubah</li>
+                </ul> <br>
+                
+                🔥 invoice harus tetap sama</p>
+
+                <br> <hr> <br>
+
+                <h4>5️⃣ Kebutuhan bisnis > teori database</h4>
+
+                <p>Kadang:
+                <ul>
+                    <li>deadline mepet</li>
+                    <li>laporan harus cepat</li>
+                    <li>query harus simpel</li>
+                </ul> <br>
+
+                ➡️ bisnis menang, teori ngalah</p>
+
+                <br> <hr> <br>
+
+                <h3>D. 🚨 KAPAN JANGAN DENORMALISASI?</h3>
+
+                <p>❌ Data sering berubah <br>
+                ❌ Data krusial (saldo, stok inti) <br>
+                ❌ Tim belum disiplin update <br>
+                ❌ CRUD masih jadi fokus utama</p>
+
+                <br> <hr> <br>
+
+                <h3>E. ⚠️ RISIKO DENORMALISASI (WAJIB SADAR)</h3>
+                <h4>1️⃣ Data tidak konsisten</h4>
+                
+                <div class="quote"><p>category_name berbeda di beberapa row</p></div>
+
+                <br> <hr> <br>
+
+                <h4>2️⃣ Update jadi ribet</h4>
+                <ul>
+                    <li>satu perubahan</li>
+                    <li>harus update banyak tabel</li>
+                </ul>
+                <br> <hr> <br>
+
+                <h4>3️⃣ Logic pindah ke aplikasi</h4>
+
+                <p>Harus:
+                <ul>
+                    <li>trigger</li>
+                    <li>job</li>
+                    <li>transaction</li>
+                    <li>observer</li>
+                </ul></p>
+
+                <br> <hr> <br>
+
+                <h3>F. 🧠 STRATEGI AMAN DENORMALISASI</h3>
+                <h4>✅ 1. Denormalize hanya untuk READ</h4>
+                <ul>
+                    <li>laporan</li>
+                    <li>dashboard</li>
+                    <li>export</li>
+                </ul>
+            
+                <br> <hr> <br>
+
+                <h4>✅ 2. Gunakan snapshot table</h4>
+<pre>
+    daily_sales_summary <br>
+    monthly_revenue
+</pre>
+
+                <p>Generated via:
+                <ul>
+                    <li>cron</li>
+                    <li>job queue</li>
+                    <li>scheduled task</li>
+                </ul></p>
+
+                <br> <hr> <br>
+
+                <h4>✅ 3. Jangan denormalisasi primary data</h4>
+
+                <p>❌ stok utama <br>
+                ❌ saldo utama <br>
+                ❌ data master inti</p>
+
+                <br> <hr> <br>
+
+                <h3>G. 🔥 CONTOH NYATA (Laravel Context)</h3>
+                <p>❌ Ideal tapi lambat</p>
+<pre>
+    SELECT SUM(order_items.price * qty) <br>
+    FROM orders <br>
+    JOIN order_items <br>
+    JOIN products <br>
+    JOIN categories
+</pre>
+
+                <p>✅ Praktis & cepat</p>
+<pre>
+    orders <br>
+    - total_amount
+</pre>
+
+                <p>➡️ total_amount dihitung saat insert</p>
+
+                <br> <hr> <br>
+
+                <h3>H. 🧠 MINDSET ARSITEK DATABASE</h3>
+
+                <div class="quote"><p>“Database bukan cuma harus BENAR,
+                tapi harus BERGUNA & CEPAT”</p></div>
+
+                <br> <hr> <br>
+
+                <h3>I. 🧩 RANGKUMAN DENORMALISASI</h3>
+                <ul>
+                    <li>Denormalisasi = pelanggaran sadar</li>
+                </ul> <br> <br>
+                
+
+                <p>Dipakai untuk:
+                <ul>
+                    <li>performa</li>
+                    <li>reporting</li>
+                    <li>histori</li>
+                </ul> <br> <br>
+
+                Jangan:
+                <ul>
+                    <li>asal copy kolom</li>
+                    <li>tanpa strategi update</li>
+                </ul> <br> <br>
+
+                Selalu tanya:</p>
+
+                <div class="quote"><p>“Data ini sering berubah atau tidak?”</p></div>
+
+                <br> <br>
+
+                <a href="4b-naming-convention.html" class="btn-next">4b. Naming Convention</a>
+                           
+            </div>
+        </main>
+    </div>
+
+    <script>
+        fetch('layout/aside.html').then(response => response.text()).then(data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop();
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

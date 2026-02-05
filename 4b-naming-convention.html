@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Type</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+
+        <main>
+            <header>
+                
+            </header>
+            
+            <div class="content">
+                <h2>4.2 — Naming Convention (biar database enak dibaca manusia) 🧠✨</h2>
+
+                <h3>🔰 APA ITU NAMING CONVENTION?</h3>
+
+                <div class="quote"><p>Naming convention adalah: <br> <br>
+
+                aturan konsisten dalam memberi nama database object <br>
+                (table, column, index, foreign key, dll)</p></div> <br> <br>
+
+                <p>Tujuannya bukan buat mesin — <br>
+                👉 buat manusia (termasuk kamu 6 bulan lagi)</p>
+
+                <br> <hr> <br>
+
+                <h3>.A. 🧠 KENAPA NAMING CONVENTION ITU PENTING?</h3>
+
+                <p>Tanpa naming convention:
+                <ul>
+                    <li>query susah dibaca</li>
+                    <li>tim bingung</li>
+                    <li>banyak asumsi</li>
+                    <li>rawan salah join</li>
+                </ul> <br> <br>
+                
+                Dengan naming convention:
+                <ul>
+                    <li>struktur langsung kebaca</li>
+                    <li>minim dokumentasi</li>
+                    <li>query “bercerita”</li>
+                </ul></p>
+
+                <br> <hr> <br>
+
+                <h3>B. 🎯 PRINSIP UMUM NAMING (PEGANG INI)</h3>
+                <ul>
+                    <li>Konsisten > pintar</li>
+                    <li>Deskriptif tapi singkat</li>
+                    <li>Gunakan bahasa Inggris</li>
+                    <li>Hindari singkatan ambigu</li>
+                    <li>Lowercase + snake_case</li>
+                    <li>Satu makna = satu nama</li>
+                </ul>
+
+                <br> <hr> <br>
+
+                <h2>4.2.1 NAMING TABLE</h2>
+                <h3>A. 🔹 ATURAN DASAR TABLE</h3>
+                <h4>✅ 1. Gunakan plural</h4>
+
+                <p>Karena table = kumpulan data</p>
+                <table>
+                    <tr>
+                        <th>❌ Salah</th>
+                        <th>✅ Benar</th>
+                    </tr>
+                    <tr>
+                        <td>user</td>
+                        <td>users</td>
+                    </tr>
+                    <tr>
+                        <td>product</td>
+                        <td>products</td>
+                    </tr>
+                    <tr>
+                        <td>order</td>
+                        <td>orders</td>
+                    </tr>
+                </table>
+<br>
+
+                <p>📌 Biar kebaca:</p>
+
+                <div class="quote"><p>“select * from users”</p></div>
+
+                <br> <hr> <br>
+
+                <h4>✅ 2. Gunakan noun (kata benda)</h4>
+
+                <p>❌ get_users <br>
+                ❌ user_data <br>
+                ✅ users</p>
+
+                <br> <hr> <br>
+
+                <h4>✅ 3. Gunakan snake_case</h4>
+<pre>
+    order_items <br>
+    purchase_orders <br>
+    user_profiles
+</pre>
+                <p>❌ JANGAN
+                <ul>
+                    <li>camelCase → <code>userProfile</code></li>
+                    <li>PascalCase → <code>UserProfile</code></li>
+                    <li>spasi → <code>user profile</code></li>
+                </ul></p>
+                
+                <br> <hr> <br>
+
+                <h3>B. 🔹 TABLE RELASI (PIVOT TABLE)</h3>
+                <p>📌 Aturan pivot table:
+                <ul>
+                    <li>gabungan dua table</li>
+                    <li>alphabetical order</li>
+                    <li>singular/plural bebas, yang penting konsisten</li>
+                </ul></p>
+                
+<pre>
+    product_category <br>
+    role_user <br>
+    order_product
+</pre>
+
+                <p>🔥 Laravel suka format ini</p>
+
+                <br> <hr> <br>
+
+                <h3>C. 🔹 TABLE DETAIL / TURUNAN</h3>
+                <table>
+                    <tr>
+                        <th>Tujuan</th>
+                        <th>Contoh</th>
+                    </tr>
+                    <tr>
+                        <td>Detail order</td>
+                        <td>order_items</td>
+                    </tr>
+                    <tr>
+                        <td>History</td>
+                        <td>order_histories</td>
+                    </tr>
+                    <tr>
+                        <td>Log</td>
+                        <td>activity_logs</td>
+                    </tr>
+                    <tr>
+                        <td>Snapshot</td>
+                        <td>daily_sales_summary</td>
+                    </tr>
+                </table>
+
+                <br> <hr> <br>
+
+                <h3>D. 🧠 PENAMAAN TABLE YANG BAGUS ITU…</h3>
+
+                <p>Saat lihat table:</p>
+<pre>
+    order_items
+</pre> <br> <br>
+
+                <p>Otak langsung mikir:</p>
+
+                <div class="quote"><p>“ini item-item di dalam order”</p></div> <br>
+
+                <p>Itu tujuan naming convention 👍</p>
+
+                <br> <hr> <br>
+
+                <h3>E. 🔥 CONTOH STRUKTUR TABLE SEHAT</h3>
+<pre>
+    users <br>
+    user_profiles <br>
+    roles <br>
+    role_user <br> <br>
+
+    products <br>
+    categories <br>
+    product_category <br> <br>
+
+    orders <br>
+    order_items <br>
+    payments
+</pre>
+
+                <p>📌 Tanpa buka schema pun, sudah kebaca relasinya</p>
+
+                <br> <hr> <br>
+
+                <h3>F. 🚨 KESALAHAN UMUM DI DUNIA NYATA</h3>
+
+                <p>❌ tbl_users <br>
+                ❌ ms_product <br>
+                ❌ data_order_2024 <br>
+                ❌ users_new_fix <br> <br>
+
+                ➡️ prefix seperti tbl_, ms_ tidak perlu di DB modern</p>
+
+                <br> <hr> <br>
+
+                <h3>G. 🧠 KALAU ADA KONDISI KHUSUS?</h3>
+<pre>
+    Multi-tenant? <br>
+    tenant_users <br>
+    tenant_orders <br> <br>
+
+    Module-based? <br>
+    sales_orders <br>
+    finance_transactions
+</pre>
+
+                <p>📌 Tapi jangan over-prefix </p>
+
+                <br> <hr> <br>
+
+                <h3>H. 🧩 RANGKUMAN TABLE NAMING</h3>
+                <ul>
+                    <li>Table = plural</li>
+                    <li>Noun, bukan verb</li>
+                    <li>snake_case</li>
+                    <li>Jelas & konsisten</li>
+                </ul> <br>
+
+                <p>Hindari prefix aneh</p>
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>4.2.2 — Naming Column (kolom yang “ngomong”)</h2>
+
+                <h3>A. 🔰 FILOSOFI NAMING COLUMN</h3>
+
+                <div class="quote"><p>Nama kolom yang bagus itu: <br> <br>
+
+                tanpa buka dokumentasi, orang langsung paham isinya apa</p></div> <br>
+
+                <p>Kalau table itu subjek, <br>
+                kolom itu atribut & fakta</p>
+
+                <br> <hr> <br>
+
+                <h3>B. 🎯 PRINSIP UMUM NAMING COLUMN</h3>
+
+                <p>Pegang ini dulu:
+                <ul>
+                    <li>snake_case</li>
+                    <li>deskriptif tapi singkat</li>
+                    <li>hindari singkatan ambigu</li>
+                    <li>konsisten antar table</li>
+                    <li>satu kolom = satu makna</li>
+                </ul></p>
+
+                <br> <hr> <br>
+
+                <h4>🔹 1. PRIMARY KEY</h4>
+                <p>📌 Aturan:</p>
+<pre>
+    id
+</pre>
+
+                <p>❌ user_id di table users <br>
+                ❌ users_id <br>
+                ❌ uid <br> <br>
+
+                🔥 Simple & universal</p>
+
+                <br> <hr> <br>
+
+                <h4>🔹 2. FOREIGN KEY</h4>
+                <p>📌 Aturan emas:</p>
+<pre>
+    {table_singular}_id
+</pre>
+                <br>
+                <p>Contoh:</p>
+<pre>
+    users.id <br>
+    orders.user_id <br>
+    order_items.order_id <br>
+    order_items.product_id
+</pre>
+
+                <p>🧠 Otak langsung tau:</p>
+
+                <div class="quote"><p>“order ini punya user”</p></div>
+
+                <br> <hr> <br>
+
+                <h4>🔹 3. KOLOM TEXT / DATA UTAMA</h4>
+                <table>
+                    <tr>
+                        <th>Tujuan</th>
+                        <th>❌ Buruk</th>
+                        <th>✅ Bagus</th>
+                    </tr>
+                    <tr>
+                        <td>Nama user</td>
+                        <td class="ct">nm</td>
+                        <td class="ct">name</td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td class="ct">mail</td>
+                        <td class="ct">email</td>
+                    </tr>
+                    <tr>
+                        <td>Alamat</td>
+                        <td class="ct">adr</td>
+                        <td class="ct">address</td>
+                    </tr>
+                    <tr>
+                        <td>Deskripsi</td>
+                        <td class="ct">desc</td>
+                        <td class="ct">description</td>
+                    </tr>
+                </table>
+                <br> 
+
+                <p>📌 Jangan takut nambah 2–3 huruf</p>
+
+                <br> <hr> <br>
+
+                <h4>🔹 4. KOLOM STATUS</h4>
+                <p>❌ Hindari:</p>
+<pre>
+    status = 1 / 2 / 3
+</pre>
+<br>
+                <p>✅ Lebih jelas:</p>
+<pre>
+    status = 'pending' <br>
+    status = 'paid' <br>
+    status = 'shipped'
+</pre>
+<br>
+                <p>Atau:</p>
+<pre>
+    status_code
+</pre>
+
+                <p>Kalau memang pakai numeric</p>
+
+                <br> <hr> <br>
+
+                <h4>🔹 5. BOOLEAN COLUMN (YA / TIDAK)</h4>
+                <p>📌 Gunakan awalan:
+                <ul>
+                    <li>is_</li>
+                    <li>has_</li>
+                    <li>can_</li>
+                </ul> <br> <br>
+
+                Contoh:</p>
+<pre>
+    is_active <br>
+    is_verified <br>
+    has_stock <br>
+    can_refund
+</pre> <br>
+
+                <p>🧠 Query kebaca:</p>
+<pre>
+    WHERE is_active = 1
+</pre>
+                <br> <hr> <br>
+
+                <h4>🔹 6. DATE & TIME COLUMN</h4>
+                <p>📌 Konsisten pakai suffix:
+                <ul>
+                    <li>_at</li>
+                    <li>_date</li>
+                </ul> <br> <br>
+
+                Contoh:</p>
+<pre>
+    created_at <br>
+    updated_at <br>
+    deleted_at <br>
+    paid_at <br>
+    shipped_at <br>
+    birth_date
+</pre>
+
+                <p>🔥 Laravel-friendly</p>
+
+                <br> <hr> <br>
+
+                <h4>🔹 7. JUMLAH & NILAI ANGKA</h4>
+                <p>📌 Gunakan:
+                <ul>
+                    <li>_count</li>
+                    <li>_total</li>
+                    <li>_amount</li>
+                    <li>_qty</li>
+                </ul> <br> <br>
+                
+                Contoh:</p>
+<pre>
+    items_count <br>
+    total_amount <br>
+    tax_amount <br>
+    quantity <br>
+    stock_qty
+</pre>
+                <br> <hr> <br>
+
+                <h4>🔹 8. KOLOM HASIL PERHITUNGAN</h4>
+                <p>❌ Jangan ambigu</p>
+<pre>
+    value <br>
+    data <br>
+    result
+</pre> <br>
+                <p>✅ Jelaskan:</p>
+<pre>
+    subtotal <br>
+    grand_total <br>
+    discount_amount
+</pre>
+                <br> <hr> <br>
+
+                <h4>🔹 9. ENUM / FIXED VALUE COLUMN</h4>
+
+                <p>Kalau pakai enum:</p>
+<pre>
+    status <br>
+    type <br>
+    role
+</pre> <br>
+
+                <p>Kalau lookup table:</p>
+<pre>
+    status_id <br>
+    role_id <br>
+    type_id
+</pre>
+
+                <p>📌 Jangan campur</p>
+
+                <br> <hr> <br>
+
+                <h3>C. 🚨 KESALAHAN UMUM DI DUNIA NYATA</h3>
+
+                <p>❌ data1, data2 <br> 
+                ❌ field_a <br> 
+                ❌ flag <br> 
+                ❌ value <br> <br>
+
+                ➡️ Ini bom waktu</p>
+
+                <br> <hr> <br>
+
+                <h3>D. 🔥 CONTOH QUERY YANG “NGOMONG”</h3>
+<pre>
+    SELECT <br>
+    users.name, <br>
+    orders.total_amount, <br>
+    orders.paid_at <br>
+    FROM orders <br>
+    JOIN users ON users.id = orders.user_id <br>
+    WHERE orders.status = 'paid';
+</pre>
+
+                <p>🧠 Bahkan non-programmer pun bisa nebak artinya</p>
+
+                <br> <hr> <br>
+
+                <h3>E. 🧩 RANGKUMAN NAMING COLUMN</h3>
+                <ul>
+                    <li>Kolom harus self-explanatory</li>
+                    <li>Foreign key konsisten {table}_id</li>
+                    <li>Boolean diawali is_, has_, can_</li>
+                    <li>Waktu pakai _at</li>
+                    <li>Jumlah pakai _count, _amount, _qty</li>
+                </ul>
+                
+            </div>
+        </main>
+    </div>
+
+    <script>
+        fetch('layout/aside.html').then(response => response.text()).then(data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop();
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

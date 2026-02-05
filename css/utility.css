@@ -100,6 +100,10 @@ td, th{
     padding: var(--sm-padd);
 }
 
+pre td, pre th{
+    border: 1px solid white;
+}
+
 pre{
     padding: var(--lg-padd) var(--sm-padd) ;
     background-color: rgb(22, 22, 22);

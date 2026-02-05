@@ -265,164 +265,1026 @@
 
                 <br> <br>
 
-                APA ITU SUM()?
+                <h2>3.3.2 SUM()</h2>
 
-                SUM() adalah aggregate function buat:
+                <h3>APA ITU SUM()?</h3>
 
-                menjumlahkan nilai numerik dari banyak baris
+                <div class="quote"><p><code>SUM()</code> adalah aggregate function buat: <br> <br>
 
-                Kalau COUNT() jawab:
+                menjumlahkan nilai numerik dari banyak baris</p></div>
 
-                “ada berapa?”
+                <p>Kalau COUNT() jawab:
+                <ul>
+                    <li>“ada berapa?”</li>
+                </ul> <br> <br>
+                
 
                 Maka SUM() jawab:
+                <ul>
+                    <li>“totalnya berapa?”</li>
+                </ul></p>
+                
 
-                “totalnya berapa?”
+                <br> <hr> <br>
 
-                🧠 CARA BERPIKIR SUM()
+                <h3>A. 🧠 CARA BERPIKIR SUM()</h3>
 
-                Biasanya kepake kalau kamu mikir:
+                <p>Biasanya kepake kalau kamu mikir:
+                <ul>
+                    <li>total penjualan</li>
+                    <li>total pengeluaran</li>
+                    <li>total stok</li>
+                    <li>total nilai transaksi</li>
+                </ul>
+                <br>
 
-                total penjualan
+                Begitu ada kata total / jumlah uang / akumulasi <br>
+                ➡️ <code>SUM()</code> langsung kepikiran</p>
 
-                total pengeluaran
+                <br> <hr> <br>
 
-                total stok
+                <h3>B. 🔧 SINTAKS DASAR</h3>
+<pre>
+    SUM(nama_kolom)
+</pre>
 
-                total nilai transaksi
+                <p>📌 Catatan:
+                <ul>
+                    <li>kolom HARUS numerik</li>
+                    <li>nilai <code>NULL</code> diabaikan</li>
+                </ul></p>
+                
 
-                Begitu ada kata total / jumlah uang / akumulasi
-                ➡️ SUM() langsung kepikiran
+                
 
-                🔧 SINTAKS DASAR
-                SUM(nama_kolom)
+                <br> <hr> <br>
 
+                <h3>C. ✅ CONTOH TABEL (orders)</h3>
+                <table>
+                    <tr>
+                        <th>id</th>
+                        <th>user_id</th>
+                        <th>total</th>
+                        <th>status</th>
+                    </tr>
+                    <tr>
+                        <td class="ct">1</td>
+                        <td class="ct">1</td>
+                        <td class="ct">100000</td>
+                        <td class="ct">paid</td>
+                    </tr>
+                    <tr>
+                        <td class="ct">2</td>
+                        <td class="ct">1</td>
+                        <td class="ct">150000</td>
+                        <td class="ct">paid</td>
+                    </tr>
+                    <tr>
+                        <td class="ct">3</td>
+                        <td class="ct">2</td>
+                        <td class="ct">200000</td>
+                        <td class="ct">unpaid</td>
+                    </tr>
+                    <tr>
+                        <td class="ct">4</td>
+                        <td class="ct">3</td>
+                        <td class="ct"><code>NULL</code></td>
+                        <td class="ct">paid</td>
+                    </tr>
+                </table>
 
-                📌 Catatan:
+                <br> <hr> <br>
 
-                kolom HARUS numerik
+                <h3>🔹 1. SUM dasar</h3>
+<pre>
+    SELECT SUM(total) FROM orders;
+</pre>
 
-                nilai NULL diabaikan
+                <p>🧠 Artinya:
 
-                ✅ CONTOH TABEL (orders)
-                id	user_id	total	status
-                1	1	100000	paid
-                2	1	150000	paid
-                3	2	200000	unpaid
-                4	3	NULL	paid
-                🔹 1. SUM dasar
-                SELECT SUM(total) FROM orders;
+                <div class="quote"><p>“Total nilai semua order?”</p></div>
 
+                📌 Hasil:</p>
+<pre>
+    450000
+</pre>
 
-                🧠 Artinya:
+                <p>(<code>NULL</code> tidak dihitung)</p>
 
-                “Total nilai semua order?”
+                <br> <hr> <br>
 
-                📌 Hasil:
+                <h3>🔹 2. SUM + WHERE (paling sering)</h3>
+<pre>
+    SELECT SUM(total) <br>
+    FROM orders <br>
+    WHERE status = 'paid';
+</pre>
 
-                450000
+                <p>🧠 Artinya:
 
+                <div class="quote"><p>“Total uang dari order yang sudah dibayar?”</p></div>
 
-                (NULL tidak dihitung)
+                📌 Hasil:</p>
+<pre>
+    250000
+</pre>
 
-                🔹 2. SUM + WHERE (paling sering)
-                SELECT SUM(total)
-                FROM orders
-                WHERE status = 'paid';
+                <p>➡️ <code>WHERE</code> dulu → baru <code>SUM</code></p>
 
+                <br> <hr> <br>
 
-                🧠 Artinya:
+                <h3>🔹 3. SUM + JOIN (real project)</h3>
 
-                “Total uang dari order yang sudah dibayar?”
+                <p>Misal:  
+                <ul>
+                    <li>users</li>
+                    <li>orders</li>
+                </ul></p>
+                <br>
+<pre>
+    SELECT users.name, SUM(orders.total) AS total_belanja <br>
+    FROM users <br>
+    JOIN orders ON users.id = orders.user_id <br>
+    GROUP BY users.id;
+</pre>
 
-                📌 Hasil:
+                <p>📌 Output:</p>
+                <table>
+                    <tr>
+                        <th>name</th>
+                        <th>total_belanja</th>
+                    </tr>
+                    <tr>
+                        <td>Andi</td>
+                        <td>250000</td>
+                    </tr>
+                    <tr>
+                        <td>Budi</td>
+                        <td>200000</td>
+                    </tr>
+                </table> <br>
+                	
+                <p>⚠️ Perhatikan:
+                <ul>
+                    <li>Begitu ada <code>SUM()</code></li>
+                    <li>kolom lain WAJIB <code>GROUP BY</code></li>
+                </ul> <br>
 
-                250000
+                (ini jembatan ke materi berikutnya 👀)</p>
 
+                <br> <hr> <br>
 
-                ➡️ WHERE dulu → baru SUM
+                <h3>🔹 4. SUM kolom hasil perhitungan</h3>
+<pre>
+    SELECT SUM(price * qty) AS total_penjualan <br>
+    FROM order_items;
+</pre>
 
-                🔹 3. SUM + JOIN (real project)
+                <p>🧠 Artinya:
 
-                Misal:
-
-                users
-
-                orders
-
-                SELECT users.name, SUM(orders.total) AS total_belanja
-                FROM users
-                JOIN orders ON users.id = orders.user_id
-                GROUP BY users.id;
-
-
-                📌 Output:
-
-                name	total_belanja
-                Andi	250000
-                Budi	200000
-
-                ⚠️ Perhatikan:
-
-                Begitu ada SUM()
-
-                kolom lain WAJIB GROUP BY
-
-                (ini jembatan ke materi berikutnya 👀)
-
-                🔹 4. SUM kolom hasil perhitungan
-                SELECT SUM(price * qty) AS total_penjualan
-                FROM order_items;
-
-
-                🧠 Artinya:
-
-                “Total omzet dari semua item?”
+                <div class="quote"><p>“Total omzet dari semua item?”</p></div>
 
                 🔥 Ini sering dipakai di:
+                <ul>
+                    <li>invoice</li>
+                    <li>laporan penjualan</li>
+                    <li>laporan keuangan</li>
+                </ul></p>
 
-                invoice
+                <br> <hr> <br>
 
-                laporan penjualan
+                <h3>E. ⚠️ HAL PENTING TENTANG SUM()</h3>
+                <p>❌ SALAH</p>
+<pre>
+    SELECT name, SUM(total) <br>
+    FROM orders;
+</pre>
 
-                laporan keuangan
+                <p>➡️ Error (karena name tidak di GROUP BY) <br> <br>
 
-                ⚠️ HAL PENTING TENTANG SUM()
-                ❌ SALAH
-                SELECT name, SUM(total)
-                FROM orders;
+                ✅ BENAR</p>
+<pre>
+    SELECT user_id, SUM(total) <br>
+    FROM orders <br>
+    GROUP BY user_id;
+</pre>
+                <br> <hr> <br>
 
+                <h3>F. 🧪 USE CASE NYATA SUM()</h3>
+                <ul>
+                    <li>Total omzet per hari</li>
+                    <li>Total pengeluaran per bulan</li>
+                    <li>Total stok per gudang</li>
+                    <li>Total penjualan per produk</li>
+                </ul>
 
-                ➡️ Error (karena name tidak di GROUP BY)
+                <br> <hr> <br>
 
-                ✅ BENAR
-                SELECT user_id, SUM(total)
-                FROM orders
-                GROUP BY user_id;
+                <h3>G. 🧠 RANGKUMAN SUM()</h3>
+                <ul>
+                    <li><code>SUM()</code> → menjumlahkan nilai numerik</li>
+                    <li><code>NULL</code> diabaikan</li>
+                </ul> <br>
+                
+                <p>Hampir selalu dipakai barengan:
+                <ul>
+                    <li><code>WHERE</code></li>
+                    <li><code>JOIN</code></li>
+                    <li><code>GROUP BY</code></li>
+                </ul></p>
 
-                🧪 USE CASE NYATA SUM()
+                <br> <br>
 
-                Total omzet per hari
+                <hr> 
 
-                Total pengeluaran per bulan
+                <br> <br>
 
-                Total stok per gudang
+                <h2>3.3.3 AVG() — rata-rata (harga, transaksi, nilai)</h2>
 
-                Total penjualan per produk
+                <h3>A. APA ITU AVG()?</h3>
 
-                🧠 RANGKUMAN SUM()
+                <div class="quote"><p><code>AVG()</code> adalah aggregate function untuk: <br> <br>
 
-                SUM() → menjumlahkan nilai numerik
+                menghitung nilai rata-rata (mean) dari kolom numerik</p></div> <br>
 
-                NULL diabaikan
+                <p>Rumus di balik layar:</p>
+<pre>
+    AVG = SUM(nilai) / COUNT(nilai)
+</pre>
 
-                Hampir selalu dipakai barengan:
+                <p>📌 Catatan penting:
+                <ul>
+                    <li>hanya hitung nilai numerik</li>
+                    <li><code>NULL</code> diabaikan</li>
+                    <li>hasilnya bisa decimal</li>
+                </ul></p>
+                
+                <br> <hr> <br>
 
-                WHERE
+                <h3>B. 🧠 CARA BERPIKIR AVG()</h3>
 
-                JOIN
+                <p>Biasanya muncul pertanyaan:
+                <ul>
+                    <li>rata-rata harga produk?</li>
+                    <li>rata-rata transaksi per user?</li>
+                    <li>rata-rata pengeluaran per hari?</li>
+                    <li>rata-rata nilai penjualan?</li>
+                </ul> <br>
+                
+                Begitu ada kata rata-rata / average / mean <br>
+                ➡️ <code>AVG()</code></p>
 
-                GROUP BY
+                <br> <hr> <br>
+
+                <h3>C. 🔧 SINTAKS DASAR</h3>
+<pre>
+    AVG(nama_kolom)
+</pre>
+                <h3>D. ✅ CONTOH TABEL (orders)</h3>
+                <table>
+                    <tr>
+                        <th>id</th>
+                        <th>user_id</th>
+                        <th>total</th>
+                        <th>status</th>
+                    </tr>
+                    <tr>
+                        <td class="ct">1</td>
+                        <td class="ct">1</td>
+                        <td class="ct">100000</td>
+                        <td class="ct">paid</td>
+                    </tr>
+                    <tr>
+                        <td class="ct">2</td>
+                        <td class="ct">1</td>
+                        <td class="ct">150000</td>
+                        <td class="ct">paid</td>
+                    </tr>
+                    <tr>
+                        <td class="ct">3</td>
+                        <td class="ct">2</td>
+                        <td class="ct">200000</td>
+                        <td class="ct">paid</td>
+                    </tr>
+                    <tr>
+                        <td class="ct">4</td>
+                        <td class="ct">3</td>
+                        <td class="ct"><code>NULL</code></td>
+                        <td class="ct">paid</td>
+                    </tr>
+                </table>
+
+                <br> <hr> <br>
+
+                <h3>🔹 1. AVG dasar</h3>
+<pre>
+    SELECT AVG(total) FROM orders;
+</pre>
+
+                <p>📌 Perhitungan:</p>
+<pre>
+    (100000 + 150000 + 200000) / 3 = 150000
+</pre>
+
+                ➡️ <code>NULL</code> tidak dihitung
+
+                <br> <hr> <br>
+
+                <h3>🔹 2. AVG + WHERE (real use case)</h3>
+<pre>
+    SELECT AVG(total) <br>
+    FROM orders <br>
+    WHERE status = 'paid';
+</pre>
+
+                <p>🧠 Artinya:</p>
+
+                <div class="quote"><p>“Rata-rata nilai order yang sudah dibayar?”</p></div>
+
+                <br> <hr> <br>
+
+                <h3>🔹 3. AVG per grup (AVG + GROUP BY)</h3>
+<pre>
+    SELECT user_id, AVG(total) AS rata_rata_order <br>
+    FROM orders <br>
+    GROUP BY user_id;
+</pre>
+
+                <p>📌 Output:</p>
+<pre>
+    <table>
+        <tr>
+            <th>user_id</th>
+            <th>rata_rata_order</th>
+        </tr>
+        <tr>
+            <td class="ct">1</td>
+            <td>125000</td>
+        </tr>
+        <tr>
+            <td class="ct">2</td>
+            <td>200000</td>
+        </tr>
+    </table>
+</pre>
+
+                <p>➡️ User 3 tidak muncul karena semua total-nya <code>NULL</code></p>
+
+                <br> <hr> <br>
+
+                <h3>🔹 4. AVG dari hasil perhitungan</h3>
+<pre>
+    SELECT AVG(price * qty) AS avg_item_value <br>
+    FROM order_items;
+</pre>
+
+                <p>🧠 Artinya:</p>
+
+                <div class="quote"><p>“Rata-rata nilai per item order?”</p></div>
+
+                <p>🔥 sering dipakai di:
+                <ul>
+                    <li>analisis produk</li>
+                    <li>pricing strategy</li>
+                    <li>evaluasi diskon</li>
+                </ul></p>
+
+                <br> <hr> <br>
+
+                <h3>E. ⚠️ PERANGKAP UMUM AVG()</h3>
+                <p>❌ SALAH PIKIR</p>
+
+                <div class="quote"><p>“AVG itu total dibagi jumlah baris”</p></div> <br>
+
+                <p>❌ SALAH <br> <br>
+                Yang benar: </p>
+
+                <div class="quote"><p>AVG = SUM(nilai) / COUNT(nilai yang tidak NULL)</p></div>
+
+                <br> <hr> <br>
+
+                <h3>F. ❌ ERROR SQL</h3>
+<pre>
+    SELECT name, AVG(total) <br>
+    FROM orders;
+</pre>
+
+                <p>➡️ Error (kolom non-aggregate tanpa GROUP BY) <br> <br>
+
+                ✅ BENAR</p>
+<pre>
+    SELECT user_id, AVG(total) <br>
+    FROM orders <br>
+    GROUP BY user_id;
+</pre>
+                <br> <hr> <br>
+
+                <h3>G. 🧠 AVG vs SUM vs COUNT</h3>
+                <table>
+                    <tr>
+                        <th>Fungsi</th>
+                        <th>Jawab pertanyaan</th>
+                    </tr>
+                    <tr>
+                        <td><code>COUNT</code></td>
+                        <td>ada berapa?</td>
+                    </tr>
+                    <tr>
+                        <td><code>SUM</code></td>
+                        <td>total berapa?</td>
+                    </tr>
+                    <tr>
+                        <td><code>AVG</code></td>
+                        <td>rata-rata berapa?</td>
+                    </tr>
+                </table> <br>
+                	
+                <p>🔥 Ketiganya sering dipakai barengan</p>
+
+                <br> <hr> <br>
+
+                <h3>H. 🧪 USE CASE NYATA</h3>
+                <ul>
+                    <li>Rata-rata transaksi harian</li>
+                    <li>Rata-rata penjualan per produk</li>
+                    <li>Rata-rata pengeluaran per user</li>
+                    <li>Rata-rata nilai invoice</li>
+                </ul>
+                
+                <br> <hr> <br>
+
+                <h3>I. 🧠 RANGKUMAN AVG()</h3>
+                <ul>
+                    <li><code>AVG()</code> menghitung rata-rata</li>
+                    <li><code>NULL</code> diabaikan</li>
+                </ul> <br> <br>
+                
+                <p>Biasanya dipakai dengan:
+                <ul>
+                    <li><code>WHERE</code></li>
+                    <li><code>GROUP BY</code></li>
+                    <li><code>JOIN</code></li>
+                </ul> <br>
+
+                Hasil sering decimal</p>
+
+                <br> <br> 
+
+                <hr> 
+
+                <br> <br>
+
+                <h2>3.3.4 GROUP BY — jantung aggregate SQL</h2>
+
+                <h3>A. APA ITU GROUP BY?</h3>
+
+                <div class="quote"><p><code>GROUP BY</code> dipakai untuk: <br> <br>
+
+                mengelompokkan baris berdasarkan satu atau lebih kolom, lalu menghitung aggregate per kelompok</p></div> <br> <br>
+
+                <p>Tanpa <code>GROUP BY</code>:
+                <ul>
+                    <li><code>SUM</code>, <code>COUNT</code>, <code>AVG</code> → 1 baris hasil</li>
+                </ul> <br> <br>
+                
+
+                Dengan <code>GROUP BY</code>:
+                <ul>
+                    <li>aggregate → per grup</li>
+                </ul></p>
+
+                <br> <hr> <br>
+
+                <h3>B. 🧠 CARA BERPIKIR GROUP BY</h3>
+
+                <p>Pola pikirnya gini:</p>
+
+                <div class="quote"><p>“Hitung sesuatu untuk setiap X”</p></div> <br>
+
+                <p>Contoh:
+                <ul>
+                    <li>total penjualan per user</li>
+                    <li>jumlah order per status</li>
+                    <li>rata-rata harga per produk</li>
+                    <li>total transaksi per bulan</li>
+                </ul> <br>
+                
+                ➡️ bagian “per …” =<code>GROUP BY</code> </p>
+
+                <br> <hr> <br>
+
+                <h3>C. 🔧 SINTAKS DASAR</h3>
+<pre>
+    SELECT kolom_group, AGGREGATE(kolom) <br>
+    FROM tabel <br>
+    GROUP BY kolom_group;
+</pre>
+                <br> <hr> <br>
+
+                <h3>D. ✅ CONTOH TABEL (orders)</h3>
+                <table>
+                    <tr>
+                        <th>id</th>
+                        <th>user_id</th>
+                        <th>total</th>
+                        <th>status</th>
+                    </tr>
+                    <tr>
+                        <td class="ct">1</td>
+                        <td class="ct">1</td>
+                        <td class="ct">100000</td>
+                        <td class="ct">paid</td>
+                    </tr>
+                    <tr>
+                        <td class="ct">2</td>
+                        <td class="ct">1</td>
+                        <td class="ct">150000</td>
+                        <td class="ct">paid</td>
+                    </tr>
+                    <tr>
+                        <td class="ct">3</td>
+                        <td class="ct">2</td>
+                        <td class="ct">200000</td>
+                        <td class="ct">unpaid</td>
+                    </tr>
+                    <tr>
+                        <td class="ct">4</td>
+                        <td class="ct">2</td>
+                        <td class="ct"><code>NULL</code></td>
+                        <td class="ct">paid</td>
+                    </tr>
+                </table>
+
+                <br> <hr> <br>
+
+                <h3>🔹 1. GROUP BY paling dasar</h3>
+<pre>
+    SELECT user_id, SUM(total) AS total_belanja <br>
+    FROM orders <br>
+    GROUP BY user_id;
+</pre> <br>
+
+                <p>📌 Output:</p>
+<pre>
+    <table>
+        <tr>
+            <th>user_id</th>
+            <th>total_belanja</th>
+        </tr>
+        <tr>
+            <td class="ct">1</td>
+            <td class="ct">250000</td>
+        </tr>
+        <tr>
+            <td class="ct">2</td>
+            <td class="ct">500000</td>
+        </tr>
+    </table>
+</pre> <br> <br>
+
+                <p>🧠 Artinya:</p>
+
+                <div class="quote"><p>“Total belanja per user”</p></div>
+
+                <br> <hr> <br>
+
+                <h3>🔹 2. GROUP BY + COUNT</h3>
+<pre>
+    SELECT status, COUNT(*) AS jumlah_order <br>
+    FROM orders <br>
+    GROUP BY status;
+</pre>
+
+                <p>📌 Output:</p>
+<pre>
+    <table>
+        <tr>
+            <th>status</th>
+            <th>jumlah_order</th>
+        </tr>
+        <tr>
+            <td class="ct">paid</td>
+            <td class="ct">3</td>
+        </tr>
+        <tr>
+            <td class="ct">unpaid</td>
+            <td class="ct">1</td>
+        </tr>
+    </table>
+</pre>
+
+                <br> <hr> <br>
+
+                <h3>🔹 3. GROUP BY + AVG</h3>
+<pre>
+    SELECT user_id, AVG(total) AS rata_rata_order  <br>
+    FROM orders <br>
+    GROUP BY user_id;
+</pre>
+                <br> <hr> <br>
+
+                <h3>⚠️ ATURAN EMAS GROUP BY (WAJIB HAFAL)</h3>
+
+                <div class="quote"><p>SETIAP kolom di <code>SELECT</code> yang BUKAN aggregate <br>
+                HARUS ada di <code>GROUP BY</code></p></div> <br>
+
+                <p>❌ SALAH</p>
+<pre>
+    SELECT user_id, status, SUM(total) <br>
+    FROM orders <br>
+    GROUP BY user_id;
+</pre>
+
+                <p>➡️ Error (status tidak di <code>GROUP BY</code>) <br> <br>
+
+                ✅ BENAR (opsi 1)</p>
+<pre>
+    SELECT user_id, status, SUM(total) <br>
+    FROM orders <br>
+    GROUP BY user_id, status;
+</pre> <br> <br>
+                
+                <p>✅ BENAR (opsi 2 – logis)</p>
+<pre>
+    SELECT user_id, SUM(total) <br>
+    FROM orders <br>
+    GROUP BY user_id;
+</pre>
+                <br> <hr> <br>
+
+                <h3>🔹 4. GROUP BY lebih dari satu kolom</h3>
+<pre>
+    SELECT user_id, status, COUNT(*) AS total <br>
+    FROM orders <br>
+    GROUP BY user_id, status;
+</pre>
+
+                <p>📌 Output:</p>
+<pre>
+    <table>
+        <tr>
+            <th>user_id</th>
+            <th>status</th>
+            <th>total</th>
+        </tr>
+        <tr>
+            <td class="ct">1</td>
+            <td class="ct">paid</td>
+            <td class="ct">2</td>
+        </tr>
+        <tr>
+            <td class="ct">2</td>
+            <td class="ct">paid</td>
+            <td class="ct">1</td>
+        </tr>
+        <tr>
+            <td class="ct">2</td>
+            <td class="ct">unpaid</td>
+            <td class="ct">1</td>
+        </tr>
+    </table>
+</pre>
+                <br> <hr> <br>
+
+                <h3>🔹 5. GROUP BY + WHERE (urutan logika penting)</h3>
+<pre>
+    SELECT user_id, SUM(total) <br>
+    FROM orders <br>
+    WHERE status = 'paid' <br>
+    GROUP BY user_id;
+</pre>
+
+                <p>🧠 Urutan berpikir:
+                <ul>
+                    <li><code>WHERE</code> → filter baris</li>
+                    <li><code>GROUP BY</code> → kelompokkan</li>
+                    <li><code>SUM()</code> → hitung per kelompok</li>
+                </ul></p>
+
+                <br> <hr> <br>
+
+                <h3>🔹 6. GROUP BY + JOIN (REAL PROJECT)</h3>
+<pre>
+    SELECT users.name, SUM(orders.total) AS total_belanja <br>
+    FROM users <br>
+    JOIN orders ON users.id = orders.user_id <br>
+    GROUP BY users.id, users.name;
+</pre>
+
+                <p>🔥 Ini bentuk laporan klasik:
+                <ul>
+                    <li>user</li>
+                    <li>total transaksi</li>
+                </ul></p>
+
+                <br> <hr> <br>
+
+                <h3>E. 🧠 GROUP BY ≠ ORDER BY</h3>
+                <table>
+                    <tr>
+                        <th><code>GROUP BY</code></th>
+                        <th><code>ORDER BY</code></th>
+                    </tr>
+                    <tr>
+                        <td>Mengelompokkan data	</td>
+                        <td>Mengurutkan hasil</td>
+                    </tr>
+                    <tr>
+                        <td>Untuk aggregate</td>
+                        <td>Untuk tampilan</td>
+                    </tr>
+                    <tr>
+                        <td>Wajib untuk aggregate per grup</td>
+                        <td>Opsional</td>
+                    </tr>
+                </table>
+
+                <br> <hr> <br>
+
+                <h3>F. 🧪 USE CASE NYATA GROUP BY</h3>
+                <ul>
+                    <li>Laporan penjualan per hari</li>
+                    <li>KPI per departemen</li>
+                    <li>Omzet per produk</li>
+                    <li>Jumlah user per role</li>
+                    <li>Statistik bulanan</li>
+                </ul>
+                
+                <br> <hr> <br>
+
+                <h3>G. 🧠 RANGKUMAN GROUP BY</h3>
+
+                <div class="quote"><p>GROUP BY = pengelompokan data</p></div> <br>
+
+                <p>Dipakai bersama:
+                <ul>
+                    <li><code>SUM</code></li>
+                    <li><code>COUNT</code></li>
+                    <li><code>AVG</code></li>
+                </ul>
+                
+                <br>
+
+                <ul>
+                    <li>Semua kolom non-aggregate WAJIB di GROUP BY</li>
+                    <li>Ini fondasi laporan & analytics</li>
+                </ul></p>
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>3.3.5 — HAVING (WHERE-nya aggregate)</h2>
+
+                <h3>A. 🔰 APA ITU HAVING?</h3>
+
+                <div class="quote"><p><code>HAVING</code> dipakai untuk:
+
+                memfilter HASIL <code>GROUP BY</code> (hasil aggregate)</p></div>
+
+                <p>📌 Ringkasnya:
+                <ul>
+                    <li><code>WHERE</code> → filter baris</li>
+                    <li><code>HAVING</code> → filter grup</li>
+                </ul></p>
+                
+                <br> <hr> <br>
+
+                <h3>B. 🧠 CARA BERPIKIR HAVING</h3>
+
+                <p>Kalau kamu mikir:
+                <ul>
+                    <li>“Tampilkan user yang total belanjanya > 1 juta”</li>
+                    <li>“Produk yang terjual lebih dari 100 kali”</li>
+                    <li>“Kategori dengan rata-rata harga di atas 50 ribu”</li>
+                </ul> <br>
+                
+                ➡️ itu HAVING, bukan WHERE</p>
+
+                <br> <hr> <br>
+
+                <h3>C. 🧩 URUTAN EKSEKUSI SQL (PENTING)</h3>
+<pre>
+    FROM <br>
+    → WHERE <br>
+    → GROUP BY <br>
+    → HAVING <br>
+    → SELECT <br>
+    → ORDER BY
+</pre>
+
+                <p>🔥 Ini alasan WHERE tidak bisa pakai SUM()</p>
+
+                <br> <hr> <br>
+
+                <h3>D. 🔧 SINTAKS DASAR</h3>
+<pre>
+    SELECT kolom, AGGREGATE() <br>
+    FROM tabel <br>
+    GROUP BY kolom <br>
+    HAVING kondisi_aggregate;
+</pre>
+                <br> <hr> <br>
+
+                <h3>E. ✅ CONTOH TABEL (orders)</h3>
+                <table>
+                    <tr>
+                        <th>id</th>
+                        <th>user_id</th>
+                        <th>total</th>
+                    </tr>
+                    <tr>
+                        <td class="ct">1</td>
+                        <td class="ct">1</td>
+                        <td class="ct">100000</td>
+                    </tr>
+                    <tr>
+                        <td class="ct">2</td>
+                        <td class="ct">1</td>
+                        <td class="ct">150000</td>
+                    </tr>
+                    <tr>
+                        <td class="ct">3</td>
+                        <td class="ct">2</td>
+                        <td class="ct">200000</td>
+                    </tr>
+                    <tr>
+                        <td class="ct">4</td>
+                        <td class="ct">3</td>
+                        <td class="ct">50000</td>
+                    </tr>
+                </table>
+
+                <br> <hr> <br>
+
+                <h3>🔹 1. HAVING paling dasar</h3>
+<pre>
+    SELECT user_id, SUM(total) AS total_belanja <br>
+    FROM orders <br>
+    GROUP BY user_id <br>
+    HAVING SUM(total) > 200000;
+</pre>
+ <br>
+
+                <p>📌 Output:</p>
+<pre>
+    <table>
+        <tr>
+            <th>user_id</th>
+            <th>total_belanja</th>
+        </tr>
+        <tr>
+            <td class="ct">1</td>
+            <td class="ct">250000</td>
+        </tr>
+        <tr>
+            <td class="ct">2</td>
+            <td class="ct">200000 ❌ (tidak masuk karena tidak > 200000)</td>
+        </tr>
+    </table>
+</pre>
+
+                <div class="quote"><p>“User dengan total belanja lebih dari 200 ribu”</p></div> <br>
+
+                <p>❌ KESALAHAN PALING UMUM</p>
+<pre>
+    SELECT user_id, SUM(total) <br>
+    FROM orders <br>
+    WHERE SUM(total) > 200000 <br>
+    GROUP BY user_id;
+</pre>
+
+                <p>🚫 ERROR <br>
+                ➡️ <code>WHERE</code> tidak bisa pakai aggregate</p>
+
+                <br> <hr> <br>
+
+                <h3>🔹 2. HAVING + COUNT</h3>
+<pre>
+    SELECT user_id, COUNT(*) AS jumlah_order <br>
+    FROM orders <br>
+    GROUP BY user_id <br>
+    HAVING COUNT(*) >= 2;
+</pre>
+
+                <p>🧠 Artinya:</p>
+
+                <div class="quote"><p>“User yang order minimal 2 kali”</p></div>
+
+                <br> <hr> <br>
+
+                <h3>🔹 3. HAVING + AVG</h3>
+<pre>
+    SELECT user_id, AVG(total) AS rata_rata <br>
+    FROM orders <br>
+    GROUP BY user_id <br>
+    HAVING AVG(total) > 100000;
+</pre>
+                <br> <hr> <br>
+
+                <h3>🔹 4. WHERE + HAVING (kombinasi ideal)</h3>
+<pre>
+    SELECT user_id, SUM(total) AS total_paid <br>
+    FROM orders <br>
+    WHERE status = 'paid' <br>
+    GROUP BY user_id <br>
+    HAVING SUM(total) > 200000;
+</pre> <br>
+
+                <p>🧠 Urutan logis:
+                <ul>
+                    <li><code>WHERE</code> → ambil order paid saja</li>
+                    <li><code>GROUP BY</code> → kelompokkan per user</li>
+                    <li><code>HAVING</code> → filter user berdasarkan total</li>
+                </ul> <br>
+
+                🔥 Ini bentuk query laporan paling sering di dunia nyata</p>
+
+                <br> <hr> <br>
+
+                <h3>🔹 5. <code>HAVING</code> tanpa <code>GROUP BY</code> (boleh tapi jarang)</h3>
+<pre>
+    SELECT SUM(total) <br>
+    FROM orders <br>
+    HAVING SUM(total) > 1000000;
+</pre> <br>
+
+                <p>📌 Dipakai kalau mau:</p>
+
+                <div class="quote"><p>“Tampilkan total jika memenuhi syarat”</p></div>
+
+                <br> <hr> <br>
+
+                <h3>F. 🧠 WHERE vs HAVING (WAJIB PAHAM)</h3>
+                <table>
+                    <tr>
+                        <th><code>WHERE</code></th>
+                        <th><code>HAVING</code></th>
+                    </tr>
+                    <tr>
+                        <td>Filter baris</td>
+                        <td>Filter grup</td>
+                    </tr>
+                    <tr>
+                        <td>Sebelum <code>GROUP BY</code></td>
+                        <td>Setelah <code>GROUP BY</code></td>
+                    </tr>
+                    <tr>
+                        <td>Tidak bisa aggregate</td>
+                        <td>Bisa aggregate</td>
+                    </tr>
+                    <tr>
+                        <td>Lebih cepat</td>
+                        <td>Lebih mahal</td>
+                    </tr>
+                </table> <br>
+
+                <p>📌 Gunakan WHERE dulu kalau bisa, HAVING hanya untuk aggregate</p>
+
+                <br> <hr> <br>
+
+                <h3>G. 🧪 USE CASE NYATA</h3>
+                <ul>
+                    <li>Top customer berdasarkan total belanja</li>
+                    <li>Produk dengan penjualan tinggi</li>
+                    <li>Cabang dengan performa rendah</li>
+                    <li>KPI threshold</li>
+                </ul>
+
+                <br> <hr> <br>
+
+                <h3>H. 🧠 RANGKUMAN HAVING</h3>
+                <ul>
+                    <li><code>HAVING</code> = <code>WHERE</code> untuk aggregate</li>
+                    <li>Dipakai SETELAH <code>GROUP BY</code></li>
+                </ul> <br> <br>
+
+                <p>Biasanya bareng:
+                <ul>
+                    <li><code>SUM</code></li>
+                    <li><code>COUNT</code></li>
+                    <li><code>AVG</code></li>
+                </ul> <br>
+
+                Jangan tukar fungsi <code>WHERE</code> & <code>HAVING</code></p>
+
+                <br> <hr> <br>
+
+                <h3>I. 🎉 BAB 3 SELESAI!</h3>
+
+                <p>Bro, kalau dirangkum:
+                <ul>
+                    <li>Relasi → cara desain tabel</li>
+                    <li><code>JOIN</code> → cara baca data lintas tabel</li>
+                    <li>Aggregate → cara bikin laporan & insight</li>
+                </ul> <br>
+                
+                🔥 Ini titik naik level dari CRUD ke ANALYTICS</p>
+
+                <a href="4a-normalisasi.html" class="btn-next">4a. Normalisasi</a>
+                
             </div>
         </main>
     </div>
