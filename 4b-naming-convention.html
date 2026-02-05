@@ -485,6 +485,390 @@
                     <li>Waktu pakai _at</li>
                     <li>Jumlah pakai _count, _amount, _qty</li>
                 </ul>
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+                <h2>4.2.3 — Naming Index (biar performa & debugging enak)</h2>
+                
+                <h3>A. 🔰 KENAPA NAMING INDEX ITU PENTING?</h3>
+                
+                Index tanpa nama jelas itu kayak:
+
+                kabel server tanpa label 😵
+
+                Masalah kalau asal:
+
+                error message susah dibaca
+
+                drop index bingung
+
+                duplicate index gak ketahuan
+
+                tim lain nyasar
+
+                <br> <hr> <br>
+
+                <h3>B. 🧠 PRINSIP UMUM NAMING INDEX</h3>
+
+                jelas kolom apa
+
+                jelas jenis index
+
+                konsisten
+
+                mudah ditebak
+
+                <h3>D. 🔧 FORMAT UMUM NAMING INDEX</h3>
+                idx_{table}_{column}
+
+
+                Contoh:
+
+                idx_users_email
+                idx_orders_user_id
+                idx_products_name
+
+                <br> <hr> <br>
+
+                <h4>🔹 1. INDEX BIASA</h4> 
+
+                Dipakai untuk:
+
+                WHERE
+
+                JOIN
+
+                ORDER BY
+
+                CREATE INDEX idx_orders_user_id ON orders(user_id);
+
+                <br> <hr> <br>
+
+                <h4>🔹 2. UNIQUE INDEX</h4> 
+
+                Format:
+
+                uniq_{table}_{column}
+
+
+                Contoh:
+
+                CREATE UNIQUE INDEX uniq_users_email ON users(email);
+
+
+                🧠 Dari namanya langsung kebaca:
+
+                “email harus unik”
+
+                <br> <hr> <br>
+
+                <h4>🔹 3. COMPOSITE INDEX (lebih dari 1 kolom)</h4> 
+                📌 Format:
+                idx_{table}_{col1}_{col2}
+
+
+                Contoh:
+
+                CREATE INDEX idx_orders_user_id_status
+                ON orders(user_id, status);
+
+
+                🔥 Penting:
+
+                urutan kolom berpengaruh
+
+                (user_id, status) ≠ (status, user_id)
+
+                <br> <hr> <br>
+
+                <h4>🔹 4. INDEX untuk SOFT DELETE</h4> 
+
+                Kalau pakai deleted_at:
+
+                CREATE INDEX idx_orders_deleted_at ON orders(deleted_at);
+
+
+                📌 Bikin query default lebih cepat:
+
+                WHERE deleted_at IS NULL
+
+                <br> <hr> <br>
+
+                <h4>🔹 5. INDEX untuk FOREIGN KEY</h4> 
+
+                Best practice:
+
+                idx_{table}_{foreign_key}
+
+
+                Contoh:
+
+                idx_orders_user_id
+                idx_order_items_product_id
+
+
+                🔥 JOIN jadi ringan
+
+                <br> <hr> <br>
+
+                <h3>E. 🚨 KESALAHAN UMUM</h3>
+
+                ❌ index1
+                ❌ idx1
+                ❌ users_email_idx (inkonsisten)
+                ❌ nama auto-generated dibiarkan
+
+                ➡️ bikin hidup susah pas error
+
+                🧪 CONTOH ERROR MESSAGE (kenapa nama penting)
+                Duplicate entry 'test@mail.com' for key 'uniq_users_email'
+
+
+                🧠 Langsung paham:
+
+                “Oh email harus unik”
+
+                Bandingin dengan:
+
+                for key 'users_email_unique_1'
+
+
+                😵‍💫 bingung
+
+                <br> <hr> <br>
+
+                <h3>F. 🔥 CONTOH STRUKTUR INDEX SEHAT</h3>
+                users
+                - idx_users_email (unique)
+                - idx_users_created_at
+
+                orders
+                - idx_orders_user_id
+                - idx_orders_status
+                - idx_orders_created_at
+
+                <br> <hr> <br>
+
+                <h3>G. 🧠 INDEX ≠ BANYAK = BAGUS</h3>
+
+                Sedikit catatan arsitek:
+
+                terlalu banyak index → insert/update lambat
+
+                index = biaya maintenance
+
+                ➡️ index hanya yang sering dipakai
+
+                <br> <hr> <br>
+
+                <h3>H. 🧩 RANGKUMAN NAMING INDEX</h3>
+
+                Gunakan prefix:
+                
+                idx_
+
+                uniq_
+
+                Sertakan:
+
+                table
+
+                kolom
+
+                Konsisten
+
+                Composite index urutannya penting
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>4.2.4 — Naming Foreign Key (constraint yang kebaca manusia) 🔗🧠</h2>
+
+                <h3>A. 🔰 APA ITU FOREIGN KEY CONSTRAINT?</h3>
+
+                Foreign key bukan cuma kolom (user_id), tapi:
+
+                aturan relasi antar tabel yang dijaga database
+
+                Kalau dilanggar:
+
+                insert gagal
+
+                delete gagal
+
+                update gagal
+
+                Dan di sinilah nama constraint muncul di error message
+
+                <br> <hr> <br>
+
+                <h3>B. 🧠 KENAPA NAMA FOREIGN KEY PENTING?</h3>
+
+                Tanpa nama jelas:
+
+                Cannot add or update a child row:
+                a foreign key constraint fails (`db`.`orders`, CONSTRAINT `orders_ibfk_1`)
+
+
+                😵‍💫 bingung
+
+                Dengan nama rapi:
+
+                CONSTRAINT fk_orders_user_id
+
+
+                🧠 langsung tau:
+
+                “order ini bermasalah ke user_id”
+
+                <br> <hr> <br>
+
+                <h3>C. 🔧 FORMAT UMUM NAMING FOREIGN KEY</h3>
+                fk_{table}_{column}
+
+
+                Atau kalau mau eksplisit:
+
+                fk_{child_table}_{parent_table}
+
+
+                Keduanya boleh, pilih satu & konsisten
+
+                <br> <hr> <br>
+
+                <h4>🔹 1. FORMAT PALING UMUM (DISARANKAN)</h4>
+                fk_orders_user_id
+                fk_order_items_order_id
+                fk_order_items_product_id
+
+
+                🔥 Jelas:
+
+                tabel mana
+
+                kolom mana
+
+                <br> <hr> <br>
+
+                <h4>🔹 2. CONTOH CREATE TABLE DENGAN FK NAMING</h4>
+                CREATE TABLE orders (
+                id BIGINT PRIMARY KEY,
+                user_id BIGINT,
+                CONSTRAINT fk_orders_user_id
+                    FOREIGN KEY (user_id)
+                    REFERENCES users(id)
+                );
+
+
+                📌 Pas error, constraint ini yang muncul
+
+                <br> <hr> <br>
+
+                <h4>🔹 3. FOREIGN KEY + ON DELETE / ON UPDATE</h4>
+
+                Nama tetap sama, behaviour beda:
+
+                CONSTRAINT fk_orders_user_id
+                FOREIGN KEY (user_id)
+                REFERENCES users(id)
+                ON DELETE RESTRICT
+                ON UPDATE CASCADE;
+
+
+                🧠 Dari nama + rule:
+
+                “order tergantung user, gak boleh user dihapus sembarangan”
+
+                <br> <hr> <br>
+
+                <h4>🔹 4. FOREIGN KEY DI PIVOT TABLE</h4>
+                CREATE TABLE role_user (
+                role_id BIGINT,
+                user_id BIGINT,
+                CONSTRAINT fk_role_user_role_id
+                    FOREIGN KEY (role_id) REFERENCES roles(id),
+                CONSTRAINT fk_role_user_user_id
+                    FOREIGN KEY (user_id) REFERENCES users(id)
+                );
+
+
+                🔥 Aman & kebaca
+
+                <br> <hr> <br>
+
+                <h3>D. 🚨 KESALAHAN UMUM</h3>
+
+                ❌ Biarkan auto-generated name
+                ❌ Nama fk_1, fk_2
+                ❌ Campur format
+                ❌ FK tanpa index (berat di JOIN)
+
+                <br> <hr> <br>
+
+                <h3>E. 🧠 FOREIGN KEY vs INDEX (JANGAN KETUKER)</h3>
+
+                Foreign key = aturan integritas
+
+                Index = performa
+
+                📌 Tapi:
+
+                kolom FK WAJIB di-index
+
+                <br> <hr> <br>
+
+                <h3>F. 🔥 CONTOH ERROR MESSAGE YANG ENAK</h3>
+                Cannot delete user:
+                foreign key constraint fails (fk_orders_user_id)
+
+
+                🧠 Langsung tau:
+
+                “User ini masih punya order”
+
+                <br> <hr> <br>
+
+                <h3>G. 🧩 RANGKUMAN NAMING FOREIGN KEY</h3>
+
+                Gunakan prefix fk_
+
+                Sertakan table & kolom
+
+                Jangan biarkan nama auto
+
+                Konsisten format
+
+                Selalu index kolom FK
+
+                <br> <hr> <br>
+
+                <h3>H. 🎉 4.2 NAMING CONVENTION SELESAI</h3>
+
+                Bro, kalau digabung:
+
+                table → kebaca struktur
+
+                column → kebaca makna
+
+                index → kebaca performa
+
+                foreign key → kebaca relasi & error
+
+                🔥 Ini database ramah manusia
+
+                <br> <br> 
+
+                <hr>
+
+                <br> <br>
+
+                <a href="4c-soft-hard-delete.html" class="btn-next">4c Soft Hard Delete</a>
                 
             </div>
         </main>

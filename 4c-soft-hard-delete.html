@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Type</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+
+        <main>
+            <header>
+                
+            </header>
+            
+            <div class="content">
+                <h2>4.3 Soft Delete vs Hard Delete</h2>
+
+                (Strategi Menghapus Data Tanpa Menyesal di Masa Depan)
+
+                Dalam database, menghapus data itu bukan cuma soal DELETE FROM table.
+                Keputusan ini ngaruh ke:
+
+                histori data
+
+                audit & laporan
+
+                relasi antar tabel
+
+                bug misterius 😅
+
+                performa & biaya mental developer di masa depan
+
+                Secara konsep, ada 2 pendekatan utama:
+
+                <br> <hr> <br>
+
+                <h3>A. Hard Delete</h3>
+
+                Data benar-benar hilang dari database
+
+                DELETE FROM users WHERE id = 10;
+
+
+                Setelah ini:
+
+                ❌ data hilang
+
+                ❌ tidak bisa direstore
+
+                ❌ histori ikut lenyap
+
+                <br> <hr> <br>
+
+                <h3>B. Soft Delete</h3>
+
+                Data dianggap terhapus, tapi masih disimpan
+
+                Biasanya pakai kolom seperti:
+
+                deleted_at
+
+                atau is_deleted
+
+                UPDATE users SET deleted_at = NOW() WHERE id = 10;
+
+
+                Secara logika:
+
+                data masih ada
+
+                tapi tidak dianggap aktif
+
+                <br> <hr> <br>
+
+                <h3>C. Kenapa Ini Penting Banget?</h3>
+
+                Karena:
+
+                bisnis sering minta:
+
+                “eh data user kemarin bisa dibalikin gak?”
+
+                laporan butuh histori lama
+
+                relasi foreign key bisa rusak kalau hard delete sembarangan
+
+                future you bakal nyalahin past you 😄
+
+                <br> <hr> <br>
+
+                Sekarang kita fokus dulu ke SOFT DELETE sesuai permintaanmu 👇
+
+                <h2>4.3.1 Soft Delete</h2>
+
+                (Menghapus Tanpa Menghilangkan Jejak)
+
+                <br> <hr> <br>
+
+                <h3>A. Definisi Soft Delete</h3>
+
+                Soft delete adalah teknik:
+
+                tidak menghapus baris, tapi menandainya sebagai terhapus
+
+                Biasanya pakai:
+
+                timestamp (deleted_at)
+
+                atau flag boolean (is_deleted)
+
+                <br> <hr> <br>
+
+                <h3>B. Pola Paling Umum (Best Practice)</h3>
+                1️⃣ deleted_at (PALING DISARANKAN)
+                deleted_at DATETIME NULL
+
+
+                Kondisi:
+
+                NULL → data aktif
+
+                ada timestamp → data terhapus
+
+                Kenapa ini cakep?
+
+                ada waktu penghapusan
+
+                enak buat audit
+
+                bisa restore
+
+                <br> <hr> <br>
+
+                2️⃣ is_deleted (Lebih sederhana)
+                is_deleted TINYINT(1) DEFAULT 0
+
+
+                Kondisi:
+
+                0 → aktif
+
+                1 → terhapus
+
+                Kekurangan:
+
+                gak tahu kapan dihapus
+
+                kurang kuat buat sistem besar
+
+                <br> <hr> <br>
+
+                <h3>C. Contoh Implementasi Query</h3>
+                Insert data normal
+                INSERT INTO products (name, price)
+                VALUES ('Tas Kulit', 250000);
+
+                Soft delete data
+                UPDATE products
+                SET deleted_at = NOW()
+                WHERE id = 5;
+
+                Ambil data yang masih aktif
+                SELECT * FROM products
+                WHERE deleted_at IS NULL;
+
+                Ambil data yang sudah terhapus
+                SELECT * FROM products
+                WHERE deleted_at IS NOT NULL;
+
+                <br> <hr> <br>
+
+                <h3>D. Dampak ke Query (INI YANG SERING KELEWAT)</h3>
+
+                Kalau pakai soft delete:
+
+                SEMUA SELECT harus sadar soft delete
+
+                ❌ SALAH (berbahaya):
+
+                SELECT * FROM orders;
+
+
+                ✅ BENAR:
+
+                SELECT * FROM orders
+                WHERE deleted_at IS NULL;
+
+
+                Makanya di framework (Laravel, dll):
+
+                biasanya ada global scope
+
+                biar aman otomatis
+
+                <br> <hr> <br>
+
+                <h3>E. Soft Delete & Foreign Key</h3>
+
+                Soft delete TIDAK memicu:
+
+                ON DELETE CASCADE
+
+                ON DELETE RESTRICT
+
+                Karena:
+
+                database merasa datanya belum dihapus
+
+                Ini bagus karena:
+
+                relasi tetap utuh
+
+                histori aman
+
+                Tapi juga berarti:
+
+                logic delete jadi tanggung jawab aplikasi
+
+                <br> <hr> <br>
+
+                <h3>F. Kapan Soft Delete WAJIB Dipakai?</h3>
+
+                Soft delete cocok banget kalau:
+
+                ✅ data user
+                ✅ transaksi
+                ✅ order
+                ✅ pembayaran
+                ✅ log aktivitas
+                ✅ laporan keuangan
+                ✅ sistem audit
+
+                Prinsipnya:
+
+                Kalau datanya penting secara bisnis → soft delete
+
+                <br> <hr> <br>
+
+                <h3>G. Kesalahan Umum Soft Delete</h3>
+
+                ❌ lupa filter deleted_at IS NULL
+                ❌ index tidak disiapkan
+                ❌ soft delete tapi FK tidak dipikirkan
+                ❌ campur soft delete & hard delete tanpa aturan
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>4.3.2 Hard Delete</h2>
+
+                (Kapan Boleh Kejam Tanpa Dosa Database)
+
+                Hard delete itu bukan jahat, tapi harus sadar konteks.
+                Masalah muncul bukan karena hard delete, tapi karena salah tempat & salah timing.
+
+                <br> <hr> <br>
+
+                <h3>A. Definisi Hard Delete</h3>
+
+                Hard delete adalah:
+
+                menghapus baris data secara permanen dari database
+
+                DELETE FROM logs WHERE id = 100;
+
+
+                Setelah ini:
+
+                ✅ data hilang dari tabel
+
+                ❌ tidak bisa direstore
+
+                ❌ histori ikut lenyap
+
+                <br> <hr> <br>
+
+                <h3>B. Karakteristik Hard Delete</h3>
+                Aspek	Dampak
+                Penyimpanan	Lebih hemat
+                Query	Lebih simpel
+                Restore	❌ Tidak bisa
+                Audit	❌ Hilang
+                Risiko	⚠️ Tinggi
+
+                <br> <hr> <br>
+
+                <h3>C. Kapan Hard Delete BOLEH Dipakai?</h3>
+
+                Hard delete aman kalau datanya:
+
+                1️⃣ Data Teknis / Temporary
+
+                Contoh:
+
+                session
+
+                cache
+
+                OTP
+
+                token reset password
+
+                log error sementara
+
+                DELETE FROM sessions WHERE expires_at < NOW();
+
+
+                ➡️ Tidak ada nilai historis
+
+                <br> <hr> <br>
+
+                2️⃣ Data Turunan (Derived Data)
+
+                Data hasil proses:
+
+                temp calculation
+
+                table staging
+
+                hasil import sementara
+
+                Jika data bisa:
+
+                dibuat ulang
+
+                dihitung ulang
+
+                ➡️ Hard delete = aman
+
+                <br> <hr> <br>
+
+                3️⃣ Data Salah Input (Belum Dipakai)
+
+                Contoh:
+
+                order belum checkout
+
+                draft yang tidak pernah publish
+
+                data dummy
+
+                Catatan penting:
+
+                Belum pernah punya relasi ke data penting lain
+
+                <br> <hr> <br>
+
+                <h3>D. Kapan Hard Delete JANGAN Dipakai?</h3>
+
+                ❌ user
+                ❌ order
+                ❌ invoice
+                ❌ pembayaran
+                ❌ laporan keuangan
+                ❌ histori aktivitas
+                ❌ data yang pernah “dipakai bisnis”
+
+                Rule keras:
+
+                Kalau data pernah dipakai ambil keputusan → JANGAN HARD DELETE
+
+                <br> <hr> <br>
+
+                <h3>E. Hard Delete & Foreign Key</h3>
+
+                Hard delete aktif memicu constraint:
+
+                DELETE FROM users WHERE id = 5;
+
+
+                Jika ada FK:
+
+                RESTRICT → gagal
+
+                CASCADE → data anak ikut hilang
+
+                SET NULL → relasi kosong
+
+                ⚠️ CASCADE itu senjata tajam
+                Sekali salah → satu pohon data lenyap 🌳💥
+
+                <br> <hr> <br>
+
+                <h3>F. Kesalahan Fatal yang Sering Terjadi</h3>
+
+                ❌ pakai hard delete untuk transaksi
+                ❌ CASCADE tanpa dokumentasi
+                ❌ delete tanpa WHERE 😱
+                ❌ tidak backup sebelum operasi besar
+
+                Pro tip:
+
+                BEGIN;
+                DELETE ...
+                ROLLBACK; -- kalau panik
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>4.3.3 Dampak Soft Delete vs Hard Delete</h2>
+
+                (Ke Query & Laporan — Ini yang Kerasa di Dunia Nyata)
+
+                Sekarang kita bahas efek nyatanya, bukan teori doang.
+
+                <br> <hr> <br>
+
+                <h3>A. Dampak ke Query</h3>
+                1️⃣ Soft Delete
+
+                Query lebih kompleks:
+
+                SELECT * FROM orders
+                WHERE deleted_at IS NULL;
+
+
+                Konsekuensi:
+
+                semua query harus sadar soft delete
+
+                butuh index tambahan (deleted_at)
+
+                raw query lebih rawan lupa filter
+
+                Tapi:
+
+                data aman
+
+                histori utuh
+
+                <br> <hr> <br>
+
+                2️⃣ Hard Delete
+
+                Query lebih simpel:
+
+                SELECT * FROM orders;
+
+
+                Konsekuensi:
+
+                query cepat & bersih
+
+                tapi data historis tidak ada
+
+                bug laporan bisa muncul diam-diam
+
+                <br> <hr> <br>
+
+                <h3>B. Dampak ke JOIN</h3>
+                Soft Delete
+                SELECT *
+                FROM orders o
+                JOIN users u ON u.id = o.user_id
+                WHERE o.deleted_at IS NULL
+                AND u.deleted_at IS NULL;
+
+
+                ⚠️ lupa satu filter = data hantu muncul 👻
+
+                Hard Delete
+                SELECT *
+                FROM orders o
+                JOIN users u ON u.id = o.user_id;
+
+
+                Lebih simpel
+                TAPI:
+
+                data lama bisa hilang → laporan berubah
+
+                <br> <hr> <br>
+
+                <h3>C. Dampak ke Laporan & Analytics</h3>
+                Soft Delete
+
+                ✅ laporan konsisten
+                ✅ histori lengkap
+                ✅ bisa audit
+                ✅ bisa restore data lama
+
+                Contoh:
+
+                “Total penjualan 2022 tetap sama walau ada order dibatalkan 2024”
+
+                Hard Delete
+
+                ❌ angka laporan bisa berubah
+                ❌ data masa lalu tidak stabil
+                ❌ sulit audit
+                ❌ rawan konflik dengan finance
+
+                Contoh bahaya:
+
+                “Kok omzet bulan lalu turun?”
+                (padahal data dihapus)
+
+                <br> <hr> <br>
+
+                <h3>D. Dampak ke Mental Developer 😄</h3>
+                Tipe	Efek
+                Soft Delete	Lebih mikir, tapi aman
+                Hard Delete	Cepat… sampai error
+
+                Rule hidup:
+
+                Query ribet masih bisa diperbaiki, data hilang gak bisa
+
+                <br> <hr> <br>
+
+                <h3>E. Ringkasan Cepat</h3>
+
+                Soft Delete → aman, historis, cocok data bisnis
+
+                Hard Delete → cepat, bersih, cocok data teknis
+
+                <a href="5a-index.html" class="btn-next">5a. Index</a>
+                
+            </div>
+        </main>
+    </div>
+
+    <script>
+        fetch('layout/aside.html').then(response => response.text()).then(data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop();
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
