@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Type</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+
+        <main>
+            <header>
+                
+            </header>
+            
+            <div class="content">
+                <h2>BAB 6 — Transaction & Data Integrity (WAJIB untuk Finance)</h2>
+
+                Kalau bab sebelumnya kita ngomongin performa,
+                bab 6 ini ngomongin kepercayaan.
+
+                ❝ Di sistem finance, data lambat masih bisa ditoleransi.
+                Data SALAH? Game over. ❞
+
+                Bab ini jawab pertanyaan krusial:
+
+                Gimana caranya banyak query dianggap satu kesatuan aksi
+
+                Gimana caranya uang nggak dobel kepotong
+
+                Gimana caranya data tetap benar walau server crash
+
+                Gimana caranya 100 user akses data bersamaan tanpa chaos
+
+                <br> <hr> <br>
+
+                <h3>Struktur Bab 6</h3>
+
+                Transaction → pondasi
+
+                ACID → hukum alam transaksi
+
+                Locking & Concurrency → dunia nyata saat banyak user
+
+                Sekarang kita fokus 6.1 dulu: TRANSACTION ITU SENDIRI
+
+                <h2>6.1 Transaction — Apa Itu Sebenarnya?</h2>
+
+                <br> <hr> <br>
+                    
+                <h3>Definisi sederhana</h3>
+
+                Transaction = sekumpulan query SQL yang dianggap sebagai SATU aksi utuh
+
+                Entah:
+
+                semua berhasil
+
+                atau semua dibatalkan
+
+                Tidak ada setengah-setengah.
+
+                <br> <hr> <br>
+
+                <h3>Analogi Dunia Nyata (WAJIB PAHAM)</h3>
+                💸 Transfer Uang
+
+                Transfer 100rb dari A ke B:
+
+                Saldo A dikurangi
+
+                Saldo B ditambah
+
+                ❌ Kalau cuma langkah 1 yang jalan → uang hilang
+                ❌ Kalau cuma langkah 2 yang jalan → uang muncul dari langit
+
+                👉 Keduanya HARUS sukses bersamaan
+
+                Itulah TRANSACTION
+
+                <br> <hr> <br>
+
+                <h3>Tanpa Transaction (BENCANA)</h3>
+                UPDATE accounts SET balance = balance - 100000 WHERE id = 1;
+                UPDATE accounts SET balance = balance + 100000 WHERE id = 2;
+
+
+                Kalau query kedua error:
+
+                saldo A sudah berkurang
+
+                saldo B tidak bertambah
+
+                💥 DATA RUSAK
+
+                <br> <hr> <br>
+
+                <h3>Dengan Transaction (PROFESSIONAL WAY)</h3>
+                START TRANSACTION;
+
+                UPDATE accounts SET balance = balance - 100000 WHERE id = 1;
+                UPDATE accounts SET balance = balance + 100000 WHERE id = 2;
+
+                COMMIT;
+
+
+                Kalau salah satu gagal → bisa dibatalkan semua
+
+                <br> <hr> <br>
+
+                <h3>Komponen Utama Transaction</h3>
+
+                Transaction selalu punya 3 keyword inti:
+
+                START TRANSACTION
+
+                COMMIT
+
+                ROLLBACK
+
+                Sekarang kita bahas satu per satu, pelan tapi nempel.
+
+                1️⃣ START TRANSACTION
+                Fungsinya
+
+                Menandai bahwa semua query setelah ini masuk mode transaksi
+
+                Database bilang:
+
+                “Oke, gue catat dulu.
+                Belum gue permanenin sebelum kamu bilang OK.”
+
+                START TRANSACTION;
+
+
+                Setelah ini:
+
+                perubahan belum disimpan permanen
+
+                masih bisa dibatalkan
+
+                Penting Banget
+
+                Semua query SETELAH START TRANSACTION:
+
+                dianggap satu paket
+
+                tidak langsung ditulis permanen ke disk
+
+                2️⃣ COMMIT
+                Fungsinya
+
+                Mengunci semua perubahan → resmi & permanen
+
+                COMMIT;
+
+
+                Artinya:
+
+                semua query berhasil
+
+                database bilang:
+                “Sip, gue simpan selamanya”
+
+                Setelah COMMIT:
+
+                ❌ tidak bisa rollback
+
+                data sudah fix
+
+                3️⃣ ROLLBACK
+                Fungsinya
+
+                Membatalkan semua perubahan sejak START TRANSACTION
+
+                ROLLBACK;
+
+
+                Efeknya:
+
+                semua update / insert / delete → DIHAPUS
+
+                data balik ke kondisi awal
+
+                <br> <hr> <br>
+
+                <h3>Contoh REAL CASE (Finance Banget)</h3>
+                START TRANSACTION;
+
+                INSERT INTO orders (user_id, total) VALUES (1, 500000);
+
+                UPDATE accounts
+                SET balance = balance - 500000
+                WHERE user_id = 1;
+
+                -- kalau saldo tidak cukup
+                ROLLBACK;
+
+                -- kalau semua aman
+                COMMIT;
+
+
+                👉 Ini wajib kalau:
+
+                pembayaran
+
+                invoice
+
+                jurnal akuntansi
+
+                stok + transaksi
+
+                <br> <hr> <br>
+
+                <h3>Kenapa Transaction WAJIB di Sistem Finance?</h3>
+
+                Karena:
+
+                ❌ error jaringan bisa terjadi
+
+                ❌ server bisa restart
+
+                ❌ aplikasi bisa crash
+
+                ❌ user bisa spam klik
+
+                Transaction adalah:
+
+                sabuk pengaman database
+
+                <br> <hr> <br>
+
+                <h3>Mindset Penting (WAJIB DISIMPAN DI OTAK)</h3>
+
+                ❌ Transaction bukan soal kecepatan
+                ✅ Transaction soal kebenaran data
+
+                Kalau kamu bikin:
+
+                e-wallet
+
+                POS
+
+                invoice system
+
+                accounting
+
+                SaaS finance
+
+                dan tidak pakai transaction
+                → itu bom waktu 💣
+
+                <br> <hr> <br>
+
+                <h3>Ringkasan 6.1 (Checkpoint Otak 🧠)</h3>
+
+                Transaction = satu paket query
+
+                Semua berhasil → COMMIT
+
+                Ada satu gagal → ROLLBACK
+
+                Digunakan saat data saling bergantung
+
+                Finance TANPA transaction = NGACO
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>6.2 ACID — Hukum Alam Transaction</h2>
+
+                Kalau kamu tanya:
+
+                “Kenapa gue bisa percaya transaction nggak bikin data rusak?”
+
+                Jawabannya cuma satu kata:
+
+                <br> <hr> <br>
+
+                <h3>ACID</h3>
+
+                Bukan asam kimia ya 😆
+                Tapi 4 prinsip wajib yang HARUS dipenuhi database transaction-based (MySQL InnoDB, PostgreSQL, dll).
+
+                Apa itu ACID?
+
+                ACID =
+
+                Atomicity
+
+                Consistency
+
+                Isolation
+
+                Durability
+
+                Kalau satu aja dilanggar →
+                ❌ transaction tidak bisa dipercaya
+
+                <br> <hr> <br>
+
+                <h3>Gambaran Besar (sebelum kita bedah satu-satu)</h3>
+
+                Bayangin transaksi keuangan:
+
+                Prinsip	Intinya
+                Atomicity	Semua atau tidak sama sekali
+                Consistency	Data selalu valid
+                Isolation	Transaksi lain nggak ganggu
+                Durability	Sudah commit → nggak hilang
+
+                Sekarang kita kupas satu per satu pakai contoh finance biar nempel.
+
+                <br> <hr> <br>
+
+                1️⃣ Atomicity — Semua atau Nol
+                Makna
+
+                Transaction itu atomik
+                → tidak bisa dipecah
+
+                Berhasil semua
+                atau
+                gagal semua
+
+                Contoh Paling Klasik
+
+                Transfer 100rb:
+
+                START TRANSACTION;
+
+                UPDATE accounts SET balance = balance - 100000 WHERE id = 1;
+                UPDATE accounts SET balance = balance + 100000 WHERE id = 2;
+
+                COMMIT;
+
+
+                Kalau salah satu query gagal:
+
+                ROLLBACK;
+
+
+                👉 Tidak ada kondisi saldo kepotong setengah
+
+                Kalau Atomicity Tidak Ada
+
+                saldo pengirim berkurang
+
+                saldo penerima tidak bertambah
+
+                💥 Uang lenyap
+
+                Catatan Penting
+
+                Atomicity BUKAN tanggung jawab aplikasi
+                👉 Database yang menjamin
+
+                <br> <hr> <br>
+
+                2️⃣ Consistency — Data Selalu Masuk Akal
+                Makna
+
+                Transaction harus menjaga aturan bisnis & constraint
+
+                Setelah transaction:
+
+                data tidak melanggar rule
+
+                database tetap sehat
+
+                Contoh Consistency Rule
+
+                saldo tidak boleh negatif
+
+                foreign key harus valid
+
+                total invoice = sum item
+
+                stok tidak boleh minus
+
+                Contoh
+                UPDATE accounts
+                SET balance = balance - 500000
+                WHERE id = 1;
+
+
+                Kalau saldo awal cuma 300rb:
+
+                transaction HARUS GAGAL
+
+                database tetap konsisten
+
+                Biasanya dikombinasikan dengan:
+
+                CHECK constraint
+
+                validation
+
+                trigger
+
+                application logic
+
+                Mindset Penting
+
+                Transaction boleh gagal,
+                tapi database tidak boleh rusak
+
+                Itulah Consistency.
+
+                <br> <hr> <br>
+
+                3️⃣ Isolation — Transaksi Tidak Saling Mengacaukan
+
+                🔥 Ini bagian paling sering bikin bug halus.
+
+                Makna
+
+                Transaction berjalan seolah-olah sendirian
+
+                Walaupun:
+
+                ada 10
+
+                100
+
+                1000 transaksi lain
+
+                Contoh Dunia Nyata
+
+                Dua user beli 1 stok terakhir:
+
+                Tanpa isolation:
+
+                User A baca stok = 1
+
+                User B baca stok = 1
+
+                Dua-duanya checkout
+
+                stok jadi -1
+
+                💀
+
+                Dengan Isolation
+
+                Database mengatur agar:
+
+                transaksi lain menunggu
+
+                atau melihat versi data yang aman
+
+                Isolation inilah yang:
+
+                melahirkan locking
+
+                memunculkan deadlock
+
+                bikin performa naik/turun
+
+                👉 nanti kita bahas detail di 6.3
+
+                Level Isolation (sekilas aja dulu)
+
+                READ UNCOMMITTED
+
+                READ COMMITTED
+
+                REPEATABLE READ (default MySQL)
+
+                SERIALIZABLE
+
+                Semakin tinggi:
+
+                makin aman
+
+                makin berat performa
+
+                <br> <hr> <br>
+
+                4️⃣ Durability — Sudah Commit, Nggak Hilang
+                Makna
+
+                Kalau transaction sudah COMMIT,
+                data HARUS tetap ada
+
+                Walaupun:
+
+                server mati
+
+                listrik padam
+
+                aplikasi crash
+
+                Contoh
+                COMMIT;
+
+
+                Begitu ini sukses:
+
+                data ditulis ke disk
+
+                dicatat di log (redo log / WAL)
+
+                Kalau server restart:
+                👉 data tetap ada
+
+                <br> <hr> <br>
+
+                <h3>Kalau Durability Tidak Ada</h3>
+
+                user sudah bayar
+
+                sistem bilang sukses
+
+                server mati
+
+                data hilang
+
+                💥 Kiamat finance
+
+                <br> <hr> <br>
+
+                <h3>Ringkasan ACID (Versi Otak Santai)</h3>
+                Huruf	Inti	Kalimat Simpel
+                A	Atomicity	Semua atau nggak sama sekali
+                C	Consistency	Data tetap waras
+                I	Isolation	Nggak saling ganggu
+                D	Durability	Sudah commit = abadi
+                Kenapa ACID Itu “Hukum Alam”?
+
+                Karena:
+
+                Tanpa ACID → transaction cuma ilusi
+
+                Finance tanpa ACID → penipuan tak sengaja
+
+                Makanya:
+
+                MySQL pakai InnoDB
+
+                PostgreSQL dari awal ACID-first
+
+                NoSQL dulu banyak yang tidak ACID penuh
+
+                <br> <hr> <br>
+
+                <h3>Checkpoint Bab 6.2</h3>
+
+                Kalau kamu ngerti ini:
+
+                kenapa ROLLBACK penting
+
+                kenapa isolation bikin deadlock
+
+                kenapa commit itu sakral
+
+                👉 berarti mental kamu sudah siap masuk sistem keuangan beneran
+
+                <br> <br>
+
+                <hr> 
+
+                <br> <br>
+
+                <h2>6.3 Locking & Concurrency</h2>
+
+                Bagaimana database menjaga ACID saat banyak transaksi jalan barengan
+
+                Kalau ACID itu hukum alam,
+                maka locking & concurrency itu mekanisme pertahanannya.
+
+                <br> <hr> <br>
+                
+                <h3>Gambaran Besar</h3>
+
+                Bayangin:
+
+                100 user checkout barengan
+
+                20 admin edit data
+
+                5 sistem cron update laporan
+
+                Semua akses tabel yang sama.
+
+                Tanpa mekanisme:
+                💥 data rusak
+                💥 saldo lompat-lompat
+                💥 stok minus
+
+                👉 Maka database pakai:
+
+                Lock
+
+                Concurrency control
+
+                <br> <hr> <br>
+                
+                <h3>Struktur Materi 6.3</h3>
+
+                Kita pakai penanda biar rapi:
+
+                A. Apa itu Locking & Concurrency
+                B. Row Lock (lock paling aman & ideal)
+                C. Deadlock (musuh dalam selimut)
+                D. Cara Menghindari Deadlock (best practice)
+
+                <br> <hr> <br>
+                
+                <h3>A. Apa itu Locking & Concurrency</h3>
+                Concurrency
+
+                Banyak transaksi berjalan bersamaan
+
+                Locking
+
+                Cara database mengatur giliran akses data
+
+                Tujuan utamanya:
+
+                menjaga Isolation
+
+                menjaga Consistency
+
+                Analogi Santai
+
+                Data = kamar mandi 🚽
+                Transaksi = orang
+
+                Kalau:
+
+                satu orang pakai
+
+                dikunci
+
+                Orang lain:
+
+                nunggu
+
+                atau cari kamar lain
+
+                <br> <hr> <br>
+                
+                <h3>B. Row Lock — Lock Paling Ideal</h3>
+                Apa itu Row Lock?
+
+                Database mengunci baris tertentu, bukan seluruh tabel
+
+                Contoh:
+
+                UPDATE accounts
+                SET balance = balance - 100000
+                WHERE id = 5;
+
+
+                👉 Yang terkunci:
+
+                row dengan id = 5
+
+                Row lain?
+
+                bebas dipakai
+
+                Kenapa Row Lock Penting?
+
+                Karena:
+
+                performa lebih baik
+
+                concurrency tinggi
+
+                sistem scalable
+
+                Makanya:
+
+                InnoDB → row-level lock
+
+                MyISAM → table-level lock (jadul 😬)
+
+                Kapan Row Lock Terjadi?
+
+                Biasanya saat:
+
+                UPDATE
+
+                DELETE
+
+                SELECT ... FOR UPDATE
+
+                Contoh: SELECT FOR UPDATE
+                START TRANSACTION;
+
+                SELECT balance
+                FROM accounts
+                WHERE id = 5
+                FOR UPDATE;
+
+                -- proses logic di aplikasi
+
+                UPDATE accounts
+                SET balance = balance - 100000
+                WHERE id = 5;
+
+                COMMIT;
+
+
+                👉 Baris itu:
+
+                dikunci sampai COMMIT / ROLLBACK
+
+                Kesalahan Umum
+                START TRANSACTION;
+
+                SELECT * FROM accounts WHERE role = 'user';
+                -- TANPA INDEX
+
+                UPDATE accounts SET status = 'active';
+
+
+                😱 bisa:
+
+                lock banyak row
+
+                bahkan terasa seperti table lock
+
+                <br> <hr> <br>
+                
+                <h3>C. Deadlock — Dua Transaksi Saling Menunggu</h3>
+
+                🔥 Ini sering muncul di sistem real
+
+                Apa itu Deadlock?
+
+                Dua (atau lebih) transaksi:
+
+                saling mengunci resource
+
+                saling menunggu
+
+                tidak ada yang bisa lanjut
+
+                Contoh Klasik Deadlock
+
+                Transaksi A:
+
+                UPDATE accounts SET balance = balance - 100 WHERE id = 1;
+                UPDATE accounts SET balance = balance + 100 WHERE id = 2;
+
+
+                Transaksi B:
+
+                UPDATE accounts SET balance = balance - 50 WHERE id = 2;
+                UPDATE accounts SET balance = balance + 50 WHERE id = 1;
+
+                Urutan kejadian:
+
+                A lock id=1
+
+                B lock id=2
+
+                A mau lock id=2 → nunggu
+
+                B mau lock id=1 → nunggu
+
+                💥 DEADLOCK
+
+                Apa yang Dilakukan Database?
+
+                Database tidak bengong.
+
+                Dia akan:
+
+                mendeteksi deadlock
+
+                membatalkan salah satu transaksi
+
+                transaksi lain lanjut
+
+                Biasanya error:
+
+                Deadlock found when trying to get lock; try restarting transaction
+
+                <br> <hr> <br>
+                
+                <h3>D. Cara Menghindari Deadlock (Best Practice)</h3>
+
+                Ini ilmu emas 🔥
+
+                1️⃣ Akses Data dengan Urutan Konsisten
+
+                ❌ Salah:
+
+                transaksi A: id 1 → 2
+
+                transaksi B: id 2 → 1
+
+                ✅ Benar:
+
+                SEMUA transaksi: id kecil → besar
+
+                2️⃣ Lock Sekecil & Secepat Mungkin
+
+                ❌ Salah:
+
+                START TRANSACTION;
+                -- proses lama di aplikasi
+                UPDATE ...
+                COMMIT;
+
+
+                ✅ Benar:
+
+                START TRANSACTION;
+                UPDATE ...
+                COMMIT;
+
+
+                👉 Jangan:
+
+                nunggu user
+
+                call API
+
+                loop panjang
+
+                di dalam transaction
+
+                3️⃣ Gunakan Index dengan Benar
+
+                Tanpa index:
+
+                database lock lebih banyak row
+
+                peluang deadlock meningkat
+
+                4️⃣ Jangan Takut Deadlock
+
+                Deadlock itu:
+
+                normal
+
+                tanda sistem concurrency tinggi
+
+                Best practice:
+
+                retry transaction di aplikasi
+
+                5️⃣ Jangan Over-Isolation
+
+                Isolation level terlalu tinggi:
+
+                locking makin agresif
+
+                deadlock makin sering
+
+                Ringkasan 6.3 (Versi Mental Model)
+                Konsep	Intinya
+                Concurrency	Banyak transaksi barengan
+                Locking	Sistem giliran database
+                Row Lock	Lock paling aman & efisien
+                Deadlock	Saling tunggu → satu dikorbankan
+                Solusi	Urutan konsisten, cepat, pakai index
+                Checkpoint Bab 6
+
+                Kalau kamu paham:
+
+                kenapa SELECT FOR UPDATE penting
+
+                kenapa deadlock itu bukan bug
+
+                kenapa index berpengaruh ke locking
+
+                👉 berarti kamu sudah siap ngerjain sistem finance & inventory serius
+            </div>
+        </main>
+    </div>
+
+    <script>
+        fetch('layout/aside.html').then(response => response.text()).then(data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop();
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
