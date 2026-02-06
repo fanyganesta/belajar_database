@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Type</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+
+        <main>
+            <header>
+                
+            </header>
+            
+            <div class="content">
+                <h2>5.2 Query Optimization</h2>
+
+                Belajar Membaca Cara MySQL Berpikir
+
+                <br> <hr> <br>
+
+                <h3>A. Apa Itu Query Optimization?</h3>
+
+                Query optimization = proses:
+
+                memahami bagaimana query dieksekusi
+
+                memastikan DB pakai jalur tercepat
+
+                menghindari kerja sia-sia
+
+                Ingat:
+
+                SQL yang BENAR belum tentu SQL yang CEPAT
+
+                <br> <hr> <br>
+
+                <h3>B. Kenapa Query Lambat?</h3>
+
+                Biasanya karena:
+
+                index tidak ada
+
+                index ada tapi tidak dipakai
+
+                salah urutan composite index
+
+                full table scan
+
+                join kolom tidak ter-index
+
+                Dan semua ini bisa kamu lihat pakai:
+                👉 EXPLAIN
+
+                <br> <hr> <br>
+
+                <h3>C. Mindset Bab 5.2</h3>
+
+                Bukan lagi:
+
+                “Query ini hasilnya benar?”
+
+                Tapi:
+
+                “DB melakukan apa saja untuk menghasilkan hasil ini?”
+
+                <h2>5.2.1 EXPLAIN</h2>
+
+                Mata Ketiga untuk Melihat Mesin MySQL
+
+                <br> <hr> <br>
+
+                <h3>A. Apa Itu EXPLAIN?</h3>
+
+                EXPLAIN menunjukkan rencana eksekusi query
+
+                EXPLAIN SELECT * FROM users WHERE email = 'a@b.com';
+
+
+                MySQL akan bilang:
+
+                tabel mana dulu
+
+                pakai index apa
+
+                scan berapa baris
+
+                full scan atau index scan
+
+                <br> <hr> <br>
+
+                <h3>B. Kenapa EXPLAIN WAJIB Dipakai?</h3>
+
+                Karena:
+
+                index bisa ada tapi tidak dipakai
+
+                query terlihat simpel tapi mahal
+
+                kamu bisa tahu masalah sebelum production
+
+                Developer pro = percaya EXPLAIN, bukan perasaan
+
+                <br> <hr> <br>
+
+                <h3>C. Kolom Penting di Hasil EXPLAIN</h3>
+
+                Kita fokus yang krusial dulu:
+
+                1️⃣ type (PALING PENTING)
+
+                Menunjukkan cara scan
+
+                Urutan dari terbaik ke terburuk:
+
+                type	Arti
+                const	super cepat
+                eq_ref	join PK / unique
+                ref	pakai index
+                range	pakai index range
+                index	scan seluruh index
+                ALL	🚨 full table scan
+
+                👉 ALL = bahaya
+
+                2️⃣ key
+
+                Index yang dipakai
+
+                key: idx_users_email
+
+
+                Kalau:
+
+                key: NULL
+
+
+                ➡️ index tidak dipakai
+
+                3️⃣ rows
+
+                Estimasi baris yang dibaca
+
+                rows: 1
+
+
+                😍
+
+                rows: 100000
+
+
+                😱
+
+                4️⃣ Extra
+
+                Clue tambahan:
+
+                Extra	Arti
+                Using index	mantap
+                Using where	normal
+                Using filesort	⚠️
+                Using temporary	🚨
+
+                <br> <hr> <br>
+
+                <h3>D. Contoh EXPLAIN Sederhana</h3>
+                EXPLAIN
+                SELECT * FROM users WHERE email = 'a@b.com';
+
+
+                Output ideal:
+
+                type: const
+                key: idx_users_email
+                rows: 1
+
+
+                Artinya:
+
+                1 baris
+
+                index dipakai
+
+                super cepat
+
+                <br> <hr> <br>
+
+                <h3>E. Contoh EXPLAIN Bermasalah</h3>
+                EXPLAIN
+                SELECT * FROM users WHERE created_at >= '2024-01-01';
+
+
+                Output:
+
+                type: ALL
+                key: NULL
+                rows: 500000
+
+
+                ➡️ full scan
+                ➡️ solusi: buat index created_at
+
+                <br> <hr> <br>
+
+                <h3>F. EXPLAIN untuk JOIN</h3>
+                EXPLAIN
+                SELECT *
+                FROM orders
+                JOIN users ON orders.user_id = users.id;
+
+
+                Perhatikan:
+
+                apakah orders.user_id pakai index
+
+                apakah users.id pakai PK
+
+                Kalau salah satu ALL → join mahal
+
+                <br> <hr> <br>
+
+                <h3>G. EXPLAIN Bukan Cuma Debugging</h3>
+
+                Gunakan EXPLAIN:
+
+                sebelum bikin index
+
+                sebelum deploy fitur berat
+
+                sebelum laporan besar
+
+                <br> <hr> <br>
+
+                <h3>H. Mental Model Profesional</h3>
+
+                Query = rencana
+                EXPLAIN = peta perjalanan
+                Index = jalan tol
+
+                Kalau jalan tol ada tapi EXPLAIN gak lewat sana
+                ➡️ berarti jalurnya salah
+
+                Ringkasan Kilat
+
+                EXPLAIN = wajib
+
+                fokus ke type, key, rows
+
+                hindari ALL
+
+                index ada ≠ index dipakai
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>5.2.2 Full Table Scan</h2>
+
+                Musuh Utama Performa Database
+
+                <br> <hr> <br>
+
+                <h3>A. Apa Itu Full Table Scan?</h3>
+
+                Full Table Scan = MySQL membaca SELURUH baris tabel satu per satu
+
+                row 1 → cek kondisi
+                row 2 → cek kondisi
+                row 3 → cek kondisi
+                ...
+
+
+                Biasanya di EXPLAIN terlihat sebagai:
+
+                type: ALL
+
+                <br> <hr> <br>
+
+                <h3>B. Kenapa Full Table Scan Berbahaya?</h3>
+
+                Karena:
+
+                makin besar data → makin lambat
+
+                CPU tinggi
+
+                disk IO berat
+
+                bikin query lain ikut lambat
+
+                Di tabel:
+
+                1.000 row → masih aman
+
+                100.000 row → mulai kerasa
+
+                1.000.000+ → 🔥🔥🔥
+
+                <br> <hr> <br>
+
+                <h3>C. Kapan Full Table Scan TERJADI?</h3>
+                1️⃣ Tidak Ada Index
+                SELECT * FROM users WHERE email = 'a@b.com';
+
+
+                Tanpa index:
+
+                type: ALL
+
+                2️⃣ Index Ada tapi TIDAK DIPAKAI
+
+                Ini lebih nyebelin 😤
+
+                Contoh:
+
+                WHERE YEAR(created_at) = 2024;
+
+
+                Index:
+
+                (created_at)
+
+
+                ➡️ index tidak bisa dipakai
+                karena kolom dibungkus fungsi
+
+                3️⃣ WHERE Terlalu Umum
+                WHERE status = 'active';
+
+
+                Kalau 90% data active:
+
+                index sering diabaikan
+
+                DB pilih full scan
+
+                4️⃣ JOIN Tanpa Index
+                JOIN orders ON orders.user_id = users.id;
+
+
+                orders.user_id tidak di-index
+                ➡️ full scan di tabel orders
+
+                5️⃣ LIKE dengan Wildcard Depan
+                WHERE name LIKE '%andi%';
+
+
+                ➡️ index tidak bisa dipakai
+
+                <br> <hr> <br>
+
+                <h3>D. Contoh EXPLAIN Full Table Scan</h3>
+                EXPLAIN
+                SELECT * FROM orders WHERE status = 'pending';
+
+
+                Output:
+
+                type: ALL
+                rows: 500000
+                key: NULL
+
+
+                🚨 alarm merah
+
+                <br> <hr> <br>
+
+                <h3>E. Kapan Full Table Scan BOLEH?</h3>
+
+                Full scan tidak selalu dosa
+
+                Boleh kalau:
+
+                tabel kecil
+
+                query jarang dipakai
+
+                laporan batch malam hari
+
+                Contoh:
+
+                lookup table
+                config table
+                country list
+
+                <br> <hr> <br>
+
+                <h3>F. Cara Menghindari Full Table Scan</h3>
+                1️⃣ Tambahkan Index yang Tepat
+                CREATE INDEX idx_orders_status ON orders(status);
+
+                2️⃣ Jangan Bungkus Kolom dengan Fungsi
+
+                ❌
+
+                WHERE DATE(created_at) = '2024-01-01';
+
+
+                ✅
+
+                WHERE created_at >= '2024-01-01'
+                AND created_at < '2024-01-02';
+
+                3️⃣ Hati-hati SELECT *
+
+                Ambil kolom seperlunya
+                ➡️ index covering bisa dipakai
+
+                4️⃣ Index Foreign Key di JOIN
+
+                Wajib:
+
+                orders.user_id
+                order_items.order_id
+
+                <br> <hr> <br>
+
+                <h3>G. Full Table Scan vs Index Scan (Preview)</h3>
+
+                Full scan:
+
+                baca semua row
+
+                Index scan:
+
+                lompat langsung ke data
+
+                ➡️ kita bahas detail di 5.2.3 Index Scan
+
+                <br> <hr> <br>
+
+                <h3>H. Mental Model Profesional</h3>
+
+                Kalau kamu lihat type: ALL
+                tanya dulu:
+
+                index ada?
+
+                index kepakai?
+
+                query-nya ramah index?
+
+                Ringkasan Kilat
+
+                Full Table Scan = type ALL
+
+                berbahaya di data besar
+
+                sering terjadi tanpa sadar
+
+                bisa dihindari dengan desain query & index
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>5.2.3 Index Scan</h2>
+
+                Jalur Cepat yang Kamu MAU Dipakai Database
+
+                <br> <hr> <br>
+
+                <h3>A. Apa Itu Index Scan?</h3>
+
+                Index Scan = MySQL membaca data melalui index, bukan seluruh tabel
+
+                Artinya:
+
+                DB pakai “peta”
+
+                lompat ke lokasi yang relevan
+
+                baca sedikit baris saja
+
+                Di EXPLAIN biasanya terlihat sebagai:
+
+                type: ref
+                type: range
+                type: eq_ref
+                type: const
+
+
+                Semua ini = 👍
+
+                <br> <hr> <br>
+
+                <h3>B. Jenis-Jenis Index Scan (yang Umum)</h3>
+                1️⃣ const
+
+                Paling cepat 🔥
+
+                WHERE id = 1
+
+
+                pakai PRIMARY KEY / UNIQUE
+
+                hasil 1 baris
+
+                DB langsung lompat
+
+                2️⃣ eq_ref
+
+                Umum di JOIN PK
+
+                JOIN users ON orders.user_id = users.id
+
+
+                satu row match
+
+                super efisien
+
+                3️⃣ ref
+
+                Index biasa dipakai
+
+                WHERE user_id = 10
+
+
+                bisa banyak row
+
+                tetap cepat
+
+                4️⃣ range
+
+                Pencarian rentang
+
+                WHERE created_at BETWEEN '2024-01-01' AND '2024-01-31'
+
+
+                pakai index
+
+                baca sebagian index
+
+                <br> <hr> <br>
+
+                <h3>C. Contoh EXPLAIN Index Scan</h3>
+                EXPLAIN
+                SELECT *
+                FROM orders
+                WHERE user_id = 10;
+
+
+                Output ideal:
+
+                type: ref
+                key: idx_orders_user_id
+                rows: 12
+
+
+                Artinya:
+
+                index dipakai
+
+                hanya baca 12 baris
+
+                sehat 🚀
+
+                <br> <hr> <br>
+
+                <h3>D. Index Scan + ORDER BY (Efisiensi Maksimal)</h3>
+                SELECT *
+                FROM orders
+                WHERE user_id = 10
+                ORDER BY created_at DESC
+                LIMIT 5;
+
+
+                Index:
+
+                (user_id, created_at)
+
+
+                EXPLAIN:
+
+                type: range
+                key: idx_orders_user_date
+                Extra: Using index
+
+
+                ➡️ filter + sorting + limit tanpa kerja ekstra
+
+                <br> <hr> <br>
+
+                <h3>E. Covering Index (Level Lanjut 🔥)</h3>
+
+                Kalau semua kolom SELECT ada di index:
+
+                SELECT user_id, created_at
+                FROM orders
+                WHERE user_id = 10;
+
+
+                Index:
+
+                (user_id, created_at)
+
+
+                EXPLAIN:
+
+                Extra: Using index
+
+
+                Artinya:
+
+                DB tidak perlu baca tabel
+
+                cukup index saja
+
+                super cepat
+
+                <br> <hr> <br>
+
+                <h3>F. Index Scan TAPI Tetap Lambat?</h3>
+
+                Bisa terjadi kalau:
+
+                rows tetap besar
+
+                index kurang spesifik
+
+                salah urutan composite index
+
+                Solusi:
+
+                perbaiki urutan index
+
+                tambahkan kolom yang sering dipakai
+
+                <br> <hr> <br>
+
+                <h3>G. Bandingkan Full Scan vs Index Scan</h3>
+                Aspek	Full Scan	Index Scan
+                Baris dibaca	Semua	Sedikit
+                IO	Berat	Ringan
+                CPU	Tinggi	Rendah
+                Skala besar	❌	✅
+                <br> <hr> <br>
+
+                <h3>H. Mindset Profesional</h3>
+
+                Index scan itu bukan bonus,
+                tapi tujuan utama optimasi
+
+                Kalau EXPLAIN belum pakai index:
+
+                jangan puas
+
+                perbaiki desain
+
+                <br> <hr> <br>
+
+                <h3>I. Checklist Cepat</h3>
+
+                Saat lihat EXPLAIN:
+
+                type ≠ ALL
+
+                key ≠ NULL
+
+                rows kecil
+
+                no Using filesort (kalau bisa)
+
+                Ringkasan Kilat
+
+                Index scan = performa ideal
+
+                banyak bentuk (const, ref, range)
+
+                covering index = turbo mode
+
+                tujuan utama optimasi SQL
+
+                <br> <br>
+
+                <a href="5c-kesalahan-umum.html" class="btn-next">5c. Kesalahan Umum</a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        fetch('layout/aside.html').then(response => response.text()).then(data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop();
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

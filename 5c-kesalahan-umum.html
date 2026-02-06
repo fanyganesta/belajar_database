@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Type</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+
+        <main>
+            <header>
+                
+            </header>
+            
+            <div class="content">
+                <h2>5.3 Kesalahan </h2>Umum dalam Indexing & Performance
+
+                Yang Kelihatan Benar, tapi Diam-diam Merusak
+
+                <br> <hr> <br>
+
+                <h3>A. Kenapa Bab Ini Penting?</h3>
+
+                Karena di dunia nyata:
+
+                database tetap lambat walau banyak index
+
+                storage bengkak
+
+                INSERT / UPDATE jadi berat
+
+                developer bingung: “lah kan index-nya banyak?”
+
+                Masalahnya bukan:
+
+                kurang index
+                tapi:
+                SALAH PAKAI index
+
+                <br> <hr> <br>
+
+                <h3>B. Pola Umum Kesalahan</h3>
+
+                Biasanya terjadi karena:
+
+                takut full table scan
+
+                tidak paham cara DB memilih index
+
+                “yang penting aman dulu”
+
+                Padahal:
+
+                Index berlebihan = racun pelan-pelan
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>5.3.1 Index Berlebihan</h2>
+
+                Terlalu Banyak Pisau di Dapur 🍴
+
+                <br> <hr> <br>
+
+                <h3>A. Apa Itu Index Berlebihan?</h3>
+
+                Index berlebihan =
+
+                membuat index lebih banyak dari yang benar-benar dipakai query
+
+                Contoh ekstrem:
+
+                INDEX(email)
+                INDEX(status)
+                INDEX(created_at)
+                INDEX(user_id)
+                INDEX(status, created_at)
+                INDEX(user_id, status)
+
+
+                Padahal query cuma:
+
+                WHERE user_id = ?
+
+                <br> <hr> <br>
+
+                <h3>B. Dampak Buruk Index Berlebihan</h3>
+                1️⃣ INSERT Jadi Lambat
+
+                Setiap INSERT:
+
+                update tabel
+
+                update SEMUA index terkait
+
+                Index banyak = kerja dobel dobel dobel
+
+                2️⃣ UPDATE & DELETE Berat
+                UPDATE orders SET status = 'paid';
+
+
+                Kalau status ada di 5 index:
+                ➡️ 5 index harus diperbarui
+
+                3️⃣ Storage Membengkak
+
+                Index itu:
+
+                file terpisah
+
+                bisa lebih besar dari data aslinya
+
+                4️⃣ Optimizer Bingung
+
+                Terlalu banyak index:
+
+                MySQL bisa pilih index yang salah
+
+                performa justru turun
+
+                <br> <hr> <br>
+
+                <h3>C. Tanda-Tanda Index Sudah Kebanyakan</h3>
+
+                🚨 alarm:
+
+                INSERT makin lama
+
+                banyak index tapi EXPLAIN tetap ALL
+
+                index jarang kepakai
+
+                developer takut hapus index 😅
+
+                <br> <hr> <br>
+
+                <h3>D. Cara Profesional Menghindari Index Berlebihan</h3>
+                1️⃣ Index Berdasarkan Query, BUKAN Kolom
+
+                ❌
+
+                "kolom penting → index"
+
+
+                ✅
+
+                "query penting → index"
+
+                2️⃣ Gunakan Composite Index daripada Banyak Single
+
+                Daripada:
+
+                INDEX(user_id)
+                INDEX(created_at)
+
+
+                Lebih baik:
+
+                INDEX(user_id, created_at)
+
+
+                Kalau query sering gabungan
+
+                3️⃣ Audit Index Secara Berkala
+
+                Tanya:
+
+                index ini dipakai query apa?
+
+                EXPLAIN menunjukkan key ini?
+
+                masih relevan?
+
+                Index yang tidak kepakai → hapus
+
+                4️⃣ Jangan Takut Hapus Index
+
+                Index bukan data utama
+                kalau salah → bisa bikin lagi
+
+                <br> <hr> <br>
+
+                <h3>E. Contoh Kasus Nyata</h3>
+
+                Query:
+
+                SELECT *
+                FROM orders
+                WHERE user_id = 10
+                ORDER BY created_at DESC
+                LIMIT 10;
+
+
+                Index IDEAL:
+
+                (user_id, created_at)
+
+
+                Index TIDAK perlu:
+
+                (status)
+                (payment_method)
+                (notes)
+
+                <br> <hr> <br>
+
+                <h3>F. Mental Model Profesional</h3>
+
+                ❌ “Biar aman, semua dikasih index”
+                ✅ “Setiap index harus punya alasan hidup”
+
+                Index yang baik:
+
+                jelas gunanya
+
+                dipakai query
+
+                worth biayanya
+
+                Ringkasan Kilat
+
+                index berlebihan bikin DB berat
+
+                INSERT / UPDATE lambat
+
+                optimizer bisa salah pilih
+
+                audit index itu wajib
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>5.3.2 SELECT *</h2>
+
+                Kebiasaan Malas yang Mahal
+
+                <br> <hr> <br>
+
+                <h3>A. Apa Masalahnya dengan SELECT *?</h3>
+
+                SELECT * artinya:
+
+                ambil SEMUA kolom, mau dipakai atau tidak
+
+                Contoh:
+
+                SELECT * FROM users WHERE id = 1;
+
+
+                Kelihatannya:
+
+                cepat
+
+                simpel
+
+                enak ngetik
+
+                Tapi di balik layar… 😬
+
+                <br> <hr> <br>
+
+                <h3>B. Dampak Buruk SELECT *</h3>
+                1️⃣ Transfer Data Berlebihan
+
+                Kalau tabel:
+
+                id, name, email, password, address, bio, avatar, created_at, updated_at
+
+
+                Padahal UI cuma butuh:
+
+                name, email
+
+
+                ➡️ DB tetap kirim SEMUANYA
+                ➡️ network & memory kebuang
+
+                2️⃣ Index Tidak Bisa Optimal (Covering Index Gagal)
+
+                Contoh query:
+
+                SELECT user_id, created_at
+                FROM orders
+                WHERE user_id = 10;
+
+
+                Index:
+
+                (user_id, created_at)
+
+
+                ➡️ covering index
+                ➡️ DB tidak perlu baca tabel
+
+                Tapi kalau:
+
+                SELECT *
+                FROM orders
+                WHERE user_id = 10;
+
+
+                ➡️ DB wajib baca tabel
+                ➡️ index jadi setengah guna
+
+                3️⃣ Performa DROP Saat Tabel Membesar
+
+                Hari ini tabel kecil → aman
+                6 bulan lagi:
+
+                kolom nambah
+
+                data nambah
+
+                SELECT * ikut makin berat
+
+                Bug performa datang belakangan 😈
+
+                4️⃣ Risiko Breaking Change
+
+                Tambah kolom baru:
+
+                ALTER TABLE users ADD COLUMN is_admin TINYINT;
+
+
+                Query lama:
+
+                SELECT * FROM users;
+
+
+                Aplikasi bisa:
+
+                error mapping
+
+                cache rusak
+
+                payload berubah
+
+                <br> <hr> <br>
+
+                <h3>C. SELECT * di JOIN = Lebih Parah 😱</h3>
+                SELECT *
+                FROM orders
+                JOIN users ON orders.user_id = users.id;
+
+
+                Hasil:
+
+                kolom dobel (id, created_at)
+
+                data besar
+
+                bingung di aplikasi
+
+                Padahal sering cuma butuh:
+
+                orders.id, orders.total, users.name
+
+                <br> <hr> <br>
+
+                <h3>D. Kapan SELECT * MASIH BOLEH?</h3>
+
+                Ada, tapi terbatas:
+
+                ✅ debugging cepat
+                ✅ admin query manual
+                ✅ tabel kecil & stabil
+                ❌ production query rutin
+
+                Rule aman:
+
+                SELECT * boleh di otak, jangan di production
+
+                <br> <hr> <br>
+
+                <h3>E. Cara Profesional Mengganti SELECT *</h3>
+                ❌ Buruk
+                SELECT * FROM orders WHERE user_id = 10;
+
+                ✅ Baik
+                SELECT id, total, created_at
+                FROM orders
+                WHERE user_id = 10;
+
+
+                Bonus:
+
+                lebih cepat
+
+                lebih jelas
+
+                lebih aman
+
+                <br> <hr> <br>
+
+                <h3>F. SELECT * & Index (Ringkas)</h3>
+                Query	Index Bisa Optimal?
+                SELECT *	❌
+                SELECT kolom tertentu	✅
+                Covering index	🚀
+                G. Mental Model Profesional
+
+                ❌ “Biar gampang”
+                ✅ “Biar efisien”
+
+                Menulis kolom:
+
+                sedikit lebih capek
+
+                tapi hemat performa bertahun-tahun
+
+                Ringkasan Kilat
+
+                SELECT * = mahal di skala
+
+                bikin index tidak optimal
+
+                bikin payload besar
+
+                berisiko saat schema berubah
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>5.3.3 JOIN Kolom Tidak Ter-Index</h2>
+
+                Pembunuh Performa Tersembunyi
+
+                <h3>A. Kenapa JOIN Itu Sensitif?</h3>
+
+                JOIN itu artinya:
+
+                mencocokkan baris antar tabel
+
+                dilakukan berulang-ulang
+
+                kalau salah desain → biaya eksponensial
+
+                JOIN tanpa index =
+
+                nested loop neraka 🔥
+
+                <br> <hr> <br>
+
+                <h3>B. Pola Masalah Paling Umum</h3>
+                SELECT *
+                FROM orders
+                JOIN users ON orders.user_id = users.id;
+
+
+                Masalah terjadi kalau:
+
+                orders.user_id ❌ tidak ada index
+
+                users.id ❌ bukan PK / unique
+
+                <br> <hr> <br>
+
+                <h3>C. Apa yang Terjadi Tanpa Index?</h3>
+
+                MySQL:
+
+                ambil 1 row dari orders
+
+                scan SELURUH users
+
+                cocokkan id
+
+                ulangi untuk row berikutnya
+
+                Kalau:
+
+                orders = 100.000
+
+                users = 50.000
+
+                ➡️ 5 miliar perbandingan 😱
+
+                <br> <hr> <br>
+
+                <h3>D. EXPLAIN JOIN Bermasalah</h3>
+                EXPLAIN
+                SELECT *
+                FROM orders
+                JOIN users ON orders.user_id = users.id;
+
+
+                Output bahaya:
+
+                table: orders   type: ALL
+                table: users    type: ALL
+
+
+                🚨 double full table scan
+
+                <br> <hr> <br>
+
+                <h3>E. JOIN yang SEHAT</h3>
+
+                Index yang WAJIB:
+
+                PK di tabel parent
+
+                index di foreign key tabel child
+
+                CREATE INDEX idx_orders_user_id ON orders(user_id);
+
+
+                EXPLAIN ideal:
+
+                orders: type ref
+                users: type eq_ref
+
+
+                😍
+
+                <br> <hr> <br>
+
+                <h3>F. JOIN Lebih dari 2 Tabel = Tambah Risiko</h3>
+                orders
+                JOIN order_items
+                JOIN products
+                JOIN users
+
+
+                Checklist:
+
+                setiap kolom JOIN harus ter-index
+
+                urutan JOIN masuk akal
+
+                EXPLAIN tiap langkah
+
+                <br> <hr> <br>
+
+                <h3>G. JOIN dengan Tipe Data Berbeda (Jebakan Halus ⚠️)</h3>
+
+                ❌
+
+                orders.user_id INT
+                users.id BIGINT
+
+
+                Index ada, tapi:
+
+                MySQL lakukan casting
+
+                index tidak dipakai
+
+                full scan
+
+                👉 tipe data HARUS sama
+
+                <br> <hr> <br>
+
+                <h3>H. JOIN + SELECT *</h3>
+
+                Kombinasi maut 😈
+
+                data besar
+
+                index tidak optimal
+
+                network berat
+
+                Solusi:
+
+                SELECT o.id, o.total, u.name
+                FROM orders o
+                JOIN users u ON o.user_id = u.id;
+
+                <br> <hr> <br>
+
+                <h3>I. JOIN vs Subquery?</h3>
+
+                JOIN tanpa index ❌
+                Subquery tanpa index ❌❌
+
+                Masalahnya bukan JOIN atau subquery
+                ➡️ index-nya
+
+                <br> <hr> <br>
+
+                <h3>J. Mental Model Profesional</h3>
+
+                ❌ “Query sudah jalan”
+                ✅ “Query jalan DENGAN BENAR”
+
+                JOIN:
+
+                harus diperlakukan serius
+
+                index = harga mati
+
+                selalu cek EXPLAIN
+
+                Ringkasan Kilat
+
+                JOIN tanpa index = performa hancur
+
+                foreign key WAJIB index
+
+                cek tipe data
+
+                selalu EXPLAIN JOIN
+
+                <br> <br> 
+
+                <hr>
+
+                <br> <br>
+
+                <a href="6a-transaction.html" class="btn-next">6a. Transaction</a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        fetch('layout/aside.html').then(response => response.text()).then(data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop();
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

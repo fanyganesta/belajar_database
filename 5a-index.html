@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Type</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+
+        <main>
+            <header>
+                
+            </header>
+            
+            <div class="content">
+                <h2>BAB 5 — Indexing & Performance</h2>
+
+                (Level Profesional 🧠⚡)
+
+                Kalau bab sebelumnya kita belajar:
+
+                struktur data
+
+                relasi
+
+                kerapihan desain
+
+                <br> <hr> <br>
+
+                <h3>A. 👉 Bab 5 ini fokus ke: KECEPATAN & SKALA</h3>
+
+                Kenapa Bab Ini Penting Banget?
+
+                Karena:
+
+                database kecil selalu terasa cepat
+
+                database besar selalu kejam
+
+                Masalah nyata:
+
+                query lambat
+
+                server ngos-ngosan
+
+                laporan loading 10–30 detik
+
+                user kabur 😵
+
+                Dan 90% masalah performa SQL = INDEX
+
+                <br> <hr> <br>
+
+                <h3>B. Cara Berpikir di Bab 5</h3>
+
+                Bukan lagi:
+
+                “Query ini bener atau enggak?”
+
+                Tapi:
+
+                “Query ini DIEKSEKUSI bagaimana oleh database?”
+
+                SQL itu:
+
+                kamu nulis → planner
+
+                planner mutusin → scan cara apa
+
+                index dipakai atau tidak
+
+                <br> <hr> <br>
+
+                <h3>C. Gambaran Besar Bab 5</h3>
+                <h4>5.1 Index</h4>
+
+                👉 Cara database mencari data cepat
+
+                Single Index
+
+                Composite Index
+
+                Unique Index
+
+                <br> <hr> <br>
+
+                <h4>5.2 Query Optimization</h4>
+
+                👉 Membaca pikiran database
+
+                EXPLAIN
+
+                Full Table Scan
+
+                Index Scan
+
+                <br> <hr> <br>
+
+                <h4>5.3 Kesalahan Umum</h4>
+
+                👉 Hal-hal sepele yang bikin DB lambat
+
+                index kebanyakan
+
+                SELECT *
+
+                JOIN tanpa index
+
+                Sekarang kita masuk ke pondasinya dulu 👇
+
+                <br> <hr> <br>
+
+                <h2>5.1 Index</h2>
+
+                (Cara Database Menemukan Data dengan Cepat)
+
+                Kalau database itu perpustakaan:
+
+                tanpa index → cari buku satu-satu
+
+                dengan index → langsung ke rak & halaman
+
+                <br> <hr> <br>
+
+                <h3>A. Apa Itu Index?</h3>
+
+                Index adalah:
+
+                struktur data tambahan untuk mempercepat pencarian data
+
+                Biasanya berbentuk:
+
+                B-Tree (paling umum)
+
+                Hash (kasus tertentu)
+
+                Index bukan data utama, tapi peta penunjuk jalan.
+
+                <br> <hr> <br>
+
+                <h3>B. Tanpa Index vs Dengan Index</h3>
+                Tanpa Index
+                SELECT * FROM users WHERE email = 'a@b.com';
+
+
+                Database:
+
+                baca baris 1
+
+                baris 2
+
+                baris 3
+                ➡️ Full Table Scan
+
+                Dengan Index
+                CREATE INDEX idx_users_email ON users(email);
+
+
+                Database:
+
+                langsung lompat ke posisi email
+                ➡️ Index Scan
+
+                <br> <hr> <br>
+
+                <h3>C. Harga yang Harus Dibayar</h3>
+
+                Index itu tidak gratis:
+
+                Aspek	Dampak
+                SELECT	🚀 cepat
+                INSERT	🐢 lebih lambat
+                UPDATE	🐢
+                DELETE	🐢
+                Storage	📦 nambah
+
+                Makanya:
+
+                Index = investasi, bukan dekorasi
+
+                <br> <hr> <br>
+
+                <h3>D. Kapan Index DIBUTUHKAN?</h3>
+
+                Index wajib kalau kolom sering:
+
+                dipakai di WHERE
+
+                dipakai di JOIN
+
+                dipakai di ORDER BY
+
+                dipakai di GROUP BY
+
+                Contoh:
+
+                user_id
+
+                order_id
+
+                created_at
+
+                email
+
+                status
+
+                <br> <hr> <br>
+
+                <h3>E. Kapan Index TIDAK PERLU?</h3>
+
+                ❌ tabel kecil
+                ❌ kolom jarang dipakai filter
+                ❌ kolom boolean (kadang)
+                ❌ kolom dengan nilai sama semua
+
+                Contoh:
+
+                is_active (0 / 1)
+
+
+                Index di sini sering tidak kepakai
+
+                <br> <hr> <br>
+
+                <h3>F. Jenis Index (Overview)</h3>
+
+                Kita akan bahas detail satu-satu:
+
+                A. Single Index → 1 kolom
+                B. Composite Index → lebih dari 1 kolom
+                C. Unique Index → jaga keunikan + cepat
+
+                <br> <hr> <br>
+
+                <h3>G. Mindset Profesional</h3>
+
+                ❌ “Semua kolom dikasih index biar cepat”
+                ✅ “Kolom yang tepat, index yang tepat”
+
+                Index itu seperti:
+
+                pisau dapur
+
+                makin banyak ≠ makin bagus
+
+                yang penting tajam & dipakai
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>5.1.1 Single Index</h2>
+
+                Index Paling Dasar tapi PALING SERING DIPAKAI
+
+                <br> <hr> <br>
+
+                <h3>A. Apa Itu Single Index?</h3>
+
+                Single Index = index yang dibuat hanya pada satu kolom
+
+                CREATE INDEX idx_users_email ON users(email);
+
+
+                Artinya:
+
+                database bikin “peta” khusus untuk kolom email
+
+                pencarian via email jadi super cepat
+
+                <br> <hr> <br>
+
+                <h3>B. Cara Kerja (Versi Otak Manusia 🧠)</h3>
+
+                Tanpa index:
+
+                DB baca row 1 → cek email
+
+                row 2 → cek email
+
+                dst…
+
+                Dengan single index:
+
+                DB langsung lompat ke posisi email yang dicari
+
+                ambil row yang relevan
+
+                ➡️ log N vs N
+                (ini bedanya query 0.01 detik vs 10 detik di data besar)
+
+                <br> <hr> <br>
+
+                <h3>C. Kolom yang PALING COCOK untuk Single Index</h3>
+
+                Biasanya kolom:
+
+                sering dipakai WHERE
+
+                nilai unik atau hampir unik
+
+                Contoh klasik:
+
+                id
+                email
+                username
+                user_id
+                order_id
+                invoice_number
+                created_at
+
+                <br> <hr> <br>
+
+                <h3>D. Contoh Kasus Nyata</h3>
+                Tabel
+                users
+                - id
+                - name
+                - email
+                - created_at
+
+                Query sering dipakai
+                SELECT * FROM users WHERE email = 'a@b.com';
+
+
+                ➡️ WAJIB pakai single index
+
+                CREATE INDEX idx_users_email ON users(email);
+
+                <br> <hr> <br>
+
+                <h3>E. Single Index di JOIN (WAJIB PAHAM)</h3>
+
+                JOIN tanpa index = dosa besar 😈
+
+                Contoh
+                SELECT *
+                FROM orders
+                JOIN users ON orders.user_id = users.id;
+
+
+                Yang WAJIB di-index:
+
+                orders.user_id
+
+                users.id (biasanya PK sudah auto index)
+
+                CREATE INDEX idx_orders_user_id ON orders(user_id);
+
+                <br> <hr> <br>
+
+                <h3>F. Single Index di ORDER BY</h3>
+
+                Index bisa dipakai buat sorting
+
+                SELECT * FROM orders
+                ORDER BY created_at DESC;
+
+
+                Index:
+
+                CREATE INDEX idx_orders_created_at ON orders(created_at);
+
+
+                ➡️ DB bisa ambil data sudah terurut, tanpa sort manual
+
+                <br> <hr> <br>
+
+                <h3>G. Single Index di WHERE + LIMIT (Super Power)</h3>
+
+                Pola klasik pagination:
+
+                SELECT *
+                FROM orders
+                WHERE user_id = 10
+                ORDER BY created_at DESC
+                LIMIT 10;
+
+
+                Dengan index:
+
+                filter cepat
+
+                sort cepat
+
+                limit cepat
+
+                Tanpa index:
+
+                DB capek dulu baru limit 😵
+
+                <br> <hr> <br>
+
+                <h3>H. Kesalahan Umum Single Index ❌</h3>
+                1️⃣ Index di kolom yang jarang dipakai
+                nickname
+                bio
+                description
+
+
+                ❌ buang-buang resource
+
+                <br> <hr> <br>
+
+                2️⃣ Index di kolom low-cardinality
+                status = 'active' / 'inactive'
+
+
+                Index sering tidak kepakai karena terlalu banyak data sama
+
+                <br> <hr> <br>
+
+                3️⃣ Lupa index di foreign key
+
+                Ini paling sering bikin query lambat tapi gak sadar
+
+                <br> <hr> <br>
+
+                <h3>I. Cek Apakah Single Index Dipakai</h3>
+
+                Gunakan:
+
+                EXPLAIN SELECT * FROM users WHERE email = 'a@b.com';
+
+
+                Kalau muncul:
+
+                type: ref / range
+
+                key: idx_users_email
+
+                ➡️ index dipakai 👍
+                Kalau:
+
+                type: ALL
+
+                ➡️ Full Table Scan 😱
+
+                <br> <hr> <br>
+
+                <h3>J. Mindset Profesional</h3>
+
+                ❌ “Query lambat → tambah RAM”
+                ✅ “Query lambat → cek index dulu”
+
+                Single index itu:
+
+                sederhana
+
+                murah
+
+                impact besar
+
+                Ringkasannya
+
+                Single index = index 1 kolom
+
+                dipakai di WHERE / JOIN / ORDER BY
+
+                wajib di foreign key
+
+                jangan asal bikin
+
+                <br> <br> 
+
+                <hr>
+
+                <br> <br>
+
+                <h2>5.1.2 Composite Index</h2>
+
+                Index Banyak Kolom — tapi URUTANNYA segalanya
+
+                <br> <hr> <br>
+
+                <h3>A. Apa Itu Composite Index?</h3>
+
+                Composite Index = index yang terdiri dari lebih dari satu kolom
+
+                CREATE INDEX idx_orders_user_date 
+                ON orders(user_id, created_at);
+
+
+                Artinya:
+
+                index dibuat berurutan
+
+                user_id ➜ lalu created_at
+
+                ⚠️ Urutan ini KRUSIAL
+
+                <br> <hr> <br>
+
+                <h3>B. Analogi Otak Manusia 🧠</h3>
+
+                Bayangin buku telepon:
+
+                disusun berdasarkan Nama → Kota
+
+                kamu gak bisa cari Kota → Nama
+
+                Sama persis dengan composite index.
+
+                <br> <hr> <br>
+
+                <h3>C. Leftmost Prefix Rule (WAJIB HAFAL)</h3>
+
+                Composite index hanya efektif dari kiri ke kanan
+
+                Index:
+
+                (user_id, created_at)
+
+                Query yang BISA pakai index
+                WHERE user_id = 10
+                WHERE user_id = 10 AND created_at >= '2024-01-01'
+
+                Query yang TIDAK bisa
+                WHERE created_at >= '2024-01-01'
+
+
+                ➡️ karena kolom pertama dilewati
+
+                <br> <hr> <br>
+
+                <h3>D. Urutan Kolom: Cara Menentukan</h3>
+
+                Aturan emas:
+
+                Kolom yang paling sering dipakai di WHERE = paling kiri
+
+                Contoh query harian:
+
+                WHERE user_id = ?
+                ORDER BY created_at DESC
+
+
+                Index ideal:
+
+                (user_id, created_at)
+
+
+                Bukan:
+
+                (created_at, user_id) ❌
+
+                <br> <hr> <br>
+
+                <h3>E. Composite Index + ORDER BY (Kombinasi Mematikan 🔥)</h3>
+
+                Query:
+
+                SELECT *
+                FROM orders
+                WHERE user_id = 10
+                ORDER BY created_at DESC
+                LIMIT 10;
+
+
+                Index:
+
+                CREATE INDEX idx_orders_user_date
+                ON orders(user_id, created_at);
+
+
+                Hasil:
+
+                filter cepat
+
+                sorting gratis
+
+                pagination super cepat
+
+                <br> <hr> <br>
+
+                <h3>F. Composite Index di JOIN</h3>
+
+                Query:
+
+                SELECT *
+                FROM order_items
+                WHERE order_id = 123 AND product_id = 9;
+
+
+                Index ideal:
+
+                CREATE INDEX idx_order_items_order_product
+                ON order_items(order_id, product_id);
+
+
+                Kalau sering dicari:
+
+                per order
+
+                lalu per produk
+
+                <br> <hr> <br>
+
+                <h3>G. Jangan Asal Bikin Composite Index ❌</h3>
+                Kesalahan 1️⃣
+                (user_id, status, created_at)
+
+
+                Padahal query cuma:
+
+                WHERE user_id = ?
+
+
+                ➡️ kolom lain jadi mubazir
+
+                Kesalahan 2️⃣
+
+                Bikin index kebalik urutan:
+
+                (created_at, user_id)
+
+
+                Padahal query selalu mulai dari user
+
+                Kesalahan 3️⃣
+
+                Terlalu banyak kolom (over-indexing)
+
+                Composite index idealnya 2–3 kolom saja
+
+                <br> <hr> <br>
+
+                <h3>H. Composite Index vs Single Index</h3>
+
+                Pertanyaan klasik:
+
+                “Mending single atau composite?”
+
+                Jawaban:
+
+                sering query gabungan kolom → composite
+
+                sering query satu kolom saja → single
+
+                Kadang:
+
+                butuh dua-duanya (tapi jangan rakus)
+
+                <br> <hr> <br>
+
+                <h3>I. Cek Index Dipakai atau Tidak</h3>
+                EXPLAIN
+                SELECT *
+                FROM orders
+                WHERE user_id = 10
+                ORDER BY created_at DESC;
+
+
+                Perhatikan:
+
+                key: idx_orders_user_date
+
+                type: range / ref
+
+                Kalau key = NULL
+                ➡️ index tidak dipakai 😱
+
+                <br> <hr> <br>
+
+                <h3>J. Mental Model Profesional</h3>
+
+                Composite index itu bukan daftar kolom,
+                tapi urutan jalur pencarian
+
+                Kalau salah urutan:
+
+                index ada
+
+                performa nol
+
+                Ringkasan Kilat
+
+                Composite index = banyak kolom
+
+                leftmost prefix rule
+
+                urutan kolom = nyawa
+
+                cocok untuk WHERE + ORDER BY
+
+                jangan kebanyakan kolom
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>5.1.3 Unique Index</h2>
+
+                Index + Penjaga Integritas Data
+
+                <br> <hr> <br>
+
+                <h3>A. Apa Itu Unique Index?</h3>
+
+                Unique Index = index yang tidak mengizinkan nilai duplikat
+
+                CREATE UNIQUE INDEX idx_users_email_unique
+                ON users(email);
+
+
+                Artinya:
+
+                email harus unik
+
+                DB menolak insert/update kalau kembar
+
+                sekaligus bikin pencarian cepat
+
+                <br> <hr> <br>
+
+                <h3>B. Unique Index vs PRIMARY KEY</h3>
+
+                Ini sering bikin bingung, kita lurusin:
+
+                Aspek	PRIMARY KEY	UNIQUE INDEX
+                Unik	✅	✅
+                NULL	❌	✅ (MySQL boleh multiple NULL)
+                Satu per tabel	✅	❌ (bisa banyak)
+                Auto index	✅	✅
+
+                👉 PK = identitas utama
+                👉 Unique index = aturan bisnis
+
+                <br> <hr> <br>
+
+                <h3>C. Kapan WAJIB Pakai Unique Index?</h3>
+
+                Kalau secara logika tidak boleh duplikat
+
+                Contoh dunia nyata:
+
+                email
+                username
+                phone_number
+                invoice_number
+                sku
+                slug
+
+
+                Kalau ini dobel → data rusak
+
+                <br> <hr> <br>
+
+                <h3>D. Contoh Kasus Nyata</h3>
+                Tabel users
+                CREATE TABLE users (
+                id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                email VARCHAR(100),
+                name VARCHAR(100)
+                );
+
+
+                Tambahkan:
+
+                CREATE UNIQUE INDEX idx_users_email_unique
+                ON users(email);
+
+
+                Sekarang:
+
+                INSERT INTO users (email, name)
+                VALUES ('a@b.com', 'A'); -- OK
+
+                INSERT INTO users (email, name)
+                VALUES ('a@b.com', 'B'); -- ❌ ERROR
+
+                <br> <hr> <br>
+
+                <h3>E. Unique Index COMPOSITE (Kombinasi)</h3>
+
+                Unique index juga bisa multi kolom
+
+                Contoh:
+
+                (user_id, product_id)
+
+
+                Artinya:
+
+                satu user tidak boleh beli produk yang sama dua kali
+
+                CREATE UNIQUE INDEX idx_cart_user_product
+                ON carts(user_id, product_id);
+
+
+                ➡️ aturan bisnis dijaga DB, bukan cuma aplikasi
+
+                <br> <hr> <br>
+
+                <h3>F. Unique Index vs Validasi Aplikasi</h3>
+
+                ❌ Salah kaprah:
+
+                “Validasi di backend saja cukup”
+
+                Masalah:
+
+                race condition
+
+                dua request masuk barengan
+
+                data tembus
+
+                ✅ Yang benar:
+
+                Validasi aplikasi + unique index di DB
+
+                DB = benteng terakhir
+
+                <br> <hr> <br>
+
+                <h3>G. Performa Unique Index</h3>
+
+                secara performa sama cepatnya dengan index biasa
+
+                saat INSERT/UPDATE:
+
+                DB harus cek keunikan
+
+                sedikit lebih berat
+
+                worth it 100%
+
+                <br> <hr> <br>
+
+                <h3>H. NULL dan Unique Index (MySQL Spesifik ⚠️)</h3>
+
+                Di MySQL:
+
+                UNIQUE(email)
+
+
+                Boleh:
+
+                NULL
+                NULL
+                NULL
+
+
+                Kalau ingin:
+
+                hanya satu NULL
+
+                atau tidak boleh NULL
+
+                👉 pakai:
+
+                email NOT NULL
+
+                <br> <hr> <br>
+
+                <h3>I. Kapan JANGAN Pakai Unique Index?</h3>
+
+                ❌ data historis
+                ❌ data log
+                ❌ data yang boleh duplikat secara bisnis
+
+                Contoh:
+
+                user_login_logs
+                activity_logs
+                transaction_logs
+
+                <br> <hr> <br>
+
+                <h3>J. Mindset Profesional</h3>
+
+                ❌ “Nanti dicek di aplikasi”
+                ✅ “Database ikut mikir”
+
+                Unique index:
+
+                mencegah bug mahal
+
+                mengurangi defensive code
+
+                bikin sistem tahan banting
+
+                Ringkasan Kilat
+
+                Unique index = cepat + aman
+
+                jaga aturan bisnis
+
+                bisa single atau composite
+
+                selalu kombinasikan dengan NOT NULL bila perlu
+
+                <br> <br> 
+
+                <a href="5b-query-optimization.html" class="btn-next">5b. Query Optimization</a>
+                
+            </div>
+        </main>
+    </div>
+
+    <script>
+        fetch('layout/aside.html').then(response => response.text()).then(data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop();
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
