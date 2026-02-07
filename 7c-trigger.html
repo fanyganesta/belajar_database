@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Type</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+
+        <main>
+            <header>
+                
+            </header>
+            
+            <div class="content">    
+                <h2>7.3 Trigger</h2>
+
+                Database yang bereaksi otomatis terhadap perubahan data
+
+                Struktur rapi pakai penanda ya:
+
+                A. Apa itu Trigger
+                B. Kapan Trigger Dipakai
+                C. Karakteristik & Bahaya Trigger
+                D. Jenis Trigger (BEFORE / AFTER)
+                E. Contoh Trigger: Auto Insert Log
+
+                (Audit trail kita bahas setelah ini)
+
+                <br> <hr> <br>
+
+                <h3>A. Apa itu Trigger</h3>
+
+                Trigger adalah:
+
+                kode SQL yang otomatis dijalankan
+                saat terjadi INSERT / UPDATE / DELETE
+
+                Tanpa:
+
+                dipanggil aplikasi
+
+                disadari developer lain 😈
+
+                Mental Model
+
+                Trigger itu kayak:
+
+                alarm otomatis
+
+                observer di database
+
+                “kalau kejadian X, lakukan Y”
+
+                <br> <hr> <br>
+
+                <h3>B. Kapan Trigger Dipakai</h3>
+
+                Trigger cocok untuk:
+
+                logging
+
+                audit trail
+
+                menjaga konsistensi data
+
+                auto update field turunan
+
+                Trigger TIDAK cocok untuk:
+
+                business flow
+
+                logic kompleks
+
+                logic yang sering berubah
+
+                <br> <hr> <br>
+
+                <h3>C. Karakteristik & Bahaya Trigger</h3>
+
+                ⚠️ Ini penting banget:
+
+                Karakteristik	Dampak
+                Auto-run	Sulit ditrack
+                Invisible	Debugging susah
+                Implicit logic	Developer lain bisa kaget
+                Jalan di transaction	Bisa rollback
+
+                👉 Trigger = power tanpa tombol off
+
+                <br> <hr> <br>
+
+                <h3>D. Jenis Trigger</h3>
+                1️⃣ BEFORE Trigger
+
+                jalan sebelum data disimpan
+
+                bisa:
+
+                validasi
+
+                ubah nilai
+
+                BEFORE INSERT
+                BEFORE UPDATE
+
+                2️⃣ AFTER Trigger
+
+                jalan setelah data tersimpan
+
+                cocok untuk:
+
+                log
+
+                audit
+
+                AFTER INSERT
+                AFTER UPDATE
+                AFTER DELETE
+
+                <br> <hr> <br>
+
+                <h3>E. Auto Insert Log (Use Case Aman)</h3>
+
+                🔥 Ini use case trigger paling sehat
+
+                Contoh Kasus
+
+                Setiap:
+
+                INSERT
+
+                UPDATE
+
+                DELETE
+
+                👉 ingin dicatat ke tabel log
+
+                Struktur Tabel Log
+                CREATE TABLE activity_logs (
+                    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                    table_name VARCHAR(50),
+                    action VARCHAR(10),
+                    record_id BIGINT,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                );
+
+                Trigger AFTER INSERT
+                DELIMITER //
+
+                CREATE TRIGGER trg_users_after_insert
+                AFTER INSERT ON users
+                FOR EACH ROW
+                BEGIN
+                    INSERT INTO activity_logs (
+                        table_name,
+                        action,
+                        record_id
+                    ) VALUES (
+                        'users',
+                        'INSERT',
+                        NEW.id
+                    );
+                END //
+
+                DELIMITER ;
+
+
+                👉 Setiap user baru:
+
+                otomatis tercatat
+
+                tanpa sentuhan aplikasi
+
+                Trigger AFTER UPDATE
+                CREATE TRIGGER trg_users_after_update
+                AFTER UPDATE ON users
+                FOR EACH ROW
+                BEGIN
+                    INSERT INTO activity_logs (
+                        table_name,
+                        action,
+                        record_id
+                    ) VALUES (
+                        'users',
+                        'UPDATE',
+                        NEW.id
+                    );
+                END;
+
+                Trigger AFTER DELETE
+                CREATE TRIGGER trg_users_after_delete
+                AFTER DELETE ON users
+                FOR EACH ROW
+                BEGIN
+                    INSERT INTO activity_logs (
+                        table_name,
+                        action,
+                        record_id
+                    ) VALUES (
+                        'users',
+                        'DELETE',
+                        OLD.id
+                    );
+                END;
+
+                <br> <hr> <br>
+
+                <h3>F. Kenapa Auto Log via Trigger Itu Bagus?</h3>
+
+                ✅ Tidak bisa dilupakan
+                ✅ Konsisten
+                ✅ Aman lintas aplikasi
+                ✅ Cocok untuk audit ringan
+
+                <br> <hr> <br>
+
+                <h3>G. Batasan Log via Trigger</h3>
+
+                Trigger log:
+
+                jangan terlalu detail
+
+                jangan log ke tabel yang sama
+
+                jangan heavy computation
+
+                Ringkasan Mental Model 7.3 (Trigger)
+
+                Trigger = reaksi otomatis database
+
+                Dipakai untuk:
+
+                log
+
+                audit
+
+                konsistensi
+
+                Dihindari untuk:
+
+                business logic
+
+                flow kompleks
+
+                conditional berat
+
+                <br> <hr> <br>
+
+                <h3>H. Checkpoint</h3>
+
+                Kalau kamu paham:
+
+                trigger auto-run
+
+                BEFORE vs AFTER
+
+                NEW vs OLD
+
+                👉 kamu sudah aman pakai trigger ringan
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>7.3.2 Audit Trail</h2>
+
+                Siapa mengubah apa, kapan, dan dari mana
+
+                Kita rapi pakai penanda ya:
+
+                A. Apa itu Audit Trail
+                B. Audit Log vs Activity Log
+                C. Desain Tabel Audit Trail yang Sehat
+                D. Trigger Audit Trail (UPDATE fokus utama)
+                E. Best Practice & Batasan
+
+                <br> <hr> <br>
+
+                <h3>A. Apa itu Audit Trail</h3>
+
+                Audit Trail adalah:
+
+                catatan historis perubahan data
+                yang bisa dipertanggungjawabkan
+
+                Audit trail menjawab:
+
+                siapa yang mengubah
+
+                data apa yang berubah
+
+                sebelum & sesudah
+
+                kapan perubahan terjadi
+
+                Kenapa Audit Trail Penting
+
+                compliance
+
+                dispute resolution
+
+                forensic debugging
+
+                keamanan
+
+                <br> <hr> <br>
+
+                <h3>B. Audit Log vs Activity Log</h3>
+
+                Ini sering ketukar 👇
+
+                Jenis	Tujuan	Detail
+                Activity Log	Jejak aksi	Ringkas
+                Audit Trail	Jejak perubahan data	Detail
+
+                👉 Audit trail:
+
+                lebih berat
+
+                lebih sensitif
+
+                lebih mahal
+
+                <br> <hr> <br>
+
+                <h3>C. Desain Tabel Audit Trail yang Sehat</h3>
+                Contoh Struktur
+                CREATE TABLE audit_logs (
+                    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                    table_name VARCHAR(50),
+                    record_id BIGINT,
+                    action VARCHAR(10),
+                    old_data JSON,
+                    new_data JSON,
+                    changed_by BIGINT,
+                    changed_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                );
+
+                Penjelasan Kolom
+                Kolom	Fungsi
+                table_name	Tabel asal
+                record_id	ID data
+                action	UPDATE / DELETE
+                old_data	Data sebelum
+                new_data	Data sesudah
+                changed_by	User ID
+                changed_at	Waktu
+
+                👉 JSON bikin fleksibel
+                👉 Tidak perlu ubah schema saat kolom nambah
+
+                <br> <hr> <br>
+
+                <h3>D. Trigger Audit Trail (UPDATE Fokus Utama)</h3>
+
+                Audit trail paling penting untuk UPDATE.
+
+                Catatan Penting
+
+                Trigger tidak tahu user aplikasi secara langsung.
+
+                Solusi umum:
+
+                simpan updated_by di tabel utama
+
+                atau set session variable
+
+                Contoh Trigger AFTER UPDATE
+                DELIMITER //
+
+                CREATE TRIGGER trg_users_audit_update
+                AFTER UPDATE ON users
+                FOR EACH ROW
+                BEGIN
+                    INSERT INTO audit_logs (
+                        table_name,
+                        record_id,
+                        action,
+                        old_data,
+                        new_data,
+                        changed_by
+                    ) VALUES (
+                        'users',
+                        NEW.id,
+                        'UPDATE',
+                        JSON_OBJECT(
+                            'name', OLD.name,
+                            'email', OLD.email,
+                            'status', OLD.status
+                        ),
+                        JSON_OBJECT(
+                            'name', NEW.name,
+                            'email', NEW.email,
+                            'status', NEW.status
+                        ),
+                        NEW.updated_by
+                    );
+                END //
+
+                DELIMITER ;
+
+                DELETE Audit
+                CREATE TRIGGER trg_users_audit_delete
+                AFTER DELETE ON users
+                FOR EACH ROW
+                BEGIN
+                    INSERT INTO audit_logs (
+                        table_name,
+                        record_id,
+                        action,
+                        old_data,
+                        changed_by
+                    ) VALUES (
+                        'users',
+                        OLD.id,
+                        'DELETE',
+                        JSON_OBJECT(
+                            'name', OLD.name,
+                            'email', OLD.email
+                        ),
+                        OLD.updated_by
+                    );
+                END;
+
+                <br> <hr> <br>
+
+                <h3>E. Best Practice & Batasan Audit Trail</h3>
+                ✅ Best Practice
+
+                audit hanya tabel penting
+
+                fokus UPDATE & DELETE
+
+                simpan data minimal
+
+                index table_name, record_id
+
+                dokumentasi trigger
+
+                ❌ Jangan Lakukan Ini
+
+                🚫 audit semua tabel
+                🚫 audit semua kolom tanpa seleksi
+                🚫 logic kompleks di trigger
+                🚫 join ke tabel lain
+
+                Masalah Umum Audit Trail
+                Masalah	Dampak
+                Audit terlalu detail	DB berat
+                Audit tanpa index	Query lambat
+                Audit tanpa user	Tidak berguna
+                Trigger berantai	Deadlock 😱
+                Ringkasan Mental Model
+
+                Audit Trail = CCTV database
+
+                tidak mencegah
+
+                tapi merekam
+
+                dan bisa dipertanggungjawabkan
+
+                Checkpoint
+
+                Kalau kamu paham:
+
+                beda log vs audit
+
+                OLD vs NEW
+
+                kapan audit dipakai
+
+                👉 kamu sudah siap audit sistem production
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <a href="7d-event-scheduler.html" class="btn-next">7d. Event Scheduler</a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        fetch('layout/aside.html').then(response => response.text()).then(data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop();
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

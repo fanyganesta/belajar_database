@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Type</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+
+        <main>
+            <header>
+                
+            </header>
+            
+            <div class="content">    
+                <h2>7.4 Event Scheduler — Cron Job di Level Database</h2>
+
+                “Kalau aplikasi mati tapi database hidup, event scheduler tetap jalan.”
+                Dan itu bisa jadi penyelamat… atau mimpi buruk 😈
+
+                <br> <hr> <br>
+
+
+                1️⃣ Apa itu Event Scheduler?
+
+                Event Scheduler adalah fitur MySQL yang memungkinkan database menjalankan query secara otomatis berdasarkan waktu.
+
+                Singkatnya:
+
+                Cron job tapi nempel di database
+
+                Jalan tanpa campur tangan aplikasi
+
+                Time-based, bukan request-based
+
+                📌 Contoh:
+
+                Hapus data sementara tiap malam
+
+                Generate laporan harian
+
+                Reset counter bulanan
+
+                Auto-archive data lama
+
+                <br> <hr> <br>
+
+
+                2️⃣ Bedanya dengan Cron di Server / Queue Job?
+                Aspek	Event Scheduler	Cron / Queue
+                Lokasi	Database	Server / App
+                Trigger	Waktu	Waktu / Event
+                Butuh aplikasi hidup	❌ Tidak	✅ Ya
+                Kontrol logika kompleks	❌ Terbatas	✅ Fleksibel
+                Risiko tersembunyi	⚠️ Tinggi	⚠️ Sedang
+
+                👉 Rule kasar
+
+                Logic berat → aplikasi
+
+                Maintenance data → database
+
+                <br> <hr> <br>
+
+
+                3️⃣ Mengaktifkan Event Scheduler (WAJIB)
+
+                Secara default sering OFF 🔕
+
+                SET GLOBAL event_scheduler = ON;
+
+
+                Cek status:
+
+                SHOW VARIABLES LIKE 'event_scheduler';
+
+
+                ⚠️ Catatan:
+
+                Di shared hosting: sering tidak diizinkan
+
+                Di production: harus seizin DBA / infra
+
+                <br> <hr> <br>
+
+
+                4️⃣ Contoh Dasar Event
+                Event jalan setiap hari jam 00:00
+                CREATE EVENT cleanup_temp_data
+                ON SCHEDULE EVERY 1 DAY
+                STARTS '2026-01-01 00:00:00'
+                DO
+                DELETE FROM temp_orders
+                WHERE created_at < NOW() - INTERVAL 7 DAY;
+
+
+                📌 Ini langsung nembak database, tanpa Laravel, tanpa cron server.
+
+                <br> <hr> <br>
+
+
+                5️⃣ Real Case yang Masuk Akal (Best Practice)
+                ✅ Auto Archive Data Lama
+                CREATE EVENT archive_orders
+                ON SCHEDULE EVERY 1 DAY
+                DO
+                BEGIN
+                INSERT INTO orders_archive
+                SELECT * FROM orders
+                WHERE created_at < NOW() - INTERVAL 1 YEAR;
+
+                DELETE FROM orders
+                WHERE created_at < NOW() - INTERVAL 1 YEAR;
+                END;
+
+
+                🧠 Cocok untuk:
+
+                Log besar
+
+                History transaksi lama
+
+                Table yang bikin query makin lambat
+
+                <br> <hr> <br>
+
+
+                6️⃣ Contoh Berbahaya (Anti Pattern 😈)
+                ❌ Update data bisnis utama
+                UPDATE users SET status = 'expired';
+
+
+                Tanpa:
+
+                Validasi user
+
+                Context aplikasi
+
+                Logging proper
+
+                👉 Kalau error?
+                👉 Kalau logic berubah?
+                👉 Kalau ada bug jam 00:00?
+
+                💥 Database tetap nurut, aplikasi yang nangis
+
+                <br> <hr> <br>
+
+
+                7️⃣ Event Scheduler + Audit Log (WAJIB)
+
+                Event HARUS log ke audit table
+
+                INSERT INTO system_logs (
+                source,
+                action,
+                executed_at
+                ) VALUES (
+                'event_scheduler',
+                'cleanup temp_orders',
+                NOW()
+                );
+
+
+                📌 Ingat Bab 7.3?
+
+                “Semua automation wajib bisa dilacak.”
+
+                <br> <hr> <br>
+
+
+                8️⃣ Kapan Event Scheduler BOLEH Dipakai?
+
+                ✅ Pakai kalau:
+
+                Maintenance data
+
+                Cleanup
+
+                Archiving
+
+                Reset statistik
+
+                Auto generate laporan ringan
+
+                ❌ Jangan pakai kalau:
+
+                Logic bisnis utama
+
+                Perhitungan kompleks
+
+                Butuh conditional logic panjang
+
+                Butuh rollback kompleks
+
+                <br> <hr> <br>
+
+
+                9️⃣ Event Scheduler vs Queue Job (Laravel)
+                Kebutuhan	Pilihan
+                Cleanup data	Event
+                Sync API	Queue
+                Kirim email	Queue
+                Generate invoice	Queue
+                Archive data	Event
+                Hitung komisi	❌ Jangan Event
+                🔚 Penutup Bab 7 — Database Bukan Tempat Sok Pintar
+
+                <br> <hr> <br>
+
+
+                Bab 7 intinya satu:
+
+                Database itu mesin, bukan otak.
+
+                View → bantu baca data
+
+                Stored Procedure → pisau bermata dua
+
+                Trigger → otomatis tapi berbahaya
+
+                Event Scheduler → jalan sendiri tanpa izin aplikasi
+
+                Kalau kamu pindahkan terlalu banyak logika ke database:
+
+                Debug makin susah
+
+                Developer baru tersesat
+
+                Bug muncul tanpa jejak
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <a href="8a-sql-injection.html" class="btn-next">8a. SQL Injection</a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        fetch('layout/aside.html').then(response => response.text()).then(data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop();
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

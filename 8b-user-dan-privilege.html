@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Type</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+
+        <main>
+            <header>
+                
+            </header>
+            
+            <div class="content">
+                <h2>B. User & Privilege (GRANT)</h2>
+
+                “Asumsikan sistemmu bakal ditembus.
+                Pertanyaannya: seberapa parah dampaknya?”
+
+                Kalau SQL Injection itu pintu,
+                Privilege itu isi rumahnya.
+
+                <br> <hr> <br>
+                
+                <h3>🧠 B.0 Cara Berpikir yang BENAR</h3>
+
+                Rule emas database security:
+
+                Jangan beri izin lebih dari yang dibutuhkan.
+                Sekecil apa pun sistemnya.
+
+                Karena:
+
+                bug pasti ada
+
+                manusia pasti khilaf
+
+                attacker pasti kreatif
+
+                <br> <hr> <br>
+                
+                <h3>🚨 B.1 Kesalahan Fatal Paling Sering</h3>
+                ❌ B.1.a App pakai user root
+
+                Ini dosa besar level neraka 😈
+
+                Kalau app pakai root:
+
+                SQL Injection → DROP DATABASE
+
+                Bug query → hancur total
+
+                Developer baru → salah ketik → tamat
+
+                📌 Root hanya untuk DBA / admin.
+
+                ❌ B.1.b Satu user untuk semua environment
+
+                local
+
+                staging
+
+                production
+
+                ➡️ sekali bocor → semua ikut bocor
+
+                <br> <hr> <br>
+                
+                <h3>🧱 B.2 Konsep Dasar Privilege</h3>
+
+                Privilege itu izin spesifik, bukan “boleh semuanya”.
+
+                Contoh privilege:
+
+                SELECT
+
+                INSERT
+
+                UPDATE
+
+                DELETE
+
+                CREATE
+
+                ALTER
+
+                DROP
+
+                INDEX
+
+                EXECUTE
+
+                📌 Setiap izin = potensi damage.
+
+                <br> <hr> <br>
+                
+                <h3>🧩 B.3 Prinsip Paling Penting: Least Privilege</h3>
+
+                User hanya boleh melakukan apa yang dia butuhkan.
+                Tidak lebih. Tidak kurang.
+
+                🎯 Contoh Kasus Nyata
+                Aplikasi Web (CRUD biasa)
+
+                Butuh:
+
+                SELECT
+
+                INSERT
+
+                UPDATE
+
+                DELETE
+
+                ❌ Tidak butuh:
+
+                DROP
+
+                ALTER
+
+                CREATE
+
+                SUPER
+
+                Aplikasi Laporan (Read-only)
+
+                Butuh:
+
+                SELECT
+
+                Selesai.
+                📌 Bahkan INSERT pun tidak boleh.
+
+                Migration / Seeder
+
+                Butuh:
+
+                CREATE
+
+                ALTER
+
+                INDEX
+
+                📌 JANGAN pakai user ini untuk app runtime.
+
+                <br> <hr> <br>
+                
+                <h3>🔑 B.4 Best Practice Struktur User</h3>
+                B.4.a Pisahkan User Berdasarkan Fungsi
+
+                Contoh ideal:
+
+                User	Fungsi
+                app_user	CRUD aplikasi
+                report_user	SELECT laporan
+                migration_user	schema changes
+                admin_user	maintenance
+
+                📌 Ini bukan ribet — ini profesional.
+
+                <br> <hr> <br>
+                
+                <h3>🧪 B.5 Contoh GRANT yang SEHAT</h3>
+                App user:
+                GRANT SELECT, INSERT, UPDATE, DELETE
+                ON app_db.*
+                TO 'app_user'@'%';
+
+                Report user:
+                GRANT SELECT
+                ON app_db.*
+                TO 'report_user'@'%';
+
+                Migration user:
+                GRANT CREATE, ALTER, INDEX
+                ON app_db.*
+                TO 'migration_user'@'localhost';
+
+
+                📌 Host juga penting (localhost vs %).
+
+                <br> <hr> <br>
+                
+                <h3>🧨 B.6 Dampak Langsung ke Security</h3>
+
+                Kalau SQL Injection terjadi:
+
+                Tanpa Least Privilege	Dengan Least Privilege
+                DROP TABLE	Query gagal
+                DELETE massal	Scope terbatas
+                Ambil schema	Akses ditolak
+
+                ➡️ Bug tetap ada, tapi bisnis selamat.
+
+                <br> <hr> <br>
+                
+                <h3>🔍 B.7 Audit & Review Privilege</h3>
+
+                Biasakan:
+
+                audit privilege berkala
+
+                cek user lama
+
+                hapus user tidak terpakai
+
+                SHOW GRANTS FOR 'app_user'@'%';
+
+
+                📌 User lama = lubang keamanan.
+
+                <br> <hr> <br>
+                
+                <h3>🧠 Ringkasan B. User & Privilege</h3>
+
+                Security bukan tentang mencegah semua serangan,
+                tapi membatasi dampak ketika serangan berhasil.
+
+                Checklist mental:
+
+                ❓ App pakai root? (STOP)
+
+                ❓ Privilege minimal?
+
+                ❓ User dipisah berdasarkan fungsi?
+
+                ❓ Migration & app user beda?
+            </div>
+        </main>
+    </div>
+
+    <script>
+        fetch('layout/aside.html').then(response => response.text()).then(data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop();
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

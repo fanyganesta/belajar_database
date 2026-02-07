@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Type</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+
+        <main>
+            <header>
+                
+            </header>
+            
+            <div class="content">
+                <h2>6.2 ACID — Hukum Alam Transaction</h2>
+
+                Kalau kamu tanya:
+
+                “Kenapa gue bisa percaya transaction nggak bikin data rusak?”
+
+                Jawabannya cuma satu kata:
+
+                <br> <hr> <br>
+
+                <h3>ACID</h3>
+
+                Bukan asam kimia ya 😆
+                Tapi 4 prinsip wajib yang HARUS dipenuhi database transaction-based (MySQL InnoDB, PostgreSQL, dll).
+
+                Apa itu ACID?
+
+                ACID =
+
+                Atomicity
+
+                Consistency
+
+                Isolation
+
+                Durability
+
+                Kalau satu aja dilanggar →
+                ❌ transaction tidak bisa dipercaya
+
+                <br> <hr> <br>
+
+                <h3>Gambaran Besar (sebelum kita bedah satu-satu)</h3>
+
+                Bayangin transaksi keuangan:
+
+                Prinsip	Intinya
+                Atomicity	Semua atau tidak sama sekali
+                Consistency	Data selalu valid
+                Isolation	Transaksi lain nggak ganggu
+                Durability	Sudah commit → nggak hilang
+
+                Sekarang kita kupas satu per satu pakai contoh finance biar nempel.
+
+                <br> <hr> <br>
+
+                1️⃣ Atomicity — Semua atau Nol
+                Makna
+
+                Transaction itu atomik
+                → tidak bisa dipecah
+
+                Berhasil semua
+                atau
+                gagal semua
+
+                Contoh Paling Klasik
+
+                Transfer 100rb:
+
+                START TRANSACTION;
+
+                UPDATE accounts SET balance = balance - 100000 WHERE id = 1;
+                UPDATE accounts SET balance = balance + 100000 WHERE id = 2;
+
+                COMMIT;
+
+
+                Kalau salah satu query gagal:
+
+                ROLLBACK;
+
+
+                👉 Tidak ada kondisi saldo kepotong setengah
+
+                Kalau Atomicity Tidak Ada
+
+                saldo pengirim berkurang
+
+                saldo penerima tidak bertambah
+
+                💥 Uang lenyap
+
+                Catatan Penting
+
+                Atomicity BUKAN tanggung jawab aplikasi
+                👉 Database yang menjamin
+
+                <br> <hr> <br>
+
+                2️⃣ Consistency — Data Selalu Masuk Akal
+                Makna
+
+                Transaction harus menjaga aturan bisnis & constraint
+
+                Setelah transaction:
+
+                data tidak melanggar rule
+
+                database tetap sehat
+
+                Contoh Consistency Rule
+
+                saldo tidak boleh negatif
+
+                foreign key harus valid
+
+                total invoice = sum item
+
+                stok tidak boleh minus
+
+                Contoh
+                UPDATE accounts
+                SET balance = balance - 500000
+                WHERE id = 1;
+
+
+                Kalau saldo awal cuma 300rb:
+
+                transaction HARUS GAGAL
+
+                database tetap konsisten
+
+                Biasanya dikombinasikan dengan:
+
+                CHECK constraint
+
+                validation
+
+                trigger
+
+                application logic
+
+                Mindset Penting
+
+                Transaction boleh gagal,
+                tapi database tidak boleh rusak
+
+                Itulah Consistency.
+
+                <br> <hr> <br>
+
+                3️⃣ Isolation — Transaksi Tidak Saling Mengacaukan
+
+                🔥 Ini bagian paling sering bikin bug halus.
+
+                Makna
+
+                Transaction berjalan seolah-olah sendirian
+
+                Walaupun:
+
+                ada 10
+
+                100
+
+                1000 transaksi lain
+
+                Contoh Dunia Nyata
+
+                Dua user beli 1 stok terakhir:
+
+                Tanpa isolation:
+
+                User A baca stok = 1
+
+                User B baca stok = 1
+
+                Dua-duanya checkout
+
+                stok jadi -1
+
+                💀
+
+                Dengan Isolation
+
+                Database mengatur agar:
+
+                transaksi lain menunggu
+
+                atau melihat versi data yang aman
+
+                Isolation inilah yang:
+
+                melahirkan locking
+
+                memunculkan deadlock
+
+                bikin performa naik/turun
+
+                👉 nanti kita bahas detail di 6.3
+
+                Level Isolation (sekilas aja dulu)
+
+                READ UNCOMMITTED
+
+                READ COMMITTED
+
+                REPEATABLE READ (default MySQL)
+
+                SERIALIZABLE
+
+                Semakin tinggi:
+
+                makin aman
+
+                makin berat performa
+
+                <br> <hr> <br>
+
+                4️⃣ Durability — Sudah Commit, Nggak Hilang
+                Makna
+
+                Kalau transaction sudah COMMIT,
+                data HARUS tetap ada
+
+                Walaupun:
+
+                server mati
+
+                listrik padam
+
+                aplikasi crash
+
+                Contoh
+                COMMIT;
+
+
+                Begitu ini sukses:
+
+                data ditulis ke disk
+
+                dicatat di log (redo log / WAL)
+
+                Kalau server restart:
+                👉 data tetap ada
+
+                <br> <hr> <br>
+
+                <h3>Kalau Durability Tidak Ada</h3>
+
+                user sudah bayar
+
+                sistem bilang sukses
+
+                server mati
+
+                data hilang
+
+                💥 Kiamat finance
+
+                <br> <hr> <br>
+
+                <h3>Ringkasan ACID (Versi Otak Santai)</h3>
+                Huruf	Inti	Kalimat Simpel
+                A	Atomicity	Semua atau nggak sama sekali
+                C	Consistency	Data tetap waras
+                I	Isolation	Nggak saling ganggu
+                D	Durability	Sudah commit = abadi
+                Kenapa ACID Itu “Hukum Alam”?
+
+                Karena:
+
+                Tanpa ACID → transaction cuma ilusi
+
+                Finance tanpa ACID → penipuan tak sengaja
+
+                Makanya:
+
+                MySQL pakai InnoDB
+
+                PostgreSQL dari awal ACID-first
+
+                NoSQL dulu banyak yang tidak ACID penuh
+
+                <br> <hr> <br>
+
+                <h3>Checkpoint Bab 6.2</h3>
+
+                Kalau kamu ngerti ini:
+
+                kenapa ROLLBACK penting
+
+                kenapa isolation bikin deadlock
+
+                kenapa commit itu sakral
+
+                👉 berarti mental kamu sudah siap masuk sistem keuangan beneran
+
+                <br> <br>
+
+                <hr> 
+
+                <br> <br>
+
+                <a href="6c-locking-dan-concurrency.html" class="btn-next">6c. Locking dan Concurency</a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        fetch('layout/aside.html').then(response => response.text()).then(data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop();
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

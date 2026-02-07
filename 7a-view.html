@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Type</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+
+        <main>
+            <header>
+                
+            </header>
+            
+            <div class="content">    
+                <h2>BAB 7 — Advanced MySQL (Naik ke Expert)</h2>
+
+                Saat database bukan cuma penyimpan data, tapi ikut “berpikir”
+
+                Kalau bab 1–6 itu:
+
+                cara pakai database dengan benar
+
+                aman, cepat, konsisten
+
+                Maka Bab 7 itu:
+
+                memanfaatkan kemampuan tersembunyi MySQL
+
+                bikin sistem rapi, scalable, dan profesional
+
+                dipakai di enterprise & sistem legacy besar
+
+                <h3>Gambaran Besar Bab 7</h3>
+
+                Kita bahas 4 fitur advanced:
+
+                Fitur	Perannya
+                View	Abstraksi query kompleks
+                Stored Procedure	Logic di level database
+                Trigger	Otomatis bereaksi ke perubahan data
+                Event Scheduler	Cron job langsung di DB
+
+                👉 Catatan penting:
+
+                Advanced ≠ selalu dipakai
+                Tapi harus paham kapan dan kenapa dipakai
+
+                <h3>Struktur Bab 7</h3>
+
+                Kita pakai penanda biar rapi:
+
+                A. Filosofi Advanced MySQL
+                B. Kapan fitur advanced dipakai (dan kapan TIDAK)
+                C. Peran DB vs Application
+                D. Risiko & trade-off
+
+                Setelah itu baru masuk ke 7.1 View
+
+                <h3>A. Filosofi Advanced MySQL</h3>
+
+                Advanced MySQL itu intinya:
+
+                mengurangi kompleksitas di aplikasi
+                dengan memindahkan sebagian ke database
+
+                Contoh:
+
+                laporan kompleks → View
+
+                audit otomatis → Trigger
+
+                job rutin → Event
+
+                logic berat & konsisten → Stored Procedure
+
+                ⚠️ Tapi Ingat
+
+                Database itu:
+
+                shared resource
+
+                sulit di-debug
+
+                sulit di-versioning
+
+                Makanya:
+
+                advanced feature = pisau tajam
+
+                Dipakai:
+
+                tepat
+
+                sadar konsekuensi
+
+                <h3>B. Kapan Advanced Feature Dipakai</h3>
+
+                ✅ Cocok dipakai kalau:
+
+                query panjang & sering dipakai
+
+                logic harus konsisten lintas aplikasi
+
+                performa kritikal
+
+                laporan berat
+
+                ❌ Jangan dipakai kalau:
+
+                tim belum paham DB
+
+                aplikasi kecil
+
+                logic sering berubah
+
+                butuh portability DB
+
+                <h3>C. Peran Database vs Application</h3>
+                Logic	Idealnya di mana
+                Validasi UI	App
+                Business flow	App
+                Aggregation berat	DB
+                Audit trail	DB
+                Reporting	DB
+                Transaksi finansial	DB + App
+
+                👉 Bab 7 ini ngajarin garis batas profesional
+
+                <h3>D. Risiko & Trade-off</h3>
+
+                Advanced MySQL:
+
+                ❌ sulit testing
+
+                ❌ sulit migrate
+
+                ❌ tight coupling ke MySQL
+
+                Tapi:
+
+                ✅ performa tinggi
+
+                ✅ konsistensi kuat
+
+                ✅ query bersih
+
+                Oke, sekarang masuk ke 7.1 View
+
+                <br> <br>
+
+                <hr> 
+
+                <br> <br>
+                
+                <h2>7.1 View</h2>
+
+                Virtual table hasil dari query
+
+                <br> <hr> <br>
+
+                <h3>A. Apa itu View?</h3>
+
+                View adalah:
+
+                query yang disimpan sebagai “tabel virtual”
+
+                tidak menyimpan data
+
+                hanya menyimpan SQL
+
+                saat dipanggil → query dijalankan
+
+                Analogi
+
+                View itu kayak:
+
+                bookmark query
+
+                preset filter
+
+                API versi database
+
+                Contoh Dasar
+                CREATE VIEW v_active_users AS
+                SELECT id, name, email
+                FROM users
+                WHERE status = 'active';
+
+
+                Lalu dipakai:
+
+                SELECT * FROM v_active_users;
+
+
+                👉 seolah-olah tabel beneran
+
+                <br> <hr> <br>
+
+                <h3>B. Kenapa View Itu Powerful</h3>
+
+                Tanpa view:
+
+                SELECT u.name, SUM(o.total)
+                FROM users u
+                JOIN orders o ON o.user_id = u.id
+                WHERE o.status = 'paid'
+                GROUP BY u.id;
+
+
+                Dengan view:
+
+                SELECT * FROM v_user_total_paid;
+
+
+                🔥 Query jadi:
+
+                lebih pendek
+
+                lebih aman
+
+                lebih konsisten
+
+                <br> <hr> <br>
+
+                <h3>C. View ≠ Table</h3>
+
+                Ini penting banget:
+
+                View	Table
+                Tidak simpan data	Simpan data
+                Hasil query	Data fisik
+                Update tergantung kasus	Update langsung
+                Bisa kompleks	Biasanya sederhana
+                <br> <hr> <br>
+
+                <h3>D. Kapan View Digunakan (High Level)</h3>
+
+                View cocok untuk:
+
+                laporan
+
+                query join panjang
+
+                pembatasan akses data
+
+                standarisasi query
+
+                👉 detail “kapan pakai view” kita bahas di 7.1.1
+
+                <br> <hr> <br>
+
+                <h3>E. Keterbatasan View</h3>
+
+                (kenapa nggak semua pakai view?)
+
+                performa tergantung query
+
+                nested view bisa berat
+
+                debugging lebih susah
+
+                tidak selalu updatable
+
+                Ringkasan Mental Model 7.1 (View)
+
+                View = abstraction layer di database
+
+                menyederhanakan query
+
+                menyamakan standar data
+
+                bikin aplikasi lebih bersih
+
+                Tapi:
+
+                View bukan pengganti design yang buruk
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>7.1.1 Kapan Pakai View (dan Kapan Jangan)</h2>
+
+                Bukan soal bisa, tapi soal tepat
+
+                Kita pakai penanda biar rapi:
+
+                A. Prinsip Dasar Pakai View
+                B. Kondisi IDEAL Pakai View
+                C. Contoh Nyata View yang Tepat
+                D. Kapan JANGAN Pakai View
+                E. Anti-Pattern View (kesalahan umum)
+                F. Checklist Profesional sebelum bikin View
+
+                <br> <hr> <br>
+
+                <h3>A. Prinsip Dasar Pakai View</h3>
+
+                Rule emas:
+
+                View dipakai untuk READ, bukan WRITE
+
+                Kalau kamu:
+
+                sering SELECT
+
+                jarang INSERT / UPDATE
+
+                👉 view adalah kandidat kuat.
+
+                <br> <hr> <br>
+
+                <h3>B. Kondisi IDEAL Pakai View</h3>
+                1️⃣ Query Panjang & Berulang
+
+                Kalau query:
+
+                JOIN banyak tabel
+
+                dipakai di banyak tempat
+
+                ❌ Jangan copy-paste
+                ✅ Bungkus pakai View
+
+                2️⃣ Query Laporan (Reporting)
+
+                View itu:
+
+                cocok untuk laporan
+
+                data read-heavy
+
+                sering agregasi
+
+                Contoh:
+
+                laporan penjualan harian
+
+                total transaksi per user
+
+                rekap stok
+
+                3️⃣ Abstraksi Struktur Database
+
+                Aplikasi tidak perlu tahu:
+
+                tabel mana join ke mana
+
+                logic agregasi
+
+                App cukup:
+
+                SELECT * FROM v_sales_summary;
+
+                4️⃣ Keamanan & Pembatasan Akses
+
+                View bisa:
+
+                menyembunyikan kolom sensitif
+
+                batasi data per role
+
+                Contoh:
+
+                CREATE VIEW v_public_users AS
+                SELECT id, name
+                FROM users;
+
+
+                👉 user DB cuma dikasih akses ke view
+
+                5️⃣ Standarisasi Query
+
+                Tanpa view:
+
+                tiap developer bikin query beda
+
+                rawan salah hitung
+
+                Dengan view:
+
+                satu sumber kebenaran
+
+                <br> <hr> <br>
+
+                <h3>C. Contoh Nyata View yang Tepat</h3>
+                Contoh 1: Laporan Penjualan
+                CREATE VIEW v_daily_sales AS
+                SELECT
+                    DATE(created_at) AS sale_date,
+                    SUM(total) AS total_sales
+                FROM orders
+                WHERE status = 'paid'
+                GROUP BY DATE(created_at);
+
+
+                Dipakai di:
+
+                dashboard
+
+                export laporan
+
+                BI tools
+
+                Contoh 2: User Aktif
+                CREATE VIEW v_active_users AS
+                SELECT id, name, email
+                FROM users
+                WHERE deleted_at IS NULL;
+
+
+                👉 Soft delete aman
+                👉 Query aplikasi bersih
+
+                <br> <hr> <br>
+
+                <h3>D. Kapan JANGAN Pakai View</h3>
+
+                Ini bagian penting ⚠️
+
+                ❌ 1. Untuk Logic Bisnis Kompleks
+
+                Jangan taruh:
+
+                flow transaksi
+
+                branching logic
+
+                conditional logic kompleks
+
+                Itu tugas:
+                👉 Application / Service layer
+
+                ❌ 2. Untuk Query yang Jarang Dipakai
+
+                View = objek permanen
+
+                Kalau query:
+
+                cuma dipakai sekali
+
+                eksperimental
+
+                👉 tulis langsung saja
+
+                ❌ 3. Untuk Write-Heavy Table
+
+                Kalau tabel:
+
+                sering INSERT / UPDATE
+
+                traffic tinggi
+
+                View:
+
+                bisa bikin bingung
+
+                rawan side effect
+
+                ❌ 4. Untuk Optimasi Palsu
+
+                View tidak otomatis lebih cepat.
+
+                Kalau query lambat:
+
+                index
+
+                struktur tabel
+
+                query plan
+
+                bukan view.
+
+                <br> <hr> <br>
+
+                <h3>E. Anti-Pattern View (Kesalahan Umum)</h3>
+                🚫 View di atas View di atas View
+                v_a → v_b → v_c → v_d
+
+
+                💀 debugging nightmare
+                💀 performa susah ditebak
+
+                🚫 SELECT * di View
+
+                Struktur tabel berubah → view ikut berubah
+
+                ❌ bahaya untuk laporan
+
+                🚫 View Tanpa Index di Base Table
+
+                Index tetap di tabel asli, bukan di view.
+
+                🚫 Mengandalkan View untuk Security Saja
+
+                View membantu,
+                tapi:
+
+                privilege DB tetap penting
+
+                <br> <hr> <br>
+
+                <h3>F. Checklist Profesional Sebelum Bikin View</h3>
+
+                Tanya ke diri sendiri:
+
+                Apakah query sering dipakai?
+
+                Apakah query read-only?
+
+                Apakah ini laporan / agregasi?
+
+                Apakah ini bikin app lebih bersih?
+
+                Apakah index di base table sudah benar?
+
+                Kalau ≥ 3 YA
+                👉 View layak dibuat
+
+                Ringkasan Singkat (Mental Model)
+
+                View = alat untuk keterbacaan & konsistensi,
+                bukan alat sakti performa
+
+                Dipakai saat:
+
+                READ
+
+                LAPORAN
+
+                STANDARISASI
+
+                Dihindari saat:
+
+                WRITE
+
+                LOGIC BERAT
+
+                OVER-ENGINEERING
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>7.1.2 View untuk Laporan</h2>
+
+                Best Practice + Real Case dari dunia nyata
+
+                Kita pakai penanda biar rapi:
+
+                A. Kenapa View Ideal untuk Laporan
+                B. Prinsip Desain View Laporan yang Sehat
+                C. Real Case 1: Laporan Penjualan Harian
+                D. Real Case 2: Laporan Per User / Customer
+                E. View vs Query Langsung untuk Reporting
+                F. Kesalahan Umum View Laporan
+                
+                <br> <hr> <br>
+
+                <h3>A. Kenapa View Ideal untuk Laporan</h3>
+
+                Laporan itu cirinya:
+
+                READ-only
+
+                query panjang
+
+                join banyak tabel
+
+                dipakai berulang
+
+                👉 View cocok 100%
+
+                Benefit:
+
+                query aplikasi bersih
+
+                konsistensi angka
+
+                gampang dipakai BI / export
+
+                satu sumber kebenaran
+                
+                <br> <hr> <br>
+
+                <h3>B. Prinsip Desain View Laporan yang Sehat</h3>
+
+                Ini aturan emas 🔥
+
+                1️⃣ Satu View = Satu Tujuan
+
+                ❌ Salah:
+
+                view campur penjualan + user + stok
+
+                ✅ Benar:
+
+                v_daily_sales
+
+                v_user_purchase_summary
+
+                **2️⃣ Hindari SELECT ***
+
+                Laporan harus:
+
+                eksplisit
+
+                stabil
+
+                ❌
+
+                SELECT *
+
+
+                ✅
+
+                SELECT sale_date, total_sales
+
+                3️⃣ Pre-Aggregate Data
+
+                View laporan:
+
+                boleh GROUP BY
+
+                boleh SUM / COUNT
+
+                Tujuan:
+                👉 aplikasi tidak mikir lagi
+
+                4️⃣ Jangan Taruh Filter Dinamis
+
+                View:
+
+                jangan tergantung parameter
+
+                ❌
+
+                WHERE created_at >= NOW() - INTERVAL 7 DAY
+
+
+                Lebih baik:
+
+                filter di query pemanggil
+
+                5️⃣ Index di Base Table WAJIB
+
+                View tidak punya index.
+
+                👉 Index tetap:
+
+                di tabel asli
+
+                kolom JOIN
+
+                kolom WHERE
+                
+                <br> <hr> <br>
+
+                <h3>C. Real Case 1 — Laporan Penjualan Harian</h3>
+                Masalah Tanpa View
+
+                Setiap laporan:
+
+                query panjang
+
+                rawan salah GROUP BY
+
+                Solusi dengan View
+                CREATE VIEW v_daily_sales AS
+                SELECT
+                    DATE(o.created_at) AS sale_date,
+                    COUNT(o.id) AS total_orders,
+                    SUM(o.total_amount) AS total_revenue
+                FROM orders o
+                WHERE o.status = 'paid'
+                GROUP BY DATE(o.created_at);
+
+                Pemakaian
+                SELECT *
+                FROM v_daily_sales
+                WHERE sale_date BETWEEN '2024-01-01' AND '2024-01-31';
+
+
+                🔥 bersih
+                🔥 aman
+                🔥 konsisten
+                
+                <br> <hr> <br>
+
+                <h3>D. Real Case 2 — Laporan Per User</h3>
+                Kebutuhan
+
+                total transaksi per user
+
+                total nilai belanja
+
+                View
+                CREATE VIEW v_user_purchase_summary AS
+                SELECT
+                    u.id AS user_id,
+                    u.name,
+                    COUNT(o.id) AS total_orders,
+                    SUM(o.total_amount) AS total_spent
+                FROM users u
+                LEFT JOIN orders o ON o.user_id = u.id
+                    AND o.status = 'paid'
+                GROUP BY u.id, u.name;
+
+                Dipakai oleh App
+                SELECT *
+                FROM v_user_purchase_summary
+                ORDER BY total_spent DESC
+                LIMIT 10;
+
+
+                👉 dashboard top customer kelar tanpa logic ribet
+                
+                <br> <hr> <br>
+
+                <h3>E. View vs Query Langsung untuk Reporting</h3>
+                Aspek	View	Query Langsung
+                Konsistensi	✅ Tinggi	❌ Bisa beda
+                Reusability	✅ Tinggi	❌ Rendah
+                Debugging	⚠️ Sedang	✅ Mudah
+                Performa	Sama (tergantung query)	Sama
+
+                👉 Untuk laporan:
+
+                View menang secara maintainability
+                
+                <br> <hr> <br>
+
+                <h3>F. Kesalahan Umum View Laporan</h3>
+                🚫 Nested View Berlapis
+                v_sales → v_sales_month → v_sales_year
+
+
+                👉 Lebih baik:
+
+                satu view per level
+
+                🚫 Logic Bisnis di View
+
+                Diskon, cashback, promo:
+
+                taruh di app
+
+                bukan di view
+
+                🚫 View Tanpa Dokumentasi
+
+                Minimal:
+
+                nama jelas
+
+                komentar SQL
+
+                -- View: Daily paid sales summary
+                
+                <br> <hr> <br>
+
+                <h3>Ringkasan Mental Model</h3>
+
+                View laporan = layer presentasi di database
+
+                data sudah “matang”
+
+                aplikasi tinggal konsumsi
+
+                angka konsisten lintas sistem
+
+                Checkpoint Bab 7.1
+
+                Kalau kamu paham:
+
+                kapan view dipakai
+
+                cara desain view laporan
+
+                kesalahan yang harus dihindari
+
+                👉 kamu sudah siap bikin reporting layer profesional
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <a href="7b-stored-procedure.html" class="btn-next">7b. Stored Procedure</a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        fetch('layout/aside.html').then(response => response.text()).then(data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop();
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

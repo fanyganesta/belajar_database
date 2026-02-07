@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Type</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+
+        <main>
+            <header>
+                
+            </header>
+            
+            <div class="content">    
+                <h2>7.2 Stored Procedure</h2>
+
+                Logic yang hidup di dalam database
+
+                Seperti biasa, kita rapi pakai penanda:
+
+                A. Apa itu Stored Procedure
+                B. Cara Kerja Stored Procedure
+                C. Karakteristik Stored Procedure
+                D. Contoh Stored Procedure Sederhana
+                E. Posisi Stored Procedure dalam Arsitektur Sistem
+
+                (Pro & Kontra kita bahas di 7.2.1 nanti)
+
+                <br> <hr> <br>
+
+                <h3>A. Apa itu Stored Procedure</h3>
+
+                Stored Procedure (SP) adalah:
+
+                sekumpulan SQL + control flow
+                yang disimpan dan dijalankan di database
+
+                Bukan cuma:
+
+                SELECT
+
+                INSERT
+
+                Tapi juga:
+
+                IF
+
+                LOOP
+
+                TRANSACTION
+
+                VARIABLE
+
+                Mental Model
+
+                Kalau:
+
+                View = query yang disimpan
+
+                Stored Procedure = function di level database
+
+                <br> <hr> <br>
+
+                <h3>B. Cara Kerja Stored Procedure</h3>
+
+                1️⃣ Kamu definisikan procedure
+                2️⃣ Database menyimpannya
+                3️⃣ Aplikasi memanggilnya
+
+                CALL transfer_balance(1, 2, 100000);
+
+
+                👉 Database:
+
+                eksekusi logic
+
+                jaga transaksi
+
+                return hasil
+
+                <br> <hr> <br>
+
+                <h3>C. Karakteristik Stored Procedure</h3>
+                1️⃣ Berjalan di Server Database
+
+                lebih dekat ke data
+
+                minim data transfer
+
+                2️⃣ Bisa Mengelola Transaction
+                START TRANSACTION;
+                -- logic
+                COMMIT;
+
+                3️⃣ Bisa Memiliki Parameter
+
+                input
+
+                output
+
+                inout
+
+                4️⃣ Bisa Digunakan Ulang
+
+                satu logic
+
+                banyak aplikasi
+
+                5️⃣ Tidak Bergantung Bahasa Aplikasi
+
+                PHP, Java, Go:
+
+                tinggal CALL
+
+                <br> <hr> <br>
+
+                <h3>D. Contoh Stored Procedure Sederhana</h3>
+                Contoh: Transfer Saldo
+                DELIMITER //
+
+                CREATE PROCEDURE transfer_balance(
+                    IN from_account INT,
+                    IN to_account INT,
+                    IN amount DECIMAL(12,2)
+                )
+                BEGIN
+                    START TRANSACTION;
+
+                    UPDATE accounts
+                    SET balance = balance - amount
+                    WHERE id = from_account;
+
+                    UPDATE accounts
+                    SET balance = balance + amount
+                    WHERE id = to_account;
+
+                    COMMIT;
+                END //
+
+                DELIMITER ;
+
+
+                Pemanggilan:
+
+                CALL transfer_balance(1, 2, 100000);
+
+
+                👉 Atomic
+                👉 Aman
+                👉 Konsisten
+
+                <br> <hr> <br>
+
+                <h3>E. Posisi Stored Procedure dalam Arsitektur</h3>
+                Tanpa Stored Procedure
+                App
+                ├─ validasi
+                ├─ transaction
+                ├─ update
+                ├─ rollback
+                DB
+
+                Dengan Stored Procedure
+                App
+                └─ CALL procedure
+                DB
+                ├─ logic
+                ├─ transaction
+                └─ data
+
+
+                👉 Logic lebih dekat ke data
+
+                Kapan Stored Procedure Biasanya Muncul?
+
+                sistem perbankan
+
+                ERP
+
+                legacy enterprise
+
+                reporting berat
+
+                data migration
+
+                Hal Penting Sebelum Lanjut
+
+                Stored Procedure itu:
+
+                kuat
+
+                berbahaya
+
+                tidak fleksibel
+
+                Makanya:
+
+                harus paham pro & kontra sebelum pakai
+
+                Ringkasan Singkat
+                View	Stored Procedure
+                Read-only	Read + Write
+                Query	Logic
+                Aman	Perlu disiplin
+                Mudah	Kompleks
+
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>7.2.1 Pro & Kontra Stored Procedure</h2>
+
+                Power vs Flexibility
+
+                Struktur rapi ya:
+
+                A. Kubu PRO Stored Procedure (kenapa banyak yang bela mati-matian)
+                B. Kubu KONTRA Stored Procedure (kenapa banyak yang benci 😅)
+                C. Mitos vs Fakta
+                D. Posisi Netral Profesional (jalan tengah)
+
+                <br> <hr> <br>
+
+                <h3>A. PRO Stored Procedure</h3>
+
+                “Logic harus dekat dengan data”
+
+                1️⃣ Konsistensi Data Tingkat Tinggi
+
+                Semua aplikasi:
+
+                mobile
+
+                web
+
+                API
+
+                👉 pakai logic yang sama
+
+                Tidak ada:
+
+                beda perhitungan
+
+                lupa validasi
+
+                logic ke-skip
+
+                2️⃣ Transaksi Lebih Aman
+
+                SP bisa:
+
+                kelola transaction
+
+                lock row
+
+                rollback otomatis
+
+                Sangat cocok:
+
+                finance
+
+                inventory
+
+                ledger
+
+                3️⃣ Performa (Kondisional)
+
+                Karena:
+
+                logic jalan di DB
+
+                minim network roundtrip
+
+                👉 terutama untuk:
+
+                batch processing
+
+                data besar
+
+                4️⃣ Security Lebih Ketat
+
+                Aplikasi:
+
+                tidak perlu akses langsung ke tabel
+
+                cukup EXECUTE procedure
+
+                👉 surface area kecil
+
+                5️⃣ Legacy & Enterprise Friendly
+
+                Banyak sistem besar:
+
+                SAP
+
+                core banking
+
+                ERP lama
+
+                👉 bergantung ke SP
+
+                <br> <hr> <br>
+
+                <h3>B. KONTRA Stored Procedure</h3>
+
+                “Ini neraka maintainability”
+
+                1️⃣ Sulit Testing
+
+                Tidak ada:
+
+                unit test enak
+
+                mocking
+
+                Testing SP:
+
+                manual
+
+                berat
+
+                mahal
+
+                2️⃣ Sulit Versioning
+
+                Git:
+
+                suka text diff
+
+                branching
+
+                Stored Procedure:
+
+                sering langsung di DB
+
+                rawan beda environment
+
+                3️⃣ Tight Coupling ke Database
+
+                Pindah DB?
+
+                MySQL → PostgreSQL
+
+                MySQL → Cloud DB lain
+
+                💀 rewrite semua SP
+
+                4️⃣ Logic Tersembunyi
+
+                Bug sering:
+
+                “kok datanya berubah?”
+
+                “siapa yang update?”
+
+                Jawaban:
+
+                “Oh, ada SP di DB…”
+
+                😵‍💫
+
+                5️⃣ Skill Barrier
+
+                developer biasa ❌
+
+                DBA senior ✅
+
+                Tim kecil:
+
+                risk tinggi
+
+                bus factor 1
+
+                <br> <hr> <br>
+
+                <h3>C. Mitos vs Fakta</h3>
+                ❌ Mitos: Stored Procedure Selalu Lebih Cepat
+
+                ✅ Fakta:
+
+                tergantung desain
+
+                query jelek → tetap lambat
+
+                ❌ Mitos: Stored Procedure Selalu Aman
+
+                ✅ Fakta:
+
+                logic salah → data rusak cepat 😬
+
+                ❌ Mitos: Stored Procedure Itu Jadul
+
+                ✅ Fakta:
+
+                masih dipakai di sistem besar
+
+                tapi dengan disiplin tinggi
+
+                <br> <hr> <br>
+
+                <h3>D. Posisi Netral Profesional (Best Practice Modern)</h3>
+
+                🔥 Ini mindset yang paling sehat:
+
+                Logic bisnis utama di Application
+                Logic data-critical di Database
+
+                Apa yang BOLEH di Stored Procedure
+
+                ✅:
+
+                transaksi finansial
+
+                batch update
+
+                data migration
+
+                reporting heavy
+
+                sinkronisasi data
+
+                Apa yang JANGAN di Stored Procedure
+
+                ❌:
+
+                aturan bisnis yang sering berubah
+
+                flow user
+
+                validasi UI
+
+                conditional kompleks berbasis user
+
+                Rule of Thumb
+
+                Kalau logic:
+
+                sering berubah → App
+
+                jarang berubah + kritikal → DB
+
+                Ringkasan Mental Model
+                Aspek	Stored Procedure
+                Power	🔥🔥🔥
+                Fleksibilitas	❌
+                Maintainability	⚠️
+                Konsistensi	✅
+                Risiko	Tinggi kalau salah
+                Kesimpulan Jujur
+
+                Stored Procedure itu:
+
+                senjata berat
+
+                Kalau:
+
+                tim kecil
+
+                startup
+
+                agile cepat
+
+                👉 pakai hemat
+
+                Kalau:
+
+                finance
+
+                enterprise
+
+                data integrity nomor 1
+
+                👉 worth it
+
+                <a href="7c-trigger.html" class="btn-next">7c. Trigger</a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        fetch('layout/aside.html').then(response => response.text()).then(data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop();
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

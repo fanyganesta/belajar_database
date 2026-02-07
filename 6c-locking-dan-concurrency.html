@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Type</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+
+        <main>
+            <header>
+                
+            </header>
+            
+            <div class="content">                
+
+                <h2>6.3 Locking & Concurrency</h2>
+
+                Bagaimana database menjaga ACID saat banyak transaksi jalan barengan
+
+                Kalau ACID itu hukum alam,
+                maka locking & concurrency itu mekanisme pertahanannya.
+
+                <br> <hr> <br>
+                
+                <h3>Gambaran Besar</h3>
+
+                Bayangin:
+
+                100 user checkout barengan
+
+                20 admin edit data
+
+                5 sistem cron update laporan
+
+                Semua akses tabel yang sama.
+
+                Tanpa mekanisme:
+                💥 data rusak
+                💥 saldo lompat-lompat
+                💥 stok minus
+
+                👉 Maka database pakai:
+
+                Lock
+
+                Concurrency control
+
+                <br> <hr> <br>
+                
+                <h3>Struktur Materi 6.3</h3>
+
+                Kita pakai penanda biar rapi:
+
+                A. Apa itu Locking & Concurrency
+                B. Row Lock (lock paling aman & ideal)
+                C. Deadlock (musuh dalam selimut)
+                D. Cara Menghindari Deadlock (best practice)
+
+                <br> <hr> <br>
+                
+                <h3>A. Apa itu Locking & Concurrency</h3>
+                Concurrency
+
+                Banyak transaksi berjalan bersamaan
+
+                Locking
+
+                Cara database mengatur giliran akses data
+
+                Tujuan utamanya:
+
+                menjaga Isolation
+
+                menjaga Consistency
+
+                Analogi Santai
+
+                Data = kamar mandi 🚽
+                Transaksi = orang
+
+                Kalau:
+
+                satu orang pakai
+
+                dikunci
+
+                Orang lain:
+
+                nunggu
+
+                atau cari kamar lain
+
+                <br> <hr> <br>
+                
+                <h3>B. Row Lock — Lock Paling Ideal</h3>
+                Apa itu Row Lock?
+
+                Database mengunci baris tertentu, bukan seluruh tabel
+
+                Contoh:
+
+                UPDATE accounts
+                SET balance = balance - 100000
+                WHERE id = 5;
+
+
+                👉 Yang terkunci:
+
+                row dengan id = 5
+
+                Row lain?
+
+                bebas dipakai
+
+                Kenapa Row Lock Penting?
+
+                Karena:
+
+                performa lebih baik
+
+                concurrency tinggi
+
+                sistem scalable
+
+                Makanya:
+
+                InnoDB → row-level lock
+
+                MyISAM → table-level lock (jadul 😬)
+
+                Kapan Row Lock Terjadi?
+
+                Biasanya saat:
+
+                UPDATE
+
+                DELETE
+
+                SELECT ... FOR UPDATE
+
+                Contoh: SELECT FOR UPDATE
+                START TRANSACTION;
+
+                SELECT balance
+                FROM accounts
+                WHERE id = 5
+                FOR UPDATE;
+
+                -- proses logic di aplikasi
+
+                UPDATE accounts
+                SET balance = balance - 100000
+                WHERE id = 5;
+
+                COMMIT;
+
+
+                👉 Baris itu:
+
+                dikunci sampai COMMIT / ROLLBACK
+
+                Kesalahan Umum
+                START TRANSACTION;
+
+                SELECT * FROM accounts WHERE role = 'user';
+                -- TANPA INDEX
+
+                UPDATE accounts SET status = 'active';
+
+
+                😱 bisa:
+
+                lock banyak row
+
+                bahkan terasa seperti table lock
+
+                <br> <hr> <br>
+                
+                <h3>C. Deadlock — Dua Transaksi Saling Menunggu</h3>
+
+                🔥 Ini sering muncul di sistem real
+
+                Apa itu Deadlock?
+
+                Dua (atau lebih) transaksi:
+
+                saling mengunci resource
+
+                saling menunggu
+
+                tidak ada yang bisa lanjut
+
+                Contoh Klasik Deadlock
+
+                Transaksi A:
+
+                UPDATE accounts SET balance = balance - 100 WHERE id = 1;
+                UPDATE accounts SET balance = balance + 100 WHERE id = 2;
+
+
+                Transaksi B:
+
+                UPDATE accounts SET balance = balance - 50 WHERE id = 2;
+                UPDATE accounts SET balance = balance + 50 WHERE id = 1;
+
+                Urutan kejadian:
+
+                A lock id=1
+
+                B lock id=2
+
+                A mau lock id=2 → nunggu
+
+                B mau lock id=1 → nunggu
+
+                💥 DEADLOCK
+
+                Apa yang Dilakukan Database?
+
+                Database tidak bengong.
+
+                Dia akan:
+
+                mendeteksi deadlock
+
+                membatalkan salah satu transaksi
+
+                transaksi lain lanjut
+
+                Biasanya error:
+
+                Deadlock found when trying to get lock; try restarting transaction
+
+                <br> <hr> <br>
+                
+                <h3>D. Cara Menghindari Deadlock (Best Practice)</h3>
+
+                Ini ilmu emas 🔥
+
+                1️⃣ Akses Data dengan Urutan Konsisten
+
+                ❌ Salah:
+
+                transaksi A: id 1 → 2
+
+                transaksi B: id 2 → 1
+
+                ✅ Benar:
+
+                SEMUA transaksi: id kecil → besar
+
+                2️⃣ Lock Sekecil & Secepat Mungkin
+
+                ❌ Salah:
+
+                START TRANSACTION;
+                -- proses lama di aplikasi
+                UPDATE ...
+                COMMIT;
+
+
+                ✅ Benar:
+
+                START TRANSACTION;
+                UPDATE ...
+                COMMIT;
+
+
+                👉 Jangan:
+
+                nunggu user
+
+                call API
+
+                loop panjang
+
+                di dalam transaction
+
+                3️⃣ Gunakan Index dengan Benar
+
+                Tanpa index:
+
+                database lock lebih banyak row
+
+                peluang deadlock meningkat
+
+                4️⃣ Jangan Takut Deadlock
+
+                Deadlock itu:
+
+                normal
+
+                tanda sistem concurrency tinggi
+
+                Best practice:
+
+                retry transaction di aplikasi
+
+                5️⃣ Jangan Over-Isolation
+
+                Isolation level terlalu tinggi:
+
+                locking makin agresif
+
+                deadlock makin sering
+
+                Ringkasan 6.3 (Versi Mental Model)
+                Konsep	Intinya
+                Concurrency	Banyak transaksi barengan
+                Locking	Sistem giliran database
+                Row Lock	Lock paling aman & efisien
+                Deadlock	Saling tunggu → satu dikorbankan
+                Solusi	Urutan konsisten, cepat, pakai index
+                Checkpoint Bab 6
+
+                Kalau kamu paham:
+
+                kenapa SELECT FOR UPDATE penting
+
+                kenapa deadlock itu bukan bug
+
+                kenapa index berpengaruh ke locking
+
+                👉 berarti kamu sudah siap ngerjain sistem finance & inventory serius
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <a href="7a-view.html" class="btn-next">7a. VIEW</a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        fetch('layout/aside.html').then(response => response.text()).then(data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop();
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

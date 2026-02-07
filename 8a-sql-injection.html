@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Type</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+
+        <main>
+            <header>
+                
+            </header>
+            
+            <div class="content">
+                <h2>BAB 8 — Security & Best Practice</h2>
+
+                “Database yang cepat tapi bocor = gagal.”
+                “Database yang aman tapi gak bisa dirawat = mati pelan-pelan.”
+
+                Bab 8 ini ngebahas cara berpikir orang production, bukan tutorial syntax doang.
+
+                Kita bakal bahas bagaimana database diserang, dijaga, dan diselamatkan.
+
+                🎯 Tujuan BAB 8
+
+                Setelah bab ini, kamu bukan cuma bisa nulis SQL, tapi:
+
+                Paham celah fatal yang sering bikin kebobolan
+
+                Tahu hak akses user itu bukan formalitas
+
+                Punya rencana kalau database hancur
+
+                Bisa upgrade struktur database tanpa chaos
+
+                🧠 Mindset Inti BAB 8
+
+                Security bukan fitur, tapi kebiasaan.
+                Best practice bukan teori, tapi refleksi dari banyak kegagalan orang lain.
+
+                🔎 Struktur BAB 8
+
+                Kita bagi jadi 4 pilar utama, masing-masing aku tandai dengan huruf (A–D) supaya jelas alurnya.
+
+                <br> <hr> <br>
+
+                <h3>A. SQL Injection — Serangan Paling Tua, Tapi Masih Membunuh</h3>
+
+                “Kalau kamu masih pakai string concat di query…
+                kamu sedang membuka pintu rumah dan bilang: masuk aja bro 😈”
+
+                Fokus di sini:
+
+                Cara kerja SQL Injection (bukan cuma contoh)
+
+                Kenapa masih sering terjadi (bahkan di 2025)
+
+                Pola pikir attacker vs developer
+
+                Secure mindset saat nulis query
+
+                📌 Ini fondasi security, kalau A bocor → B, C, D gak ada artinya.
+
+                <br> <hr> <br>
+
+                <h3>B. User & Privilege (GRANT) — Jangan Semua Jadi Tuhan</h3>
+
+                “Kenapa user aplikasi bisa DROP TABLE?”
+                Karena developer males bikin role.
+
+                Di bagian ini:
+
+                Konsep least privilege
+
+                Pemisahan user:
+
+                user aplikasi
+
+                user admin
+
+                user reporting
+
+                Kenapa root = musuh production
+
+                GRANT bukan formalitas, tapi firewall level SQL
+
+                📌 Banyak kebocoran data bukan karena injection, tapi karena hak akses kebablasan.
+
+                <br> <hr> <br>
+
+                <h3>C. Backup Strategy — Pertanyaan Paling Mahal: ‘Backup terakhir kapan?’</h3>
+
+                Backup itu seperti payung.
+                Baru dicari setelah hujan.
+
+                Fokus:
+
+                Jenis backup (logical vs physical)
+
+                Full, incremental, differential
+
+                Backup tanpa ganggu production
+
+                Restore test (yang sering dilupakan)
+
+                📌 Backup tanpa pernah test restore = ilusi keamanan.
+
+                <br> <hr> <br>
+
+                <h3>D. Migration Strategy — Ubah Database Tanpa Membunuh Sistem</h3>
+
+                “Di local aman, di production chaos.”
+                Itu bukan takdir, itu migration strategy yang jelek.
+
+                Di sini kita bahas:
+
+                Kenapa ALTER TABLE itu berbahaya
+
+                Versioning schema
+
+                Forward vs rollback migration
+
+                Zero-downtime mindset
+
+                <br> <hr> <br>
+
+                <h3>E. 📌 Migration itu bukan nulis SQL, tapi ngatur risiko.</h3>
+
+                🧩 Relasi Antar Sub Materi
+                A (Injection) → Lindungi pintu masuk
+                B (Privilege) → Batasi kerusakan
+                C (Backup) → Jalan pulang kalau gagal
+                D (Migration) → Evolusi tanpa bunuh diri
+
+
+                Kalau satu hilang:
+
+                A gagal → database dibobol
+
+                B gagal → damage total
+
+                C gagal → data hilang permanen
+
+                D gagal → production downtime
+
+                <br> <hr> <br>
+
+                <h3>F. ⚠️ Kesalahan Umum Developer (yang Bab 8 beresin)</h3>
+
+                “Framework kan udah aman”
+
+                “Nanti aja backup kalau user banyak”
+
+                “Migration tinggal ALTER TABLE”
+
+                “User database cuma satu, lebih simpel”
+
+                👉 Bab 8 ngajarin kamu berpikir sebelum kejadian, bukan setelah kena.
+
+                <br> <hr> <br>
+
+                <h3>G. 🔥 Penutup BAB 8 (Overview)</h3>
+
+                Security bukan tentang paranoia, tapi persiapan.
+                Best practice bukan ribet, tapi bekas luka.
+
+                Setelah BAB 8:
+
+                Kamu siap pegang database orang lain
+
+                Kamu layak dipercaya ngelola data bisnis
+
+                Kamu naik kelas dari coder ke engineer
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>A. SQL Injection</h2>
+
+                “Bukan bug. Ini akibat cara berpikir.”
+
+                SQL Injection itu bukan soal syntax salah,
+                tapi developer yang percaya input user.
+
+                <br> <hr> <br>
+
+                <h3>🧠 A.0 Mindset Dulu (PENTING)</h3>
+
+                Sebelum teknis, pegang ini:
+
+                User = musuh potensial
+                Bahkan user baik pun bisa jadi vektor serangan.
+
+                Attacker tidak peduli UI kamu cantik.
+                Dia peduli: “Input ini masuk ke query gak?”
+
+                <br> <hr> <br>
+
+                <h3>🔥 A.1 Apa Itu SQL Injection (Secara Nyata)</h3>
+
+                SQL Injection terjadi ketika:
+
+                Input user langsung disambung ke query
+
+                Database menjalankan input itu sebagai perintah SQL
+
+                Contoh klasik (DOSA BESAR 😈):
+
+                SELECT * FROM users 
+                WHERE email = '$email' AND password = '$password';
+
+
+                User isi:
+
+                email: admin@example.com
+                password: ' OR 1=1 --
+
+
+                Query berubah jadi:
+
+                SELECT * FROM users 
+                WHERE email = 'admin@example.com'
+                AND password = '' OR 1=1 -- ';
+
+
+                📌 OR 1=1 = selalu true
+                📌 -- = komentar → sisanya diabaikan
+
+                ➡️ LOGIN TANPA PASSWORD
+
+                <br> <hr> <br>
+
+                <h3>💀 A.2 Jenis-Jenis SQL Injection (yang sering kejadian)</h3>
+                A.2.a Authentication Bypass
+
+                Login tanpa password
+
+                Reset password user lain
+
+                Ambil session admin
+
+                Biasanya di:
+
+                login
+
+                forgot password
+
+                OTP check
+
+                A.2.b Data Exfiltration (Nyedot Data)
+
+                Query disuntik buat:
+
+                baca tabel lain
+
+                dump data user
+
+                ambil email, hash password
+
+                Contoh:
+
+                ' UNION SELECT email, password FROM users --
+
+
+                📌 UNION = musuh lama developer malas
+
+                A.2.c Data Manipulation
+
+                Bukan cuma baca, tapi:
+
+                UPDATE saldo
+
+                DELETE data
+
+                DROP TABLE
+
+                '; DELETE FROM transactions; --
+
+
+                💥 Satu request → satu bisnis tutup.
+
+                A.2.d Blind SQL Injection
+
+                Lebih licik:
+
+                Tidak ada error
+
+                Tapi attacker pakai logika TRUE/FALSE
+
+                Lama tapi pasti berhasil
+
+                Contoh:
+
+                ' AND SUBSTRING(password,1,1)='a' --
+
+
+                📌 Pelan tapi mematikan.
+
+                <br> <hr> <br>
+
+                <h3>🤯 A.3 Kenapa SQL Injection Masih Terjadi?</h3>
+
+                Jawaban jujur:
+
+                ❌ A.3.a “Framework sudah aman kan?”
+
+                Aman kalau kamu pakai dengan benar
+
+                Tapi raw query + string concat = tamat
+
+                ❌ A.3.b “Cuma internal app”
+
+                Internal ≠ aman
+
+                Insider threat itu nyata
+
+                ❌ A.3.c “Data kecil”
+
+                Attacker gak peduli besar kecil
+
+                Mereka cari pintu terbuka
+
+                <br> <hr> <br>
+
+                <h3>🛡️ A.4 Cara Mencegah SQL Injection (WAJIB)</h3>
+                A.4.a Prepared Statement (WAJIB HUKUM)
+
+                Bukan opsi. WAJIB.
+
+                SELECT * FROM users 
+                WHERE email = ? AND password = ?;
+
+
+                Database:
+
+                memisahkan query dan data
+
+                input tidak bisa jadi SQL
+
+                📌 Ini tembok beton.
+
+                A.4.b ORM BUKAN jaminan mutlak
+
+                ORM aman kalau:
+
+                gak pakai raw query sembarangan
+
+                gak concat string manual
+
+                A.4.c Validasi Input ≠ Anti Injection
+
+                Validasi:
+
+                panjang
+
+                format
+
+                tipe
+
+                Tapi:
+                ❌ bukan pengganti prepared statement
+
+                A.4.d Least Privilege (nyambung ke B nanti)
+
+                Kalau injection terjadi:
+
+                damage harus minimal
+
+                User aplikasi:
+
+                ❌ DROP
+
+                ❌ ALTER
+
+                ❌ SUPER
+
+                <br> <hr> <br>
+
+                <h3>🚨 A.5 Anti-Pattern Mematikan (JANGAN DILAKUKAN)</h3>
+
+                ❌ Escape manual (addslashes)
+                ❌ Regex anti SQL keyword
+                ❌ Blacklist kata (SELECT, DROP)
+                ❌ Percaya input karena "udah di filter"
+
+                📌 Attacker selalu lebih kreatif.
+
+                🧪 A.6 Checklist Aman (Mental Model)
+
+                Setiap query tanya ini:
+
+                ❓ Ada input user?
+
+                ❓ Apakah masuk ke SQL?
+
+                ❓ Apakah pakai prepared?
+
+                ❓ User DB punya akses minimal?
+
+                Kalau satu jawabannya tidak yakin → bahaya.
+
+                <br> <hr> <br>
+
+                <h3>🧠 Ringkasan A. SQL Injection</h3>
+
+                SQL Injection bukan bug teknis
+                tapi bug kepercayaan
+
+                Salah Kaprah	Realita
+                Framework aman	Developer bisa bikin tidak aman
+                Internal app	Internal ≠ trusted
+                Sudah divalidasi	Validasi ≠ proteksi SQL
+
+                <a href="8b-user-dan-privilege.html" class="btn-next">8b. User Privilege</a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        fetch('layout/aside.html').then(response => response.text()).then(data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop();
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
