@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Type</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+
+        <main>
+            <header>
+                
+            </header>
+            
+            <div class="content">
+                <h2>C. Backup Strategy</h2>
+
+                “Bukan apakah database akan rusak,
+                tapi kapan.”
+
+                Kalau kamu pegang data:
+
+                transaksi
+
+                user
+
+                keuangan
+
+                order
+
+                ➡️ backup itu kewajiban, bukan fitur tambahan.
+
+                <br> <hr> <br>
+
+                <h3>🧠 C.0 Mindset yang Benar soal Backup</h3>
+
+                Backup bukan:
+
+                sekadar file .sql
+
+                cuma ada di server yang sama
+
+                dibuat “kalau ingat”
+
+                Backup itu:
+
+                strategi
+
+                berlapis
+
+                teruji
+
+                <br> <hr> <br>
+
+                <h3>🚨 C.1 Kesalahan Backup Paling Mematikan</h3>
+                ❌ Backup disimpan di server yang sama
+
+                Server mati → backup ikut mati
+
+                ❌ Tidak pernah restore-test
+
+                “Yang penting ada backup”
+
+                ⚠️ pas butuh:
+
+                file corrupt
+
+                encoding rusak
+
+                setengah data hilang
+
+                ❌ Backup manual
+
+                Manusia = lupa
+                Cron = setia
+
+                <br> <hr> <br>
+
+                <h3>🧱 C.2 Jenis Backup Database</h3>
+                C.2.a Logical Backup
+
+                Backup dalam bentuk SQL.
+
+                Contoh:
+
+                mysqldump app_db > backup.sql
+
+
+                ✅ Mudah dibaca
+                ✅ Bisa restore sebagian
+                ❌ Lambat untuk DB besar
+
+                C.2.b Physical Backup
+
+                Backup file data langsung.
+
+                Contoh:
+
+                Percona XtraBackup
+
+                snapshot volume
+
+                ✅ Cepat
+                ✅ Cocok DB besar
+                ❌ Lebih kompleks
+
+                📌 Untuk 90% aplikasi web → logical backup cukup.
+
+                <br> <hr> <br>
+
+                <h3>⏱️ C.3 Strategi Waktu Backup</h3>
+                Best practice umum:
+                Jenis	Jadwal
+                Daily	setiap malam
+                Weekly	full backup
+                Monthly	arsip panjang
+
+                📌 Finance-heavy → backup lebih sering.
+
+                <br> <hr> <br>
+
+                <h3>🗂️ C.4 Retention Policy (Berapa Lama Disimpan?)</h3>
+
+                Contoh sehat:
+
+                harian: 7 hari
+
+                mingguan: 4 minggu
+
+                bulanan: 6–12 bulan
+
+                ➡️ Jangan simpan selamanya:
+
+                makan storage
+
+                sulit audit
+
+                <br> <hr> <br>
+
+                <h3>🌍 C.5 Lokasi Backup (WAJIB Berlapis)</h3>
+
+                Minimal:
+
+                server A (primary)
+
+                server B (offsite / cloud)
+
+                Ideal:
+
+                object storage (S3, GCS, dll)
+
+                region berbeda
+
+                📌 Rule 3-2-1:
+
+                3 copy
+
+                2 media berbeda
+
+                1 offsite
+
+                <br> <hr> <br>
+
+                <h3>🔐 C.6 Backup = Data Sensitif</h3>
+
+                Backup harus lebih aman dari database.
+
+                Wajib:
+
+                enkripsi
+
+                permission ketat
+
+                tidak publik
+
+                ❌ .sql bocor = lebih parah dari DB bocor
+
+                <br> <hr> <br>
+
+                <h3>🧪 C.7 Restore Strategy (Ini yang Sering Dilupakan)</h3>
+
+                Latihan restore:
+
+                staging
+
+                local
+
+                Cek:
+
+                data utuh?
+
+                foreign key aman?
+
+                encoding benar?
+
+                index kembali?
+
+                📌 Backup tanpa restore test = ilusi keamanan.
+
+                <br> <hr> <br>
+
+                <h3>🧩 C.8 Contoh Backup Strategy Nyata (Aplikasi UMKM → Enterprise)</h3>
+                UMKM / Startup kecil:
+
+                mysqldump daily
+
+                upload ke cloud
+
+                simpan 7–14 hari
+
+                Enterprise / Finance:
+
+                daily incremental
+
+                weekly full
+
+                encrypted
+
+                restore drill bulanan
+
+                <br> <hr> <br>
+
+                <h3>🧠 Ringkasan C. Backup Strategy</h3>
+
+                Backup bukan soal “ada file”,
+                tapi bisa balik dengan tenang.
+
+                Checklist:
+
+                ❓ otomatis?
+
+                ❓ offsite?
+
+                ❓ encrypted?
+
+                ❓ pernah restore-test?
+
+                Kalau satu jawabannya “tidak” → bahaya ⚠️
+
+                <br> <br>
+
+                <hr> 
+
+                <br> <br>
+
+                <h2>🔹 Pendalaman: Logical Backup & Automatic Backup (MySQL)</h2>
+                <br> <hr> <br>
+
+                <h3>A. Logical Backup (Detail & Best Practice)</h3>
+                <br> <hr> <br>
+
+                <h4>A.1 Apa itu Logical Backup (ulang singkat)</h4>
+
+                Logical backup = backup isi database dalam bentuk perintah SQL:
+
+                CREATE TABLE
+
+                INSERT
+
+                ALTER
+
+                Biasanya berupa:
+
+                .sql
+
+                .sql.gz
+
+                <br> <hr> <br>
+
+                <h4>A.2 Tool Utama: mysqldump</h4>
+                Contoh paling dasar:
+                mysqldump -u user -p app_db > app_db.sql
+
+
+                ⚠️ Ini masih level pemula, belum aman.
+
+                <br> <hr> <br>
+
+                <h4>A.3 mysqldump yang BENAR (Production Ready)</h4>
+                🔐 Aman + konsisten:
+                mysqldump \
+                -u backup_user \
+                -p \
+                --single-transaction \
+                --routines \
+                --triggers \
+                --events \
+                --set-gtid-purged=OFF \
+                app_db > app_db.sql
+
+
+                📌 Penjelasan penting:
+
+                --single-transaction
+                ➜ snapshot konsisten tanpa lock tabel (InnoDB)
+
+                --routines → backup stored procedure
+
+                --triggers → backup trigger
+
+                --events → backup event scheduler
+
+                <br> <hr> <br>
+
+                <h4>A.4 Kompresi (Wajib)</h4>
+                mysqldump ... | gzip > app_db_$(date +%F).sql.gz
+
+
+                Manfaat:
+
+                ukuran kecil
+
+                upload cepat
+
+                hemat storage
+
+                <br> <hr> <br>
+
+                <h4>A.5 Backup Per Tabel (Selective Backup)</h4>
+                mysqldump app_db users orders > data.sql
+
+
+                Dipakai saat:
+
+                recovery sebagian
+
+                audit data
+
+                <br> <hr> <br>
+
+                <h4>A.6 Backup Structure Only (Schema)</h4>
+                mysqldump --no-data app_db > schema.sql
+
+
+                📌 Wajib sebelum migration besar.
+
+                <br> <hr> <br>
+
+                <h3>B. Automatic Backup (Otomatis & Disiplin)</h3>
+
+                Backup manual itu bohong.
+                Backup otomatis itu jujur.
+
+                <br> <hr> <br>
+
+                <h4>B.1 Cron Job (Cara Paling Umum)</h4>
+                Contoh cron harian jam 02:00
+                0 2 * * * /usr/bin/mysqldump ... | gzip > /backup/app_db_$(date +\%F).sql.gz
+
+
+                📌 Pakai path full (/usr/bin/mysqldump).
+
+                <br> <hr> <br>
+
+                <h4>B.2 Struktur Folder Backup (Rapi & Manusiawi)</h4>
+                /backup
+                ├── daily
+                │   ├── app_db_2026-02-01.sql.gz
+                │   ├── app_db_2026-02-02.sql.gz
+                ├── weekly
+                └── monthly
+
+                <br> <hr> <br>
+
+                <h4>B.3 Rotasi Backup Otomatis (Retention)</h4>
+                Simpan hanya 7 hari (daily)
+                find /backup/daily -type f -mtime +7 -delete
+
+
+                📌 Jangan manual hapus — otomatis.
+
+                <br> <hr> <br>
+
+                <h4>B.4 Backup ke Cloud (Wajib Level Pro)</h4>
+
+                Flow ideal:
+
+                mysqldump → gzip → encrypt → upload → delete local
+
+
+                Contoh tools:
+
+                rclone
+
+                aws cli
+
+                gcloud
+
+                <br> <hr> <br>
+
+                <h4>B.5 Backup User Khusus (Security)</h4>
+
+                ❌ Jangan pakai root
+
+                Privilege minimal:
+                GRANT SELECT, LOCK TABLES, SHOW VIEW
+                ON app_db.*
+                TO 'backup_user'@'localhost';
+
+
+                📌 Backup user ≠ app user.
+
+                <br> <hr> <br>
+
+                <h3>C. Restore (Latihan Wajib!)</h3>
+                Restore full:
+                gunzip < app_db.sql.gz | mysql app_db
+
+                Restore ke DB baru:
+                mysql -e "CREATE DATABASE app_db_restore;"
+                gunzip < app_db.sql.gz | mysql app_db_restore
+
+
+                📌 Selalu restore ke database baru dulu.
+
+                <br> <hr> <br>
+
+                <h3>D. Checklist Logical Backup Profesional</h3>
+
+                ✔ pakai --single-transaction
+                ✔ include trigger / event / procedure
+                ✔ kompresi
+                ✔ user khusus
+                ✔ cron job
+                ✔ retention
+                ✔ offsite
+                ✔ restore test
+
+                Kalau 1 saja ❌ → belum aman.
+
+                <br> <hr> <br>
+
+                <h3>🧠 Ringkasan Besar</h3>
+
+                Logical backup itu paling fleksibel,
+                tapi disiplin & otomatisasi adalah nyawanya.
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <a href="8d-migration-strategy.html" class="btn-next">8d. Migration Strategy</a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        fetch('layout/aside.html').then(response => response.text()).then(data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop();
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
