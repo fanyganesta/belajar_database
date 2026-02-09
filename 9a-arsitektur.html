@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Type</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+
+        <main>
+            <header>
+                
+            </header>
+            
+            <div class="content">
+                <h2>BAB 9: MySQL di Dunia Nyata (Production Mindset)</h2>
+
+                “Database di production bukan soal SQL pintar,
+                tapi soal stabil, aman, dan bisa tumbuh.”
+
+                Di bab ini, kita berhenti mikir sebagai coder,
+                dan mulai mikir sebagai engineer yang jaga sistem hidup.
+
+                <br> <hr> <br>
+
+                <h3>A. Perbedaan Belajar vs Dunia Nyata</h3>
+                Saat belajar:
+
+                satu database
+
+                satu user
+
+                satu query
+
+                Di production:
+
+                ribuan user
+
+                query paralel
+
+                data tidak boleh hilang
+
+                downtime = uang hilang
+
+                📌 Kesalahan kecil = dampak besar
+
+                <br> <hr> <br>
+
+                <h3>B. Tujuan Bab 9</h3>
+
+                Setelah bab ini, kamu:
+
+                ngerti arsitektur database
+
+                paham cara sistem tumbuh
+
+                tahu kapan ORM aman / berbahaya
+
+                nggak kaget lihat istilah enterprise
+
+                <br> <hr> <br>
+
+                <h3>C. Production Mindset (Pola Pikir Baru)</h3>
+
+                Engineer production mikir:
+
+                kalau server mati?
+
+                kalau traffic naik 10x?
+
+                kalau query lambat?
+
+                kalau data bocor?
+
+                Bukan:
+
+                “yang penting jalan di laptop”
+
+                <br> <br>
+
+                <hr> 
+
+                <br> <br>
+
+                <h2>9.1 Arsitektur Database (Fondasi Sistem)</h2>
+
+                Arsitektur = cara database ditempatkan & dihubungkan
+
+                <br> <hr> <br>
+
+                <h3>A. Apa itu Arsitektur Database?</h3>
+
+                Arsitektur menjawab:
+
+                ada berapa database?
+
+                siapa akses ke mana?
+
+                bagaimana data dipisah?
+
+                📌 Ini bukan soal query, tapi soal desain sistem.
+
+                <br> <hr> <br>
+
+                <h3>B. Evolusi Arsitektur (Nyata di Industri)</h3>
+
+                Biasanya sistem tumbuh seperti ini:
+
+                Single DB
+
+                Multi Database
+
+                Multi-Tenant
+
+                <br> <hr> <br>
+
+                <h3>9.1.1 Single Database (Awal Semua Sistem)</h3>
+                <br> <hr> <br>
+
+                <h4>A. Gambaran</h4>
+                [ App ] → [ MySQL ]
+
+
+                Semua:
+
+                user
+
+                order
+
+                produk
+
+                laporan
+
+                ➡️ satu database
+
+                <br> <hr> <br>
+
+                <h4>B. Kapan Dipakai?</h4>
+
+                ✅ MVP
+                ✅ UMKM
+                ✅ traffic kecil
+                ✅ satu bisnis
+
+                <br> <hr> <br>
+
+                <h4>C. Kelebihan</h4>
+
+                ✔ setup simpel
+                ✔ murah
+                ✔ gampang debug
+
+                <br> <hr> <br>
+
+                <h4>D. Kekurangan</h4>
+
+                ❌ kalau DB mati → semua mati
+                ❌ scaling terbatas
+                ❌ laporan berat ganggu transaksi
+
+                <br> <hr> <br>
+
+                <h4>E. Contoh Nyata</h4>
+
+                Website:
+
+                toko online kecil
+
+                company profile + admin
+
+                📌 90% aplikasi dimulai dari sini.
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h3>9.1.2 Multi Database (Pisah Beban)</h3>
+
+                “Jangan campur dapur dengan gudang.”
+
+                <br> <hr> <br>
+
+                <h4>A. Gambaran</h4>
+                [ App ]
+                ├── MySQL (transaksi)
+                └── MySQL (laporan)
+
+                <br> <hr> <br>
+
+                <h4>B. Kenapa Dipisah?</h4>
+
+                laporan berat
+
+                query agregat
+
+                read-only data
+
+                📌 Biar transaksi tetap cepat.
+
+                <br> <hr> <br>
+
+                <h4>C. Contoh Kasus</h4>
+
+                DB 1: orders, payments
+
+                DB 2: laporan, analytics
+
+                <br> <hr> <br>
+
+                <h4>D. Kelebihan</h4>
+
+                ✔ performa stabil
+                ✔ isolasi masalah
+                ✔ lebih aman
+
+                <br> <hr> <br>
+
+                <h4>E. Kekurangan</h4>
+
+                ❌ kompleks
+                ❌ sinkronisasi data
+                ❌ biaya naik
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h3>9.1.3 Multi-Tenant (Level SaaS)</h3>
+
+                “Satu sistem, banyak pelanggan.”
+
+                <br> <hr> <br>
+
+                <h4>A. Apa itu Tenant?</h4>
+
+                Tenant = satu perusahaan / satu klien
+
+                Contoh:
+
+                SaaS accounting
+
+                HR system
+
+                POS cloud
+
+                <br> <hr> <br>
+
+                <h4>B. Pola Multi-Tenant</h4>
+                1️⃣ Shared DB, Shared Table
+                users (tenant_id)
+                orders (tenant_id)
+
+                2️⃣ Shared DB, Separate Schema
+                tenant_a.users
+                tenant_b.users
+
+                3️⃣ Separate Database per Tenant
+                db_tenant_a
+                db_tenant_b
+
+                <br> <hr> <br>
+
+                <h4>C. Mana yang Dipilih?</h4>
+                Model	Cocok untuk
+                Shared table	tenant kecil
+                Separate schema	menengah
+                Separate DB	enterprise
+
+                📌 Semakin ke kanan → makin aman, makin mahal.
+
+                <br> <hr> <br>
+
+                <h4>D. Kesalahan Fatal di Arsitektur</h4>
+
+                ❌ langsung multi-tenant tanpa kebutuhan
+                ❌ laporan berat di DB transaksi
+                ❌ semua pakai satu user DB
+
+                🧠 Ringkasan 9.1 Arsitektur
+
+                Arsitektur itu soal kesiapan tumbuh,
+                bukan soal keren-kerenan.
+
+                Mulai dari:
+
+                yang sederhana
+
+                bisa dikontrol
+
+                siap berkembang
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>9.1.1 Single Database (Bedah Sampai Akar)</h2>
+
+                Single DB bukan berarti jelek.
+                Justru: ini fondasi yang BENAR kalau dipakai dengan sadar.
+
+                <br> <hr> <br>
+
+                <h3>A. Apa yang Dimaksud Single Database (Super Jelas)</h3>
+
+                Single Database = satu server database / satu instance MySQL
+                yang dipakai oleh seluruh aplikasi.
+
+                Diagram sederhana:
+
+                [ Web / API / Admin ] → [ MySQL ]
+
+
+                Semua data:
+
+                users
+
+                orders
+
+                products
+
+                payments
+
+                logs
+
+                reports
+
+                ➡️ masuk ke satu DB
+
+                <br> <hr> <br>
+
+                <h3>B. Kenapa 90% Sistem Dimulai dari Single DB?</h3>
+
+                Karena dunia nyata itu:
+
+                butuh cepat jalan
+
+                butuh murah
+
+                butuh simpel
+
+                Single DB itu:
+                ✔ paling cepat dibangun
+                ✔ paling sedikit bug
+                ✔ paling gampang dipahami
+
+                <br> <hr> <br>
+
+                <h3>C. Kapan Single DB adalah PILIHAN YANG TEPAT</h3>
+
+                Single DB sangat cocok kalau:
+
+                ✔ user < puluhan ribu
+                ✔ traffic stabil
+                ✔ tim kecil
+                ✔ fitur masih berkembang
+                ✔ laporan belum berat
+
+                📌 Banyak startup sukses bertahun-tahun pakai single DB.
+
+                <br> <hr> <br>
+
+                <h3>D. Komponen di Dalam Single DB (Sering Salah Kaprah)</h3>
+
+                Single DB bukan berarti asal campur.
+
+                Di dalamnya tetap harus ada:
+
+                D.1 Struktur Schema Rapi
+
+                tabel jelas
+
+                relasi jelas
+
+                index benar
+
+                D.2 User DB Berbeda
+
+                Walaupun DB-nya satu:
+
+                app_user
+
+                report_user
+
+                backup_user
+
+                📌 Satu DB ≠ satu user
+
+                D.3 Index & Query Sehat
+
+                Single DB hidup-matinya di:
+
+                index
+
+                query
+
+                Tanpa itu:
+                ➡️ pelan → stres → scaling terlalu cepat
+
+                <br> <hr> <br>
+
+                <h3>E. Masalah Nyata yang Muncul di Single DB</h3>
+
+                Ini bukan teori, ini kejadian harian.
+
+                E.1 Query Laporan Berat
+
+                Contoh:
+
+                SELECT
+                DATE(created_at),
+                SUM(total)
+                FROM orders
+                GROUP BY DATE(created_at);
+
+
+                📌 Kalau tabel besar:
+
+                CPU naik
+
+                query lain ikut lambat
+
+                E.2 Locking Tanpa Sadar
+
+                UPDATE besar
+
+                DELETE massal
+
+                migration jam sibuk
+
+                ➡️ user lain nunggu
+
+                E.3 Backup Mengganggu Performa
+
+                Backup tanpa --single-transaction:
+
+                tabel ke-lock
+
+                transaksi nunggu
+
+                <br> <hr> <br>
+
+                <h3>F. Cara MENYELAMATKAN Single DB (Best Practice)</h3>
+
+                Ini ilmu emas 🔑
+
+                F.1 Pisahkan Jam Sibuk & Jam Berat
+
+                laporan → malam
+
+                backup → dini hari
+
+                migration → low traffic
+
+                📌 Ini bisa bikin Single DB awet lama.
+
+                F.2 Index itu WAJIB, bukan Opsional
+
+                Kalau query sering dipakai:
+
+                WHERE
+
+                JOIN
+
+                ORDER BY
+
+                ➡️ harus ada index
+
+                F.3 Batasi Query Berbahaya
+
+                LIMIT wajib
+
+                hindari SELECT *
+
+                pagination
+
+                F.4 Monitor (Walau Sederhana)
+
+                Minimal tahu:
+
+                query paling lambat
+
+                tabel paling besar
+
+                index tidak terpakai
+
+                <br> <hr> <br>
+
+                <h3>G. Batas Alami Single DB</h3>
+
+                Single DB pasti punya batas, tapi sering jauh lebih tinggi dari yang dikira.
+
+                Biasanya mulai terasa saat:
+
+                jutaan row aktif
+
+                laporan berat real-time
+
+                traffic paralel tinggi
+
+                📌 Jangan pindah arsitektur terlalu cepat.
+
+                <br> <hr> <br>
+
+                <h3>H. Kesalahan Fatal Terkait Single DB</h3>
+
+                ❌ takut single DB lalu over-engineering
+                ❌ langsung microservice
+                ❌ langsung sharding
+
+                ➡️ sistem kompleks, bug lebih banyak
+
+                <br> <hr> <br>
+
+                <h3>I. Pola Evolusi yang BENAR</h3>
+
+                Single DB →
+                optimasi query & index →
+                pisah laporan →
+                replica →
+                baru scaling kompleks
+
+                📌 Ini jalur sehat.
+
+                <br> <hr> <br>
+
+                <h3>🧠 Ringkasan Mental Model</h3>
+
+                Single DB itu seperti rumah kecil.
+                Kalau rapi & terawat, bisa nyaman lama.
+
+                Masalah bukan di “single”-nya,
+                tapi di:
+
+                query buruk
+
+                index asal
+
+                disiplin rendah
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>9.1.2 Multi Database (Pisah Beban Biar Sistem Napas)</h2>
+
+                “Single DB itu rumah.
+                Multi DB itu rumah + gudang + kantor.”
+
+                Bukan buat gaya-gayaan — tapi buat bertahan hidup.
+
+                <br> <hr> <br>
+
+                <h3>A. Apa itu Multi Database? (Versi Paling Manusia)</h3>
+
+                Multi Database = satu aplikasi pakai LEBIH DARI SATU database.
+
+                Diagram simpel:
+
+                [ App ]
+                ├── MySQL_DB_Transaksi
+                └── MySQL_DB_Laporan
+
+
+                📌 Masih satu aplikasi
+                📌 Bukan microservice
+                📌 Tapi beban dipisah
+
+                <br> <hr> <br>
+
+                <h3>B. Kenapa Orang Beralih ke Multi DB?</h3>
+
+                Karena Single DB mulai ngos-ngosan.
+
+                Biasanya karena:
+
+                laporan berat
+
+                agregasi besar
+
+                query lama
+
+                traffic naik
+
+                📌 BUKAN karena “biar keren”.
+
+                <br> <hr> <br>
+
+                <h3>C. Pola Multi DB Paling Umum (Nyata di Industri)</h3>
+                C.1 Transaksi vs Laporan
+
+                DB Transaksi
+
+                INSERT / UPDATE cepat
+
+                order
+
+                payment
+
+                user activity
+
+                DB Laporan
+
+                SELECT berat
+
+                GROUP BY
+
+                grafik
+
+                dashboard
+
+                📌 Laporan tidak boleh ganggu transaksi.
+
+                C.2 Operational vs Archive
+
+                DB Aktif
+
+                data 1–2 tahun terakhir
+
+                DB Arsip
+
+                data lama
+
+                jarang diakses
+
+                📌 Query harian jadi jauh lebih ringan.
+
+                <br> <hr> <br>
+
+                <h3>D. Cara Data Masuk ke DB Kedua?</h3>
+
+                Ini sering bikin bingung, kita jelasin pelan.
+
+                D.1 Copy Berkala (Batch Sync)
+
+                Contoh:
+
+                setiap malam
+
+                setiap jam
+
+                Cara:
+
+                DB Transaksi → Export → Import → DB Laporan
+
+
+                ✔ simpel
+                ❌ data tidak real-time
+
+                D.2 ETL (Extract, Transform, Load)
+
+                extract dari DB utama
+
+                transform (bersih / ringkas)
+
+                load ke DB laporan
+
+                📌 dipakai di sistem menengah ke atas.
+
+                D.3 Read Replica (nyambung ke bab 9.2)
+
+                DB kedua copy otomatis dari DB utama.
+
+                📌 ini bukan manual copy.
+
+                <br> <hr> <br>
+
+                <h3>E. Keuntungan Multi Database (Nyata Banget)</h3>
+
+                ✔ transaksi lebih cepat
+                ✔ laporan bebas berat
+                ✔ masalah terisolasi
+                ✔ scaling lebih fleksibel
+
+                <br> <hr> <br>
+
+                <h3>. Kekurangan & Risiko (Jujur)</h3>
+
+                ❌ sistem lebih kompleks
+                ❌ data bisa tidak sinkron
+                ❌ maintenance nambah
+                ❌ biaya naik
+
+                📌 Makanya jangan lompat terlalu cepat.
+
+                <br> <hr> <br>
+
+                <h3>G. Kesalahan Fatal Pemula</h3>
+
+                ❌ langsung multi DB tanpa problem nyata
+                ❌ lupa data sync
+                ❌ query lintas DB
+                ❌ semua user punya akses ke semua DB
+
+                <br> <hr> <br>
+
+                <h3>H. Best Practice Multi Database (Wajib Tahu)</h3>
+                H.1 Aplikasi Tahu DB Mana untuk Apa
+
+                Contoh:
+
+                write → DB transaksi
+
+                read laporan → DB laporan
+
+                📌 Jangan kebalik.
+
+                H.2 User DB Dipisah
+                DB	User
+                Transaksi	app_user
+                Laporan	report_user
+                H.3 Monitoring Terpisah
+
+                slow query transaksi
+
+                query berat laporan
+
+                <br> <hr> <br>
+
+                <h3>I. Kapan HARUS Pindah ke Multi DB?</h3>
+
+                Checklist jujur:
+
+                ❓ laporan bikin transaksi lambat?
+
+                ❓ query agregat berat?
+
+                ❓ data makin besar?
+
+                ❓ scaling single DB mentok?
+
+                Kalau 2–3 “ya” → waktunya.
+
+                <br> <hr> <br>
+
+                <h3>🧠 Ringkasan Mental Model</h3>
+
+                Multi Database bukan solusi pertama,
+                tapi solusi saat sistem mulai berat.
+
+                Single DB → optimasi → Multi DB → replica → sharding
+
+                📌 Urutan ini menyelamatkan banyak tim.
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>9.1.3 Multi-Tenant Architecture</h2>
+
+                Satu aplikasi → melayani banyak “tenant” (client / perusahaan / user group) secara terisolasi
+
+                <br> <hr> <br>
+
+                <h3>A. Apa itu Multi-Tenant? (versi manusia)</h3>
+
+                Multi-tenant = satu aplikasi, banyak “rumah”
+
+                Bayangin:
+
+                Kamu bikin 1 aplikasi Laravel
+
+                Tapi dipakai oleh:
+
+                Company A
+
+                Company B
+
+                Company C
+
+                Data tidak boleh campur
+
+                Tapi code-nya satu
+
+                👉 Setiap company = tenant
+
+                <br> <hr> <br>
+
+                <h3>B. Kenapa Dunia Nyata Suka Multi-Tenant?</h3>
+
+                Karena:
+
+                🔥 Hemat biaya
+
+                🔥 Maintenance lebih simpel
+
+                🔥 Scale lebih mudah
+
+                🔥 Cocok untuk:
+
+                SaaS
+
+                ERP
+
+                HR system
+
+                Accounting system
+
+                Learning platform
+
+                Marketplace B2B
+
+                Contoh real:
+
+                Notion
+
+                Shopify
+
+                Xero
+
+                Google Workspace
+
+                <br> <hr> <br>
+
+                <h3>C. Masalah Utama Multi-Tenant (yang harus kamu sadari)</h3>
+
+                Multi-tenant BUKAN cuma “tambah company_id”
+
+                Masalah real:
+
+                ❌ Data bocor antar tenant
+
+                ❌ Query lambat karena data gede
+
+                ❌ Backup ribet
+
+                ❌ Migration makin kompleks
+
+                ❌ Permission & role makin sensitif
+
+                Makanya arsitekturnya harus jelas dari awal
+
+                <br> <hr> <br>
+
+                <h3>D. Pola Multi-Tenant (INI BAGIAN PALING PENTING)</h3>
+
+                Ada 3 pendekatan utama
+                (kita bahas dari yang paling simpel → paling enterprise)
+
+                1️⃣ Single Database + Shared Tables
+
+                (tenant_id / company_id)
+
+                Struktur
+                database: app_db
+
+                users
+                - id
+                - company_id
+                - name
+                - email
+
+                orders
+                - id
+                - company_id
+                - total
+
+                Cara kerja
+
+                Semua tenant pakai database & table yang sama
+
+                Data dipisah pakai company_id
+
+                Contoh Query
+                SELECT * FROM orders WHERE company_id = 3;
+
+                ✅ Kelebihan
+
+                Paling mudah
+
+                Migration gampang
+
+                ORM friendly
+
+                Cocok untuk MVP
+
+                ❌ Kekurangan
+
+                Risiko data bocor kalau query salah
+
+                Table makin besar → performa turun
+
+                Backup per tenant susah
+
+                👉 Cocok untuk:
+
+                Startup awal
+
+                User < ribuan
+
+                Data masih kecil
+
+                2️⃣ Single Database + Separate Schema / Table
+
+                (semi-isolated)
+
+                Struktur
+                app_db
+
+                company_1_users
+                company_1_orders
+
+                company_2_users
+                company_2_orders
+
+
+                atau (di DB lain seperti PostgreSQL):
+
+                schema_company_1.users
+                schema_company_2.users
+
+                Cara kerja
+
+                Database tetap satu
+
+                Tapi table / schema dipisah per tenant
+
+                ✅ Kelebihan
+
+                Isolasi lebih aman
+
+                Data bocor hampir nol
+
+                Query lebih cepat per tenant
+
+                ❌ Kekurangan
+
+                Migration kompleks
+
+                Table bisa ribuan
+
+                ORM agak ribet
+
+                👉 Cocok untuk:
+
+                Mid-scale SaaS
+
+                Tenant tidak terlalu banyak
+
+                Perlu isolasi lebih kuat
+
+                3️⃣ Database per Tenant (Paling Aman & Mahal)
+                Struktur
+                company_a_db
+                company_b_db
+                company_c_db
+
+                Cara kerja
+
+                Setiap tenant punya database sendiri
+
+                Aplikasi cuma switch koneksi
+
+                Contoh (Laravel)
+                config(['database.connections.tenant.database' => $dbName]);
+                DB::purge('tenant');
+                DB::reconnect('tenant');
+
+                ✅ Kelebihan
+
+                🔐 Isolasi total
+
+                Backup per tenant gampang
+
+                Scaling fleksibel
+
+                Enterprise-grade
+
+                ❌ Kekurangan
+
+                Setup kompleks
+
+                Migration harus jalan ke banyak DB
+
+                Operasional berat
+
+                👉 Cocok untuk:
+
+                SaaS serius
+
+                Data sensitif
+
+                Company besar
+
+                Skema langganan mahal
+
+                <br> <hr> <br>
+
+                <h3>E. Istilah Penting (biar nggak bingung)</h3>
+                🔹 Tenant
+
+                Satu unit pengguna
+                Biasanya = company / organisasi / customer
+
+                🔹 Isolation
+
+                Seberapa kuat data tenant dipisahkan
+
+                Model	Isolasi
+                Shared table	Lemah
+                Separate table	Sedang
+                Separate DB	Kuat
+
+                <br> <hr> <br>
+
+                <h3>F. Multi-Tenant & Laravel (konteks kamu)</h3>
+
+                Karena kamu:
+
+                Pake Laravel
+
+                Pernah bahas database per company
+
+                Bangun sistem bisnis
+
+                👉 Best path buat kamu:
+
+                Mulai dari:
+                Single DB + company_id
+
+                Naik level ke:
+                Database per tenant
+
+                Siapkan:
+
+                Middleware tenant
+
+                Dynamic DB connection
+
+                Migration runner per tenant
+
+                Ini production mindset banget 🔥
+
+                <br> <hr> <br>
+
+                <h3>G. Kesalahan Umum (Wajib dihindari)</h3>
+
+                ❌ Lupa filter company_id
+                ❌ Admin bisa lihat data tenant lain
+                ❌ Migration cuma jalan di main DB
+                ❌ Backup nyampur
+                ❌ Pakai SELECT * di table shared
+
+                <br> <hr> <br>
+
+                <h3>H. Ringkasan Super Singkat</h3>
+
+                Multi-Tenant bukan fitur, tapi arsitektur
+
+                Model	Cocok untuk
+                Shared DB	MVP
+                Shared DB + Table	Mid
+                DB per Tenant	Enterprise
+
+                <br> <br> 
+
+                <hr> 
+
+                <br> <br>
+
+                <a href="9b-scaling.html" class="btn-next">9b. Scalling</a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        fetch('layout/aside.html').then(response => response.text()).then(data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop();
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
