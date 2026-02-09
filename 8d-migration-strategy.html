@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Type</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+
+        <main>
+            <header>
+                
+            </header>
+            
+            <div class="content">
+                <h2>D. Migration Strategy (Versi Pemula, Tapi Profesional)</h2>
+
+                <br> <hr> <br>
+
+                <h3>A. Apa itu Migration? (Definisi Paling Sederhana)</h3>
+
+                Migration = catatan perubahan database dari waktu ke waktu.
+
+                Kalau diibaratkan:
+
+                Database = bangunan
+
+                Migration = riwayat renovasi bangunan
+
+                Contoh:
+
+                hari ini nambah kamar
+
+                besok ganti pintu
+
+                lusa nambah lantai
+
+                Semua perubahan itu dicatat, bukan diingat di kepala.
+
+                <br> <hr> <br>
+
+                <h3>B. Kenapa Migration Itu Penting?</h3>
+
+                Tanpa migration:
+
+                lupa sudah ngubah apa
+
+                laptop A beda dengan server B
+
+                error muncul tapi nggak tahu sebabnya
+
+                Dengan migration:
+
+                semua perubahan terurut
+
+                bisa diulang
+
+                bisa dijelaskan ke orang lain
+
+                <br> <hr> <br>
+
+                <h3>C. Istilah-Istilah Penting (Kita Bongkar Satu-Satu)</h3>
+                C.1 Environment (Lingkungan)
+
+                Environment = tempat database dijalankan
+
+                Biasanya ada 3:
+
+                Nama	Fungsi
+                Local	Laptop kamu
+                Staging	Server percobaan
+                Production	Server asli (user beneran)
+
+                📌 Production = paling sakral
+                Salah sedikit → data user rusak.
+
+                C.2 File Versioned (File Berurutan & Tercatat)
+
+                Artinya:
+
+                Setiap perubahan database punya file sendiri, dan tidak diubah lagi.
+
+                Contoh nama file:
+
+                2026_02_06_001_create_users_table.sql
+                2026_02_06_002_add_email_to_users.sql
+
+
+                Kenapa pakai angka/tanggal?
+
+                supaya urut
+
+                supaya tahu mana duluan
+
+                📌 File lama tidak diedit
+                Kalau mau ubah → buat file baru
+
+                C.3 Rollback (Balik ke Kondisi Sebelumnya)
+
+                Rollback = membatalkan perubahan
+
+                Contoh nyata:
+
+                kamu tambah kolom
+
+                ternyata aplikasi error
+
+                kamu ingin balik seperti sebelum nambah kolom
+
+                Itu rollback.
+
+                📌 Catatan penting:
+
+                Tidak semua perubahan bisa di-rollback dengan aman
+
+                Misalnya:
+
+                DROP COLUMN salary;
+
+
+                Data hilang → tidak bisa balik
+
+                <br> <hr> <br>
+
+                <h3>D. Cara Kerja Migration Secara Mental (Tanpa Tool)</h3>
+
+                Bayangkan kamu punya buku catatan:
+
+                Buat tabel users
+
+                Tambah kolom email
+
+                Tambah index
+
+                Ubah tipe data
+
+                Migration = buku catatan itu versi digital
+
+                <br> <hr> <br>
+
+                <h3>E. Contoh Migration PALING SEDERHANA</h3>
+                E.1 Migration: Buat Tabel
+
+                File:
+
+                001_create_users_table.sql
+
+
+                Isi:
+
+                CREATE TABLE users (
+                    id INT PRIMARY KEY AUTO_INCREMENT,
+                    name VARCHAR(100)
+                );
+
+                E.2 Migration: Tambah Kolom
+
+                File baru:
+
+                002_add_email_to_users.sql
+
+
+                Isi:
+
+                ALTER TABLE users ADD email VARCHAR(100);
+
+
+                📌 Jangan edit file 001
+
+                <br> <hr> <br>
+
+                <h3>F. UP & DOWN (Maju dan Mundur)</h3>
+
+                Beberapa sistem migration punya konsep:
+
+                Arah	Artinya
+                UP	Terapkan perubahan
+                DOWN	Batalkan perubahan
+
+                Contoh logika:
+
+                UP
+
+                ALTER TABLE users ADD phone VARCHAR(20);
+
+
+                DOWN
+
+                ALTER TABLE users DROP phone;
+
+
+                📌 Ini konsep, bukan wajib manual kalau kamu belum pakai framework.
+
+                <br> <hr> <br>
+
+                <h3>G. Perubahan yang AMAN vs BERBAHAYA</h3>
+                ✅ Perubahan Aman (Beginner-Friendly)
+
+                ADD COLUMN
+
+                ADD INDEX
+
+                CREATE TABLE baru
+
+                ⚠️ Perubahan Berbahaya
+
+                DROP COLUMN
+
+                RENAME COLUMN
+
+                CHANGE DATA TYPE
+
+                Kenapa?
+
+                data bisa hilang
+
+                aplikasi bisa error diam-diam
+
+                <br> <hr> <br>
+
+                <h3>H. Strategi Aman untuk Pemula (SANGAT PENTING)</h3>
+                H.1 Jangan Hapus, Tambah Dulu
+
+                ❌ Langsung hapus kolom
+                ✅ Tambah kolom baru
+
+                ALTER TABLE users ADD phone_new VARCHAR(20);
+
+
+                pindahkan data pelan-pelan
+
+                update aplikasi
+
+                baru hapus kolom lama (kalau yakin)
+
+                <br> <hr> <br>
+
+                <h3>I. Migration + Backup (WAJIB BERDUA)</h3>
+
+                Rule:
+
+                Tidak boleh migration tanpa backup.
+
+                Urutan sehat:
+
+                backup database
+
+                jalankan migration
+
+                cek aplikasi
+
+                lanjut
+
+                <br> <hr> <br>
+
+                <h3>J. Migration di Dunia Nyata (Framework)</h3>
+
+                Kalau kamu pakai Laravel nanti:
+
+                migration auto dibuat
+
+                ada perintah migrate & rollback
+
+                📌 Tapi konsepnya sama seperti yang kamu pelajari sekarang.
+
+                <br> <hr> <br>
+
+                <h3>K. Kesalahan Pemula yang WAJIB Dihindari</h3>
+
+                ❌ Edit database langsung di phpMyAdmin
+                ❌ ALTER TABLE di production tanpa test
+                ❌ Tidak backup
+                ❌ Tidak catat perubahan
+
+                <br> <hr> <br>
+
+                <h3>L. Ringkasan Super Sederhana</h3>
+
+                Migration itu:
+
+                catatan perubahan database
+
+                dilakukan bertahap
+
+                aman
+
+                bisa dijelaskan
+
+                Kalau kamu bisa menjawab:
+
+                “kapan tabel ini berubah?”
+
+                “siapa yang ubah?”
+
+                “bisa balik nggak?”
+
+                ➡️ berarti migrationmu sehat.
+                
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <a href="9a-arsitektur.html" class="btn-next">9a. Arsitektur</a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        fetch('layout/aside.html').then(response => response.text()).then(data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop();
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
