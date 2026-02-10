@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Type</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+
+        <main>
+            <header>
+                
+            </header>
+            
+            <div class="content">
+
+                <h2>9.2 Scaling (Production Mindset)</h2>
+
+                “Scaling bukan soal cepat, tapi soal sistem tetap waras saat dipakai banyak orang.”
+
+                <br> <hr> <br>
+
+                <h3>A. Apa itu Scaling? (bukan definisi buku)</h3>
+
+                Scaling = kemampuan sistem untuk tetap:
+
+                cepat
+
+                stabil
+
+                aman
+
+                meskipun:
+
+                user nambah
+
+                data nambah
+
+                traffic naik
+
+                query makin kompleks
+
+                📌 Bukan bikin cepat di laptop, tapi tetap hidup di dunia nyata.
+
+                <br> <hr> <br>
+
+                <h3>B. Kenapa Database Jadi Bottleneck PERTAMA?</h3>
+
+                Di production:
+
+                code bisa di-cache
+
+                frontend bisa CDN
+
+                server bisa nambah
+
+                Tapi:
+
+                database = satu sumber kebenaran
+
+                Akibatnya:
+
+                semua baca & tulis ke DB
+
+                DB cepat capek
+
+                DB crash → semua mati
+
+                Makanya scaling DB itu krusial.
+
+                <br> <hr> <br>
+
+                <h3>C. Tanda-Tanda Kamu Perlu Scaling DB</h3>
+
+                Ini tanda real, bukan teori:
+
+                ✔ query SELECT makin lama
+                ✔ CPU DB sering tinggi
+                ✔ banyak dashboard & laporan
+                ✔ user aktif naik
+                ✔ timeout random
+                ✔ index sudah ada tapi tetap berat
+
+                Kalau ini kejadian → bukan salah Laravel, tapi arsitektur DB
+
+                <br> <hr> <br>
+
+                <h3>D. Dua Arah Besar Scaling</h3>
+
+                Ini peta besarnya:
+
+                SCALING
+                ├── Vertical Scaling
+                └── Horizontal Scaling
+
+                1️⃣ Vertical Scaling (Naik Kelas Server)
+
+                Artinya:
+
+                RAM ditambah
+
+                CPU lebih kuat
+
+                disk lebih cepat
+
+                📌 Contoh:
+
+                dari 2GB → 8GB
+
+                dari 1 core → 4 core
+
+                ✅ Kelebihan
+
+                gampang
+
+                cepat
+
+                no code change
+
+                ❌ Kekurangan
+
+                ada batas
+
+                makin mahal
+
+                tetap 1 titik kegagalan
+
+                👉 Ini solusi pertama, bukan terakhir.
+
+                2️⃣ Horizontal Scaling (Arsitektur)
+
+                Artinya:
+
+                nambah node
+
+                nambah server
+
+                bagi beban
+
+                Contoh:
+
+                read replica
+
+                sharding
+
+                multi DB
+
+                📌 Ini production-grade scaling.
+
+                <br> <hr> <br>
+
+                <h3>E. Database Scaling ≠ Server Scaling</h3>
+
+                Kesalahan umum:
+
+                “Server udah kuat, kok tetap lemot?”
+
+                Karena:
+
+                DB query jelek
+
+                satu DB handle semua
+
+                schema salah
+
+                📌 Scaling DB = arsitektur + pola akses data
+
+                <br> <hr> <br>
+
+                <h3>F. Urutan Scaling yang WARAS (Real World Order)</h3>
+
+                Ini urutan yang benar:
+
+                1️⃣ Query & Index Optimization
+                2️⃣ Vertical Scaling
+                3️⃣ Read Replica
+                4️⃣ Caching
+                5️⃣ Sharding / Multi DB
+
+                ❗ Jangan lompat ke sharding kalau:
+
+                query belum rapi
+
+                index belum benar
+
+                <br> <hr> <br>
+
+                <h3>G. Read vs Write Scaling (Konsep Inti 9.2)</h3>
+
+                DB load itu terbagi:
+
+                Jenis	Contoh
+                READ	list, dashboard, report
+                WRITE	checkout, submit form
+
+                📌 Fakta dunia nyata:
+
+                80–90% beban DB = READ
+
+                Makanya:
+
+                Read Replica → solve READ
+
+                Sharding → solve READ + WRITE
+
+                <br> <hr> <br>
+
+                <h3>H. Kenapa 9.2 Dibahas Terpisah dari Arsitektur?</h3>
+
+                Karena:
+
+                arsitektur = bentuk data
+
+                scaling = cara bertahan
+
+                Kamu bisa punya:
+
+                arsitektur bagus
+
+                tapi scaling jelek
+
+                Hasilnya tetap:
+                ❌ lambat
+                ❌ mahal
+                ❌ chaos
+
+                <br> <hr> <br>
+
+                <h3>I. Mental Model yang Harus Kamu Pegang</h3>
+
+                Scaling bukan ditanya “bisa nggak”
+                tapi “kapan perlu dan risikonya apa”
+
+                Karena:
+
+                scaling selalu nambah kompleksitas
+
+                bug makin mahal
+
+                debug makin susah
+
+                <br> <hr> <br>
+
+                <h3>J. Ringkasan Super Padat</h3>
+
+                9.2 Scaling itu:
+
+                menjaga DB tetap sehat
+
+                saat user & data naik
+
+                Pendekatannya:
+
+                vertical → cepat
+
+                horizontal → tahan lama
+
+                Fokus utamanya:
+
+                READ dulu
+
+                WRITE belakangan
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>9.2.1 Read Replica (Scaling Tanpa Nyentuh Data Write)</h2>
+
+                “Kalau write itu otak,
+                read itu mata.”
+                kebanyakan sistem capek karena kebanyakan baca, bukan nulis.
+
+                <br> <hr> <br>
+
+                <h3>A. Masalah yang Diselesaikan Read Replica</h3>
+
+                Biasanya sistem mulai lemot karena:
+
+                banyak SELECT
+
+                dashboard
+
+                laporan
+
+                list data
+
+                pagination
+
+                Padahal:
+
+                INSERT / UPDATE masih normal
+
+                📌 Ini momen read replica bersinar.
+
+                <br> <hr> <br>
+
+                <h3>B. Apa itu Read Replica? (Versi Paling Gampang)</h3>
+
+                Read Replica = salinan database utama (master)
+                yang:
+
+                otomatis update
+
+                hanya untuk READ (SELECT)
+
+                Diagram:
+
+                            ┌── Read Replica #1 (SELECT)
+                [ App ] ────┤
+                            └── Read Replica #2 (SELECT)
+                                ↑
+                            Replikasi otomatis
+                                ↑
+                        [ Master DB (WRITE) ]
+
+                        <br> <hr> <br>
+
+                <h3>C. Cara Kerja Read Replica (Pelan & Jelas)</h3>
+
+                Aplikasi nulis data ke Master DB
+
+                Master kirim perubahan ke replica
+
+                Replica update otomatis
+
+                Aplikasi baca dari replica
+
+                📌 Ini realtime tapi tidak 100% instan.
+
+                <br> <hr> <br>
+
+                <h3>D. Istilah Penting (JANGAN LEWAT)</h3>
+                🔹 Master / Primary
+
+                tempat INSERT, UPDATE, DELETE
+
+                🔹 Replica / Slave
+
+                hanya SELECT
+
+                🔹 Replication Lag
+
+                jeda waktu antara master → replica
+
+                Biasanya:
+
+                milidetik
+
+                detik
+
+                bisa menit (kalau load tinggi)
+
+                <br> <hr> <br>
+
+                <h3>E. Kapan Read Replica Cocok Dipakai?</h3>
+
+                Checklist jujur:
+
+                ✔ SELECT >> WRITE
+                ✔ dashboard berat
+                ✔ banyak list data
+                ✔ laporan sering
+                ✔ DB CPU tinggi tapi write santai
+
+                Kalau iya → read replica solusi ideal
+
+                <br> <hr> <br>
+
+                <h3>F. Hal yang TIDAK Boleh Dilakukan di Replica</h3>
+
+                ❌ INSERT
+                ❌ UPDATE
+                ❌ DELETE
+                ❌ transaksi penting
+
+                📌 Replica itu baca doang.
+
+                <br> <hr> <br>
+
+                <h3>G. Contoh Kasus Nyata</h3>
+                Sebelum Replica
+
+                semua query ke 1 DB
+
+                CPU 90%
+
+                user ngeluh
+
+                Setelah Replica
+
+                write tetap ke master
+
+                read ke 2 replica
+
+                CPU master turun
+
+                sistem stabil
+
+                📌 Ini real-world fix.
+
+                <br> <hr> <br>
+
+                <h3>H. Read Replica di Level Aplikasi (Konsep)</h3>
+
+                Aplikasi harus tahu:
+
+                mana DB write
+
+                mana DB read
+
+                Contoh logika:
+
+                create order → master
+
+                list orders → replica
+
+                checkout → master
+
+                dashboard → replica
+
+                <br> <hr> <br>
+
+                <h3>I. Masalah Umum (dan Cara Mikirnya)</h3>
+                I.1 Data Baru Belum Muncul
+
+                Karena:
+
+                replication lag
+
+                Solusi:
+
+                read-after-write → master
+
+                jangan langsung baca dari replica
+
+                I.2 Replica Ketinggalan Jauh
+
+                Penyebab:
+
+                query berat
+
+                network lambat
+
+                Solusi:
+
+                tambah replica
+
+                optimasi query
+
+                <br> <hr> <br>
+
+                <h3>J. Kesalahan Fatal Pemula</h3>
+
+                ❌ nulis ke replica
+                ❌ semua read langsung pindah tanpa aturan
+                ❌ nggak paham lag
+                ❌ pakai replica buat transaksi penting
+
+                <br> <hr> <br>
+
+                <h3>K. Read Replica ≠ Backup</h3>
+
+                ❌ replica bukan backup
+                ✔ backup tetap wajib
+
+                Karena:
+
+                data rusak ikut direplikasi
+
+                🧠 Mental Model Penting
+
+                Read Replica itu “otot tambahan”,
+                bukan otak baru.
+
+                Dia bantu:
+
+                baca cepat
+
+                traffic naik
+
+                Tapi:
+
+                logic tetap di master
+
+                🔥 Ringkasan Singkat
+                Aspek	Read Replica
+                Fokus	SELECT
+                Aman	✔
+                Kompleksitas	Rendah
+                Scaling	Horizontal
+                Risiko	Lag
+
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>9.2.1 Read Replica — Lebih Dalam & Praktik Laravel</h2>
+
+                Target bagian ini:
+                kamu paham kapan, kenapa, dan gimana Laravel pakai read replica tanpa ngerusak data.
+
+                <br> <hr> <br>
+
+                <h3>A. Mental Model Read Replica (Ulang dikit tapi penting)</h3>
+
+                Bayangin kamu punya:
+
+                1 otak (Master DB) → nulis
+
+                beberapa mata (Replica DB) → baca
+
+                Laravel HARUS tahu:
+
+                query mana nulis
+
+                query mana baca
+
+                Kalau salah → chaos 😅
+
+                <br> <hr> <br>
+
+                <h3>B. Arsitektur Read Replica di Laravel</h3>
+
+                Struktur umumnya:
+
+                Laravel App
+                ├── write connection → master DB
+                └── read connection(s) → replica DB
+
+
+                Laravel sudah support native ini.
+
+                <br> <hr> <br>
+
+                <h3>C. Konfigurasi Dasar di Laravel (config/database.php)</h3>
+
+                Ini contoh PALING PENTING, kita bedah baris per baris.
+
+                'mysql' => [
+                    'driver' => 'mysql',
+
+                    'read' => [
+                        'host' => [
+                            '192.168.1.10',
+                            '192.168.1.11',
+                        ],
+                    ],
+
+                    'write' => [
+                        'host' => '192.168.1.9',
+                    ],
+
+                    'database' => env('DB_DATABASE', 'app_db'),
+                    'username' => env('DB_USERNAME', 'root'),
+                    'password' => env('DB_PASSWORD', ''),
+
+                    'sticky' => true,
+
+                    'charset' => 'utf8mb4',
+                    'collation' => 'utf8mb4_unicode_ci',
+                ],
+
+                <br> <hr> <br>
+
+                <h3>D. Penjelasan Pelan-Pelan (JANGAN DISKIP)</h3>
+                🔹 read
+
+                daftar host replica
+
+                Laravel auto load-balance
+
+                hanya dipakai untuk SELECT
+
+                🔹 write
+
+                host master
+
+                dipakai untuk:
+
+                insert
+
+                update
+
+                delete
+
+                transaction
+
+                🔹 sticky => true (INI KRUSIAL)
+
+                Artinya:
+
+                Setelah WRITE, READ berikutnya tetap ke MASTER
+
+                Kenapa?
+
+                supaya data baru langsung kebaca
+
+                hindari replication lag
+
+                📌 Kalau ini false → bug halus tapi mematikan.
+
+                <br> <hr> <br>
+
+                <h3>E. Laravel Memutuskan Read vs Write (MAGIC-NYA)</h3>
+
+                Laravel otomatis menentukan:
+
+                Query	Ke mana
+                select()	read
+                insert()	write
+                update()	write
+                delete()	write
+                transaction()	write
+
+                Contoh:
+
+                User::where('active', 1)->get(); // replica
+                User::create([...]);             // master
+
+                <br> <hr> <br>
+
+                <h3>F. Kasus Penting: Read After Write</h3>
+                Masalah
+                $order = Order::create([...]);
+                $order = Order::find($order->id); // bisa ke replica!
+
+
+                Kalau:
+
+                sticky = false
+
+                replica lag
+
+                👉 data belum ada → error
+
+                Solusi
+
+                sticky => true
+
+                atau paksa master
+
+                DB::connection()->getPdo();
+
+                <br> <hr> <br>
+
+                <h3>G. Memaksa Query ke MASTER (Jika Perlu)</h3>
+
+                Kadang HARUS ke master, contoh:
+
+                konfirmasi pembayaran
+
+                cek stok
+
+                transaksi penting
+
+                DB::connection('mysql')->select(...);
+
+
+                Atau:
+
+                User::onWriteConnection()->find($id);
+
+
+                📌 Gunakan hemat, jangan kebiasaan.
+
+                <br> <hr> <br>
+
+                <h3>H. Transaction & Read Replica</h3>
+
+                Semua DB::transaction():
+
+                otomatis ke master
+
+                aman dari replica lag
+
+                DB::transaction(function () {
+                    Order::create(...);
+                    Stock::decrement(...);
+                });
+
+                <br> <hr> <br>
+
+                <h3>I. Monitoring & Reality Check</h3>
+
+                Di production:
+
+                cek replication lag
+
+                monitor slow query
+
+                pantau CPU master
+
+                Kalau:
+
+                replica sering ketinggalan
+                → tambah replica atau optimasi query
+
+                <br> <hr> <br>
+
+                <h3>J. Kesalahan Fatal di Dunia Nyata</h3>
+
+                ❌ sticky = false tanpa ngerti
+                ❌ baca data sensitif dari replica
+                ❌ pakai replica buat logic bisnis
+                ❌ lupa transaction
+
+                <br> <hr> <br>
+
+                <h3>K. Kapan Read Replica TIDAK CUKUP?</h3>
+
+                Kalau:
+
+                write juga berat
+
+                data terlalu besar
+
+                tenant banyak
+
+                index mentok
+
+                👉 saatnya sharding
+
+                🧠 Ringkasan Inti
+
+                Read Replica = scaling aman
+
+                Laravel support native
+
+                sticky = true itu wajib
+
+                logic penting → master
+
+                read berat → replica
+
+                <br> <br>
+
+                <hr> 
+
+                <br> <br>
+
+                <h2>ADDITIONAL REPLICA SETUP</h2>
+
+                Karena sinkronisasi database (Replikasi) terjadi di level sistem server, maka perintahnya bukan diketik di dalam kode PHP Laravel, melainkan di Terminal (SSH) pada server database kamu.
+
+                Berikut adalah langkah-langkah atau "perintah" (sintaks) untuk mengaktifkan sinkronisasi otomatis antara Master dan Slave:
+
+                <br> <hr> <br>
+
+                <h3>1. Perintah di Server MASTER</h3>
+                Pertama, kita harus memberi tahu Master bahwa dia punya "pengikut" (Slave).
+
+                Edit Konfigurasi (my.cnf): Kamu harus mengaktifkan log pencatatan.
+
+                Ini, TOML
+                [mysqld]
+                server-id = 1
+                log-bin = mysql-bin
+                binlog-do-db = nama_db_kamu  # Database yang ingin disinkronkan
+                Buat User Khusus Replikasi: Masuk ke MySQL (mysql -u root -p) dan beri izin untuk si Slave:
+
+                SQL
+                CREATE USER 'user_replikasi'@'%' IDENTIFIED BY 'password_aman';
+                GRANT REPLICATION SLAVE ON *.* TO 'user_replikasi'@'%';
+                FLUSH PRIVILEGES;
+                Cek Status Master: Ketik ini untuk mendapatkan "koordinat" posisi data terakhir:
+
+                SQL
+                SHOW MASTER STATUS;
+                Catat file (mysql-bin.000001) dan posisinya (154), ini akan dipakai di Slave.
+
+                <br> <hr> <br>
+
+                <h3>2. Perintah di Server SLAVE</h3>
+                Sekarang kita perintahkan si Slave untuk "mengekor" ke Master.
+
+                Edit Konfigurasi (my.cnf): Beri ID yang berbeda dengan Master.
+
+                Ini, TOML
+                [mysqld]
+                server-id = 2
+                relay-log = /var/log/mysql/mysql-relay-bin.log
+                Hubungkan ke Master: Masuk ke MySQL Slave, lalu masukkan perintah "Ikuti Master":
+
+                SQL
+                CHANGE MASTER TO
+                MASTER_HOST='IP_ADDRESS_MASTER',
+                MASTER_USER='user_replikasi',
+                MASTER_PASSWORD='password_aman',
+                MASTER_LOG_FILE='mysql-bin.000001', -- Dari status Master tadi
+                MASTER_LOG_POS=154;                 -- Dari status Master tadi
+                Jalankan Replikasi:
+
+                SQL
+                START SLAVE;
+                Cek Apakah Sudah Sinkron:
+
+                SQL
+                SHOW SLAVE STATUS\G;
+                Pastikan Slave_IO_Running dan Slave_SQL_Running keduanya bernilai Yes.
+
+                <br> <hr> <br>
+
+                <h3>3. Bagaimana di Laravel?</h3>
+                Setelah server di atas "jadian" (sinkron), barulah kamu memberi perintah di Laravel. Kamu tidak perlu perintah sinkron lagi, cukup bagi tugas di config/database.php:
+
+                PHP
+                'mysql' => [
+                    'read' => [
+                        'host' => ['IP_SLAVE'],
+                    ],
+                    'write' => [
+                        'host' => ['IP_MASTER'],
+                    ],
+                    'sticky' => true, // Agar data yang baru di-input Master bisa langsung dibaca Slave tanpa delay
+                    'driver' => 'mysql',
+                    // ... sisanya sama
+                ],
+                Bisakah ini dilakukan tanpa SSH (hanya lewat cPanel)?
+                Jawabannya: Hampir tidak bisa. Menu di cPanel biasanya hanya mengizinkan "Remote MySQL" (mengizinkan koneksi dari luar), tapi tidak menyediakan menu untuk mengatur server-id atau log-bin yang dibutuhkan untuk replikasi otomatis.
+
+                Alternatif jika kamu terpaksa tetap di Shared Hosting (tanpa SSH): Kamu bisa menggunakan MySQL Trigger. Ini adalah perintah SQL yang dipasang di database agar setiap ada INSERT di Tabel A, dia otomatis melempar data yang sama ke Tabel B.
+
+                Contoh Sintaks Trigger:
+
+                SQL
+                CREATE TRIGGER sync_pasien AFTER INSERT ON db_transaksi.pasiens
+                FOR EACH ROW
+                BEGIN
+                INSERT INTO db_laporan.pasiens_history (id, nama, tgl)
+                VALUES (NEW.id, NEW.nama, NEW.tgl);
+                END;
+                Perintah ini dimasukkan lewat tab "SQL" di phpMyAdmin.
+
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>9.2.2 Sharding — Konsep Pelan & Visual</h2>
+
+                Kalau Read Replica = nambah “mata”,
+                Sharding = mecah “otak”.
+
+                Ini level advanced, dan TIDAK semua sistem perlu sharding.
+
+                <br> <hr> <br>
+
+                <h3>A. Masalah yang Diselesaikan Sharding</h3>
+
+                Read replica GAGAL kalau:
+
+                WRITE makin berat
+
+                data makin gede
+
+                table sudah ratusan juta row
+
+                index mentok
+
+                master DB tetap overload
+
+                📌 Di sinilah sharding masuk.
+
+                <br> <hr> <br>
+
+                <h3>B. Apa itu Sharding? (Versi Paling Gampang)</h3>
+
+                Sharding = membagi data ke beberapa database
+                berdasarkan aturan tertentu.
+
+                Bukan copy, tapi pecah.
+
+                <br> <hr> <br>
+
+                <h3>C. Visual Sharding vs Non-Sharding</h3>
+                ❌ Tanpa Sharding
+                [ App ]
+                |
+                [ DB ]
+                (semua data di sini)
+
+
+                Masalah:
+
+                satu DB capek
+
+                write nabrak
+
+                disk penuh
+
+                ✅ Dengan Sharding
+                            ┌── DB Shard 1
+                [ App ] ────┤
+                            ├── DB Shard 2
+                            └── DB Shard 3
+
+
+                📌 Setiap DB cuma pegang sebagian data.
+
+                <br> <hr> <br>
+
+                <h3>D. Mental Model PALING PENTING</h3>
+
+                Read Replica = data sama, query beda
+                Sharding = data beda, query harus pintar
+
+                <br> <hr> <br>
+
+                <h3>E. Cara Membagi Shard (INI KUNCI)</h3>
+
+                Ada beberapa strategi, kita bahas satu-satu.
+
+                1️⃣ Sharding Berdasarkan ID (Range Sharding)
+                Contoh
+                ID 1–1.000.000  → Shard A
+                ID 1.000.001+  → Shard B
+
+                Visual
+                users (shard A): id 1–1jt
+                users (shard B): id 1jt+
+
+                ✅ Kelebihan
+
+                simpel
+
+                query cepat
+
+                ❌ Kekurangan
+
+                shard baru bisa overload
+
+                data tidak seimbang
+
+                📌 Jarang dipakai sendirian di production besar.
+
+                2️⃣ Hash-Based Sharding (PALING UMUM)
+                Contoh aturan
+                shard = user_id % 3
+
+                Visual
+                user_id % 3 = 0 → shard A
+                user_id % 3 = 1 → shard B
+                user_id % 3 = 2 → shard C
+
+                ✅ Kelebihan
+
+                data rata
+
+                write terbagi seimbang
+
+                ❌ Kekurangan
+
+                join antar shard susah
+
+                tambah shard = migrasi besar
+
+                📌 Ini yang sering dipakai SaaS.
+
+                3️⃣ Sharding Berdasarkan Tenant (SANGAT RELEVAN BUAT KAMU)
+                Contoh
+                Company A → DB A
+                Company B → DB B
+                Company C → DB C
+
+
+                📌 Ini Multi-Tenant + Sharding.
+
+                ✅ Kelebihan
+
+                isolasi kuat
+
+                scaling per tenant
+
+                backup gampang
+
+                ❌ Kekurangan
+
+                setup kompleks
+
+                migration per DB
+
+                👉 Ini enterprise pattern.
+
+                <br> <hr> <br>
+
+                <h3>F. Apa yang BERUBAH Saat Pakai Sharding?</h3>
+
+                Ini poin penting banget:
+
+                Hal	Sebelum	Sesudah
+                Query	langsung	harus tahu shard
+                Join	gampang	susah
+                Transaction	1 DB	lintas DB ribet
+                Migration	sekali	banyak DB
+                Debug	simpel	mikir
+
+                📌 Sharding bukan cuma DB issue, tapi arsitektur aplikasi.
+
+                <br> <hr> <br>
+
+                <h3>G. Contoh Alur Request (Visual Story)</h3>
+                Tanpa Sharding
+                User request
+                → Laravel
+                → DB
+
+                Dengan Sharding
+                User request
+                → Laravel
+                → Tentukan shard
+                → Koneksi ke DB shard
+                → Query
+
+
+                Laravel HARUS:
+
+                tahu shard mana
+
+                switch koneksi
+
+                konsisten
+
+                <br> <hr> <br>
+
+                <h3>H. Kesalahan Fatal Pemula</h3>
+
+                ❌ sharding terlalu cepat
+                ❌ belum butuh tapi sudah kompleks
+                ❌ query global tanpa strategi
+                ❌ join lintas shard
+                ❌ lupa tooling & monitoring
+
+                <br> <hr> <br>
+
+                <h3>I. Kapan Sharding WAJIB?</h3>
+
+                Checklist jujur:
+
+                ✔ data > ratusan juta row
+                ✔ write tinggi
+                ✔ single DB mentok
+                ✔ biaya vertical scaling absurd
+                ✔ tenant besar & berat
+
+                Kalau belum → JANGAN SHARDING
+
+                <br> <hr> <br>
+
+                <h3>J. Sharding ≠ Solusi Segalanya</h3>
+
+                Masalah yang tidak diselesaikan sharding:
+
+                query jelek
+
+                index salah
+
+                N+1
+
+                logic bocor
+
+                📌 Sharding itu last weapon, bukan first.
+
+                🧠 Analogi Penutup (biar nempel)
+
+                Read Replica = banyak kasir baca menu
+                Sharding = buka cabang baru
+
+                🔥 Ringkasan Keras & Jujur
+
+                Sharding = pecah data
+
+                Solve read + write
+
+                Kompleks & mahal
+
+                Butuh disiplin arsitektur
+
+                Cocok enterprise / SaaS besar
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <a href="9c-integrasi-framework.html" class="btn-next">9c. Integrasi Framework</a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        fetch('layout/aside.html').then(response => response.text()).then(data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop();
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
