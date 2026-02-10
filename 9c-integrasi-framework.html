@@ -18,7 +18,944 @@
             </header>
             
             <div class="content">
+                <h2>9.3 Integrasi dengan Framework (Production Mindset)</h2>
+
+                Framework itu alat bantu,
+                database itu sumber kebenaran.
+                Kalau salah paham relasinya → bug mahal.
+
+                <br> <hr> <br>
                 
+                <h3>A. Apa Maksud “Integrasi Framework” Sebenarnya?</h3>
+
+                Bukan cuma:
+
+                connect DB
+
+                bikin model
+
+                query data
+
+                Tapi:
+
+                bagaimana framework mengatur cara kamu BERPIKIR soal data
+
+                Framework:
+
+                menyederhanakan
+
+                menyembunyikan kompleksitas
+
+                tapi juga bisa menipu kalau kamu terlalu percaya
+
+                <br> <hr> <br>
+                
+                <h3>B. Peran Framework di Antara App & Database</h3>
+
+                Struktur real-nya:
+
+                [ Business Logic ]
+                        ↓
+                [ Framework Layer ]
+                        ↓
+                [ Database ]
+
+
+                Framework bertugas:
+
+                bikin developer cepat
+
+                jaga konsistensi
+
+                lindungi dari kesalahan dasar
+
+                📌 Tapi bukan pengganti pemahaman SQL.
+
+                <br> <hr> <br>
+                
+                <h3>C. Kenapa Integrasi Framework Jadi Masalah di Production?</h3>
+
+                Karena di production:
+
+                data besar
+
+                query kompleks
+
+                traffic tinggi
+
+                scaling aktif
+
+                Sedangkan framework:
+
+                default untuk kasus umum
+
+                bukan untuk edge case ekstrem
+
+                📌 Di sinilah konflik muncul.
+
+                <br> <hr> <br>
+                
+                <h3>D. Ilusi “ORM Itu Aman”</h3>
+
+                Pemula sering mikir:
+
+                “Pakai ORM = aman & performa oke”
+
+                Faktanya:
+
+                ORM = abstraction
+
+                abstraction = tradeoff
+
+                Framework tidak tahu konteks bisnis kamu.
+
+                <br> <hr> <br>
+                
+                <h3>E. Tiga Level Integrasi Framework ↔ DB</h3>
+
+                Anggap ini tangga kematangan:
+
+                1️⃣ Convenience Level
+
+                CRUD cepat
+
+                developer senang
+
+                performa cukup
+
+                Ciri:
+
+                User::all();
+                Order::create([...]);
+
+
+                Cocok:
+
+                MVP
+
+                admin sederhana
+
+                2️⃣ Control Level
+
+                mulai mikir query
+
+                sadar performa
+
+                selective abstraction
+
+                Ciri:
+
+                DB::table('orders')
+                ->select('id', 'total')
+                ->where('status', 'paid')
+                ->get();
+
+
+                Cocok:
+
+                production awal
+
+                traffic naik
+
+                3️⃣ Ownership Level (Production Mindset)
+
+                ngerti SQL
+
+                ORM dipakai selektif
+
+                query berat diatur manual
+
+                Ciri:
+
+                mix ORM + raw query
+
+                explain query
+
+                index-aware
+
+                📌 Ini level engineer production.
+
+                <br> <hr> <br>
+                
+                <h3>F. Framework ≠ Database Manager</h3>
+
+                Kesalahan besar:
+                ❌ nyerahin semua ke ORM
+                ❌ nggak ngerti schema
+                ❌ nggak ngerti index
+                ❌ nggak ngerti execution plan
+
+                Framework tidak menggantikan DBA mindset.
+
+                <br> <hr> <br>
+                
+                <h3>G. Integrasi Framework Harus Sadar Arsitektur</h3>
+
+                Framework harus tahu:
+
+                read vs write
+
+                replica vs master
+
+                shard mana
+
+                tenant mana
+
+                Kalau tidak:
+
+                framework jadi blind driver
+
+                <br> <hr> <br>
+                
+                <h3>H. Integrasi yang Sehat (Checklist)</h3>
+
+                ✔ framework aware read/write
+                ✔ ORM tidak dipakai membabi buta
+                ✔ raw query untuk heavy query
+                ✔ transaksi jelas
+                ✔ error handling jelas
+                ✔ logging query aktif
+
+                <br> <hr> <br>
+                
+                <h3>I. Kenapa Bab 9.3 Datang SETELAH Scaling?</h3>
+
+                Karena:
+
+                framework default = non-scaled
+
+                scaling = arsitektur
+
+                integrasi = adaptasi framework ke arsitektur
+
+                📌 Framework HARUS menyesuaikan arsitektur, bukan sebaliknya.
+
+                <br> <hr> <br>
+                
+                <h3>J. Ringkasan Inti BAB 9.3</h3>
+
+                Framework bukan otak,
+                tapi sarung tangan.
+
+                Kalau:
+
+                data kecil → sarung tangan tipis
+
+                data besar → butuh kontrol tangan langsung
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>9.3.1 ORM vs Raw Query (Bedah Tanpa Bias)</h2>
+
+                ORM itu bukan salah.
+                Raw Query juga bukan selalu benar.
+                Yang salah itu: pakai tanpa sadar.
+
+                <br> <hr> <br>
+
+                <h3>A. Definisi Singkat (biar satu frekuensi)</h3>
+                🔹 ORM (Object Relational Mapping)
+
+                Cara kerja:
+
+                tabel → object
+                row → instance
+
+                Contoh (Laravel Eloquent):
+
+                $user = User::where('email', $email)->first();
+
+                🔹 Raw Query
+
+                Query SQL ditulis manual, dieksekusi langsung.
+
+                $user = DB::select(
+                    'SELECT * FROM users WHERE email = ?',
+                    [$email]
+                );
+
+                <br> <hr> <br>
+
+                <h3>B. Kenapa ORM Sangat Populer?</h3>
+
+                Karena:
+
+                cepat dikoding
+
+                readable
+
+                maintainable
+
+                minim SQL knowledge
+
+                📌 Cocok untuk developer speed.
+
+                <br> <hr> <br>
+
+                <h3>C. Ilusi Berbahaya dari ORM</h3>
+
+                ORM bikin kamu lupa bahwa:
+
+                DB tetap pakai SQL
+
+                DB tetap pakai index
+
+                DB tetap punya execution plan
+
+                ORM menyembunyikan:
+
+                query asli
+
+                jumlah query
+
+                join yang terjadi
+
+                📌 Inilah sumber banyak bug production.
+
+                <br> <hr> <br>
+
+                <h3>D. Perbandingan Langsung (Jujur & Nyata)</h3>
+                Aspek	ORM	Raw Query
+                Kecepatan dev	⭐⭐⭐⭐	⭐⭐
+                Kontrol query	⭐⭐	⭐⭐⭐⭐⭐
+                Performa	⭐⭐–⭐⭐⭐	⭐⭐⭐⭐⭐
+                Debug SQL	❌	✔
+                Scaling	❌	✔
+                Aman SQL Injection	✔ (default)	⚠️ (kalau ceroboh)
+
+                <br> <hr> <br>
+
+                <h3>E. Contoh Kasus Nyata (PENTING)</h3>
+                Kasus 1: List User Sederhana
+                User::where('active', 1)->get();
+
+
+                ✔ ORM ideal
+                ✔ clean
+                ✔ cepat
+
+                Kasus 2: Dashboard Laporan Berat
+                SELECT DATE(created_at), COUNT(*)
+                FROM orders
+                GROUP BY DATE(created_at);
+
+
+                ❌ ORM ribet
+                ❌ sulit dioptimasi
+                ✔ Raw Query jauh lebih jelas
+
+                Kasus 3: N+1 Problem (JEBakan ORM)
+                $orders = Order::all();
+
+                foreach ($orders as $order) {
+                    echo $order->user->name;
+                }
+
+
+                Yang terjadi:
+
+                1 query ambil orders
+
+                N query ambil user
+
+                📌 ORM bikin ini terlihat aman padahal mahal.
+
+                <br> <hr> <br>
+
+                <h3>F. ORM Cocok untuk Apa?</h3>
+
+                Gunakan ORM kalau:
+
+                ✔ CRUD sederhana
+                ✔ data kecil–menengah
+                ✔ logic bisnis jelas
+                ✔ bukan query agregat berat
+                ✔ butuh maintainability
+
+                <br> <hr> <br>
+
+                <h3>G. Raw Query Cocok untuk Apa?</h3>
+
+                Gunakan Raw Query kalau:
+
+                ✔ laporan berat
+                ✔ agregasi kompleks
+                ✔ join banyak
+                ✔ tuning performa
+                ✔ query critical path
+
+                📌 Production systems pasti mix.
+
+                <br> <hr> <br>
+
+                <h3>H. Pola Sehat di Dunia Nyata</h3>
+
+                ORM untuk transaksi,
+                Raw Query untuk analitik.
+
+                Contoh:
+
+                create order → ORM
+
+                list dashboard → raw SQL
+
+                report bulanan → raw SQL
+
+                <br> <hr> <br>
+
+                <h3>I. ORM + Raw Query (Bisa Hidup Bareng)</h3>
+
+                Laravel mendukung:
+
+                DB::select(...)
+                DB::statement(...)
+                DB::transaction(...)
+
+
+                Dan tetap bisa:
+
+                logging
+
+                binding
+
+                connection control
+
+                <br> <hr> <br>
+
+                <h3>J. Kesalahan Fatal Pemula</h3>
+
+                ❌ anti raw query
+                ❌ pakai ORM untuk semua
+                ❌ nggak cek SQL hasil ORM
+                ❌ ORM = performa
+
+                📌 ORM bukan pengganti SQL.
+
+                🧠 Mental Model yang Harus Nempel
+
+                ORM itu peta,
+                SQL itu medan aslinya.
+
+                Kalau medan sulit:
+
+                kamu harus turun dari peta
+
+                🔥 Ringkasan Keras & Jujur
+
+                ORM = cepat & nyaman
+
+                Raw Query = kontrol & performa
+
+                Production = kombinasi
+
+                Jangan fanatik
+
+                <br> <br>
+
+                <hr> 
+
+                <br> <br>
+                
+                <h2>9.3.2 Kapan ORM Berbahaya (Real Production Talk)</h2>
+
+                ORM itu aman kalau kecil.
+                Begitu sistem gede, ORM bisa jadi senjata makan tuan.
+
+                Kita bahas bukan buat nakutin, tapi biar kamu pakai dengan sadar.
+
+                <br> <hr> <br>
+
+                <h3>A. ORM Tidak Tahu Konteks Production</h3>
+
+                ORM itu:
+
+                dibuat untuk kasus umum
+
+                tidak tahu:
+
+                data kamu jutaan
+
+                query kamu kritikal
+
+                DB kamu punya replica
+
+                ada sharding / tenant
+
+                📌 Jadi kalau kamu percaya 100% ke ORM → bahaya
+
+                <br> <hr> <br>
+
+                <h3>B. Situasi ORM Mulai Berbahaya</h3>
+
+                Kita masuk ke kasus nyata satu per satu 👇
+
+                1️⃣ Data Sudah BESAR
+
+                Contoh polos:
+
+                User::all();
+
+
+                Di dev:
+
+                100 row → aman
+
+                Di prod:
+
+                10 juta row → 💀
+
+                📌 ORM tidak kasih peringatan.
+
+                2️⃣ N+1 Query Problem (Pembunuh Diam-Diam)
+                $orders = Order::all();
+
+                foreach ($orders as $order) {
+                    echo $order->user->email;
+                }
+
+
+                Yang terjadi:
+
+                1 query ambil orders
+
+                N query ambil users
+
+                📌 Ini paling sering bikin DB overload.
+
+                3️⃣ Eager Loading yang Salah Kaprah
+                Order::with('items', 'user', 'payments')->get();
+
+
+                Masalah:
+
+                join besar
+
+                data kebanyakan
+
+                memory naik
+
+                waktu query lama
+
+                📌 Eager loading bukan obat semua penyakit.
+
+                4️⃣ ORM Menyembunyikan Query Asli
+
+                Kamu nulis:
+
+                Order::where('status', 'paid')->get();
+
+
+                Yang DB lihat:
+
+                SELECT * FROM orders WHERE status = 'paid';
+
+
+                Masalah:
+
+                SELECT *
+
+                index belum tentu ada
+
+                DB scan besar
+
+                ORM tidak maksa kamu mikir index.
+
+                5️⃣ Pagination Palsu (OFFSET = MUSUH)
+                Order::paginate(100);
+
+
+                Di belakang:
+
+                LIMIT 100 OFFSET 100000;
+
+
+                OFFSET besar:
+
+                DB tetap scan ribuan row
+
+                makin halaman belakang → makin lambat
+
+                📌 ORM bikin ini kelihatan aman.
+
+                6️⃣ Transaction Tersembunyi
+
+                ORM kadang:
+
+                auto save
+
+                auto update
+
+                auto relationship sync
+
+                Akibatnya:
+
+                lock lama
+
+                deadlock
+
+                timeout random
+
+                Dan kamu:
+
+                “kok errornya nggak konsisten?”
+
+                7️⃣ Tidak Sadar Read vs Write
+
+                ORM:
+
+                auto select
+
+                auto save
+
+                Kalau kamu pakai:
+
+                read replica
+
+                sharding
+
+                ORM default tidak tahu konteks itu.
+
+                📌 Bisa baca dari replica padahal data baru saja ditulis.
+
+                <br> <hr> <br>
+
+                <h3>C. ORM + Scaling = Harus Extra Disiplin</h3>
+
+                Begitu:
+
+                read replica aktif
+
+                sharding aktif
+
+                multi-tenant aktif
+
+                ORM harus dikontrol:
+
+                connection
+
+                scope
+
+                transaction
+
+                query
+
+                <br> <hr> <br>
+
+                <h3>D. Ciri-Ciri ORM SUDAH KEBABLASAN</h3>
+
+                Kalau kamu lihat:
+
+                loading lama tanpa error
+
+                CPU DB tinggi
+
+                banyak query kecil
+
+                sulit trace query
+
+                “di lokal cepat, di prod lambat”
+
+                📌 95% kasus = ORM misuse
+
+                <br> <hr> <br>
+
+                <h3>E. Cara Mengamankan ORM (Bukan Meninggalkannya)</h3>
+
+                ORM tidak perlu dibuang, tapi:
+
+                E.1 Batasi ORM ke Area Aman
+
+                Gunakan ORM untuk:
+
+                create / update entity
+
+                simple lookup
+
+                business logic inti
+
+                E.2 Query Berat = Query Builder / Raw SQL
+                DB::table('orders')
+                ->select(DB::raw('DATE(created_at) as date, COUNT(*) as total'))
+                ->groupBy('date')
+                ->get();
+
+                E.3 Selalu Sadari Jumlah Query
+
+                Biasakan tanya:
+
+                “Ini nembak DB berapa kali?”
+
+                E.4 Gunakan Index-Aware Thinking
+
+                ORM tidak peduli index, kamu harus peduli.
+
+                <br> <hr> <br>
+
+                <h3>F. Mental Model Penyelamat</h3>
+
+                ORM itu asisten,
+                bukan arsitek.
+
+                Kalau:
+
+                sistem kecil → asisten oke
+
+                sistem besar → kamu harus pegang kemudi
+
+                <br> <hr> <br>
+
+                <h3>G. Ringkasan Keras & Jujur</h3>
+
+                ORM berbahaya saat data besar
+
+                ORM menipu rasa aman
+
+                Scaling + ORM = disiplin ekstra
+
+                Production = sadar SQL
+
+                <br> <br>
+
+                <hr>
+
+                <br> <br>
+
+                <h2>9.3.3 Laravel Query Builder — Deep Dive (Production-Oriented)</h2>
+
+                Query Builder = kontrol SQL tanpa kehilangan kenyamanan framework
+
+                Ini jembatan:
+
+                dari ORM → raw SQL
+
+                dari “asal jalan” → sadar performa
+
+                <br> <hr> <br>
+                
+                <h3>A. Posisi Query Builder di Mental Model</h3>
+
+                Ingat tangga ini:
+
+                ORM (Eloquent)
+                ↓
+                Query Builder   ← ⭐ KITA DI SINI
+                ↓
+                Raw SQL
+
+
+                Query Builder:
+
+                lebih eksplisit dari ORM
+
+                lebih aman dari raw SQL
+
+                masih readable
+
+                📌 Production-friendly default.
+
+                <br> <hr> <br>
+                
+                <h3>B. Kenapa Query Builder Sangat Penting di Production?</h3>
+
+                Karena:
+
+                kamu tahu persis query apa yang dikirim
+
+                bisa optimasi
+
+                bisa kontrol kolom
+
+                bisa kontrol index
+
+                cocok untuk read-heavy system
+
+                <br> <hr> <br>
+                
+                <h3>C. Dasar yang Wajib Dipakai (Bukan Opsional)</h3>
+                C.1 Hindari SELECT *
+
+                ❌ Jangan:
+
+                DB::table('orders')->get();
+
+
+                ✅ Lakukan:
+
+                DB::table('orders')
+                ->select('id', 'user_id', 'total')
+                ->where('status', 'paid')
+                ->get();
+
+
+                📌 Query kecil → cepat → DB sehat.
+
+                C.2 WHERE + INDEX AWARE
+
+                Biasakan:
+
+                WHERE = kolom indexed
+
+                JOIN = foreign key indexed
+
+                Query Builder tidak peduli index, kamu yang harus.
+
+                <br> <hr> <br>
+                
+                <h3>D. JOIN yang Aman & Terkontrol</h3>
+                DB::table('orders')
+                ->join('users', 'orders.user_id', '=', 'users.id')
+                ->select(
+                    'orders.id',
+                    'users.email',
+                    'orders.total'
+                )
+                ->where('orders.status', 'paid')
+                ->get();
+
+
+                📌 Lebih jelas dari ORM, lebih aman dari raw SQL.
+
+                <br> <hr> <br>
+                
+                <h3>E. Aggregation (INI KEKUATAN UTAMA)</h3>
+                DB::table('orders')
+                ->selectRaw('DATE(created_at) as date, SUM(total) as revenue')
+                ->groupBy('date')
+                ->orderBy('date')
+                ->get();
+
+
+                ✔ dashboard
+                ✔ laporan
+                ✔ statistik
+
+                ORM biasanya kalah telak di sini.
+
+                <br> <hr> <br>
+                
+                <h3>F. Pagination yang Lebih Waras</h3>
+
+                Hindari OFFSET besar.
+
+                ❌ Default ORM
+                Order::paginate(100);
+
+                ✅ Keyset Pagination
+                DB::table('orders')
+                ->where('id', '>', $lastId)
+                ->orderBy('id')
+                ->limit(100)
+                ->get();
+
+
+                📌 Ini production-grade pagination.
+
+                <br> <hr> <br>
+                
+                <h3>G. Transaction dengan Query Builder</h3>
+                DB::transaction(function () {
+                    DB::table('orders')->insert([...]);
+                    DB::table('stocks')->decrement('qty', 1);
+                });
+
+
+                ✔ aman
+                ✔ jelas
+                ✔ atomic
+
+                <br> <hr> <br>
+                
+                <h3>H. Read Replica & Query Builder</h3>
+
+                Query Builder otomatis:
+
+                SELECT → replica
+
+                WRITE → master
+
+                Kalau sticky = true, aman dari lag.
+
+                📌 Lebih predictable dari ORM.
+
+                <br> <hr> <br>
+                
+                <h3>I. Debugging & Visibility (WAJIB DIKETAHUI)</h3>
+                I.1 Lihat SQL Asli
+                $query = DB::table('orders')->where('status', 'paid');
+                dd($query->toSql(), $query->getBindings());
+
+                I.2 Logging Query (Production Safe)
+                DB::listen(function ($query) {
+                    logger($query->sql, $query->bindings);
+                });
+
+
+                📌 Ini bikin kamu benar-benar paham apa yang DB jalankan.
+
+                <br> <hr> <br>
+                
+                <h3>J. Anti-Pattern (HINDARI)</h3>
+
+                ❌ query di loop
+                ❌ join berlebihan
+                ❌ select kolom nggak dipakai
+                ❌ raw SQL tanpa binding
+                ❌ log semua query tanpa filter
+
+                <br> <hr> <br>
+                
+                <h3>K. Kapan TURUN ke Raw SQL?</h3>
+
+                Query Builder cukup untuk 80–90% kasus.
+
+                Turun ke raw SQL kalau:
+
+                window function
+
+                CTE
+
+                query sangat kompleks
+
+                vendor-specific SQL
+
+                📌 Jangan turun cuma karena malas belajar Query Builder.
+
+                🧠 Mental Model Penutup
+
+                Query Builder itu “setir manual”
+                di mobil matic bernama Laravel.
+
+                Kamu:
+
+                tetap nyaman
+
+                tapi bisa ngontrol arah
+
+                🔥 Ringkasan Bab 9.3
+
+                ORM = cepat tapi berbahaya kalau kebablasan
+
+                Raw SQL = kuat tapi riskan
+
+                Query Builder = titik tengah production
+
+                🎯 Kamu Sudah Sampai Level Ini
+
+                Kalau kamu:
+
+                paham arsitektur
+
+                paham scaling
+
+                paham ORM risk
+
+                paham Query Builder
+
+                👉 kamu sudah mikir seperti engineer production, bukan sekadar coder 🔥
             </div>
         </main>
     </div>
