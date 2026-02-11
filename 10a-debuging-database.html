@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Type</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+
+        <main>
+            <header>
+                
+            </header>
+            
+            <div class="content">
+                <h2>Cara Debugging Database</h2>
+
+                Biar Tahu Performa Query & Arsitektur Kamu Sehat atau Sakit
+
+                <br> <hr> <br>
+                
+                <h3>A. Level 1 — Debug Query Paling Dasar (WAJIB)</h3>
+                A.1 EXPLAIN (senjata pertama)
+
+                Ini non-negotiable.
+
+                EXPLAIN SELECT * FROM orders WHERE user_id = 123;
+
+
+                Yang kamu lihat:
+
+                type
+
+                key
+
+                rows
+
+                Cara baca cepat:
+                Field	Artinya
+                type	cara DB ambil data
+                key	index yang dipakai
+                rows	estimasi row dibaca
+
+                🚨 Tanda bahaya:
+
+                type = ALL
+
+                key = NULL
+
+                rows besar
+
+                📌 Ini langsung nunjuk masalah arsitektur / index.
+
+                <br> <hr> <br>
+                
+                <h3>B. Level 2 — Slow Query Log (Real Production Debug)</h3>
+
+                Ini cara paling jujur, karena berdasarkan kenyataan, bukan asumsi.
+
+                B.1 Aktifkan Slow Query Log
+                slow_query_log = 1
+                long_query_time = 1
+                slow_query_log_file = /var/log/mysql/slow.log
+
+
+                Artinya:
+
+                query > 1 detik → dicatat
+
+                📌 Ini emas murni.
+
+                B.2 Apa yang Kamu Dapat?
+
+                Di file log:
+
+                query asli
+
+                waktu eksekusi
+
+                jumlah row
+
+                frekuensi
+
+                Kamu bisa tahu:
+
+                “query ini kecil tapi sering”
+                “query ini jarang tapi berat”
+
+                <br> <hr> <br>
+                
+                <h3>C. Level 3 — Query Profiling (Deep Dive)</h3>
+                C.1 EXPLAIN ANALYZE (MySQL 8+)
+                EXPLAIN ANALYZE
+                SELECT * FROM orders WHERE status = 'paid';
+
+
+                Ini kasih:
+
+                waktu nyata
+
+                urutan eksekusi
+
+                bottleneck
+
+                📌 Lebih akurat dari EXPLAIN.
+
+                <br> <hr> <br>
+                
+                <h3>D. Level 4 — Framework-Level Debug (Laravel)</h3>
+                D.1 Lihat SQL yang Dieksekusi
+                DB::listen(function ($query) {
+                    logger($query->sql, $query->bindings, $query->time);
+                });
+
+
+                Kamu bisa tahu:
+
+                query mana paling sering
+
+                query mana paling lama
+
+                N+1 problem
+
+                ⚠️ Jangan aktifkan full di prod tanpa filter.
+
+                <br> <hr> <br>
+                
+                <h3>E. Level 5 — Monitoring Arsitektur DB (Big Picture)</h3>
+                E.1 CPU & Disk
+
+                Kalau:
+
+                CPU DB tinggi
+
+                disk I/O tinggi
+
+                Bisa jadi:
+
+                query jelek
+
+                index kurang
+
+                laporan berat di jam sibuk
+
+                E.2 Connection Count
+
+                Terlalu banyak koneksi:
+
+                app leak
+
+                pool salah
+
+                transaction kepanjangan
+
+                <br> <hr> <br>
+                
+                <h3>F. Level 6 — Read Replica & Sharding Debug</h3>
+
+                Kalau pakai replica:
+
+                cek replication lag
+
+                pastikan read tidak ke master semua
+
+                Kalau pakai sharding:
+
+                cek distribusi data
+
+                shard imbalance
+
+                📌 Ini debugging arsitektur, bukan query doang.
+
+                <br> <hr> <br>
+                
+                <h3>G. Tools Dunia Nyata (Bukan Teori)</h3>
+                Tool	Fungsi
+                pt-query-digest	analisa slow log
+                MySQL Performance Schema	statistik internal
+                Laravel Telescope	query tracing
+                APM (Datadog / NewRelic)	full stack trace
+                <br> <hr> <br>
+                
+                <h3>H. Cara Berpikir yang BENAR Saat Debug DB</h3>
+
+                Jangan tanya:
+
+                “query ini cepat atau lambat?”
+
+                Tapi:
+
+                “berapa kali query ini dieksekusi?”
+
+                Karena:
+
+                query 5ms × 100.000 = bencana
+
+                <br> <hr> <br>
+                
+                <h3>I. Checklist Debugging DB (Tempel di Kepala)</h3>
+
+                ✔ query pakai index
+                ✔ tidak ada full table scan
+                ✔ tidak ada N+1
+                ✔ slow log bersih
+                ✔ read & write terpisah
+                ✔ transaksi singkat
+                ✔ laporan di jam sepi
+
+                🧠 Kalimat Sakti Penutup
+
+                Database tidak pernah bohong.
+                Log & explain akan selalu buka kedok desain kamu.
+            </div>
+        </main>
+    </div>
+
+    <script>
+        fetch('layout/aside.html').then(response => response.text()).then(data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop();
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
