@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Type</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+
+        <main>
+            <header>
+                
+            </header>
+
+<pre style="background-color: white; color: black;">
+PRAKTIK DATABASE
+
+A. Task:
+    1. Buat rancangan database untuk bisa relasional tipe:
+        a. one to one
+        b. one to many
+        c. many to many
+
+    2. Buat data mentahnya masing masing 30 data.
+    3. Lakukan proses Alter Table
+    4. Berikan seuah Column memiliki aturan Unique
+    5. Coba insert 1 data dengan relasi
+    6. Coba update 1 data dengan relasi
+    7. Coba delete data dengan relasi
+    8. Coba cari data dengan AND, OR, Like, In, Between, Order By, dan Limit Offset
+    9. Coba join (inner, left, rigth dan self)
+    10. Coba Agregate (count, sum, avg, group by, dan having)
+    11. Coba softdelete dan problemnya
+    12. Coba transaction
+    13. Coba auto insert Log dengan trigger
+
+B. Rancangan Database:
+    1. Table Lists
+        a. users
+        b. user_profiles
+        c. merchants
+        d. merchant_profiles
+        e. products
+        f. orders
+        g. order_items
+        h. categories
+
+    2. Table Relations
+        a. One to one
+            1. users -> user_profiles
+            2. merchants -> merchant_profiles
+            3. users -> merchants
+
+        b. One to many
+            1. merchants -> products
+            2. users -> orders
+            3. orders -> order_items
+
+        c. Many to many
+            1. products -> categories
+
+    3. Table Details
+        1. users:
+            a. id
+            b. username (index)
+            c. name
+            d. email (index)
+            e. role (seller/buyer)
+            f. Alter Table:
+                1. Column:
+                    a. master (to self join)
+            g. deleted_at
+
+        2. user_profiles
+            a. id
+            b. user_id (UNIQUE) -> FK user.id
+            c. birth_date
+            d. address
+            e. instagram
+            f. tiktok
+            g. bio
+            h. deleted_at
+
+        3. merchants
+            a. id
+            b. user_id -> FK users.id
+            c. name
+            d. username (index)
+            e. address
+            f. deleted_at
+
+        4. merchant_profiles
+            a. id
+            b. merchant_id (UNIQUE) -> FK merchants.id
+            c. avatar
+            d. email
+            e. phone
+            f. website
+            g. deleted_at
+            
+        5. products
+            a. id
+            b. merchant_id -> FK merchants.id
+            c. name
+            d. image
+            e. quantity
+            f. price
+            g. deleted_at
+
+        6. orders
+            a. id
+            b. user_id -> FK users.id
+            c. merchant_id -> FK merchants.id
+            d. order_numbers (index)
+            e. checkout_date
+            f. status (index) (paid/cancled/expired/refund)
+            g. updated_at
+            h. composite index (user_id, merchant_id)
+            i. deleted_at
+
+        7. order_items
+            a. id
+            b. order_id -> FK orders.id
+            c. product_id -> FK products.id
+            d. quantity
+            e. total
+            f. composite index (order_id, product_id)
+            g. deleted_at
+
+        8. categories
+            a. id
+            b. name
+            c. deleted_at
+
+        9. product_categories
+            a. product_id -> FK products.id
+            b. category_id -> FK categories.id
+            c. composite index (product_id, category_id)
+            d. deleted_at
+
+        10. audit_logs
+            a. id
+            b. table_name
+            c. record_id
+            d. action (insert/update/delete)
+            e. old_data (JSON)
+            f. new_data (JSON)
+            g. created_at
+            h. deleted_at
+
+    4. ERD 
+        1. Link https://app.diagrams.net/?src=about#G1vP4s10RQ3_8-lDiBH_4bxuv-gEU0IfxC#%7B%22pageId%22%3A%22_u7ztZJYVYy_aFD5fLoU%22%7D
+
+        2. Diagram
+
+
+</pre>
+
+        </main>
+    </div>
+
+    <script>
+        fetch('layout/aside.html').then(response => response.text()).then(data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop();
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
