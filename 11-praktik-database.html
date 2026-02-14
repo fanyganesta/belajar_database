@@ -17,7 +17,7 @@
                 
             </header>
 
-<pre style="background-color: white; color: black;">
+<pre style="background-color: white; color: black; width: 100%">
 PRAKTIK DATABASE
 
 A. Task:
@@ -157,7 +157,40 @@ B. Rancangan Database:
         1. Link https://app.diagrams.net/?src=about#G1vP4s10RQ3_8-lDiBH_4bxuv-gEU0IfxC#%7B%22pageId%22%3A%22_u7ztZJYVYy_aFD5fLoU%22%7D
 
         2. Diagram
+<img src="img/Belajar Database 1.drawio (1).png" alt="diagram database" style="max-width: 100%; box-sizing: border-box">
 
+        3. Query SQL
+            a. Create Table users
+                CREATE TABLE `belajar_database`.`users` (`id` INT NOT NULL AUTO_INCREMENT , `username` VARCHAR(100) NOT NULL , `name` VARCHAR(100) NOT NULL , `email` VARCHAR(255) NOT NULL , `role` ENUM('buyer','seller') NOT NULL , `deleted_at` TIMESTAMP NULL , PRIMARY KEY (`id`), INDEX `idx_username_users` (`username`), INDEX `idx_email_users` (`email`)) ENGINE = InnoDB;
+
+            b. Create Table user_profiles
+                CREATE TABLE `belajar_database`.`user_profiles` (`id` INT NOT NULL AUTO_INCREMENT , `user_id` INT NOT NULL , `birth_date` DATE NOT NULL , `address` VARCHAR(255) NOT NULL , `instagram` VARCHAR(100) NOT NULL , `tiktok` VARCHAR(100) NOT NULL , `bio` TEXT NOT NULL , `deleted_at` TIMESTAMP NULL , PRIMARY KEY (`id`, `user_id`)) ENGINE = InnoDB;
+
+            c. (ALTER) Create Relation user_profiles.user_id -> users.id
+                ALTER TABLE `user_profiles` ADD CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+            d. Create Table merchants
+                CREATE TABLE `belajar_database`.`merchants` (`id` INT NOT NULL AUTO_INCREMENT , `user_id` INT NOT NULL , `name` VARCHAR(100) NOT NULL , `username` VARCHAR(100) NOT NULL , `address` VARCHAR(255) NOT NULL , `deleted_at` TIMESTAMP NOT NULL , PRIMARY KEY (`id`, `user_id`), INDEX `idx_username_merchants` (`username`)) ENGINE = InnoDB;
+
+            e. (ALTER) Create Relation merchants.user_id -> users.id
+                ALTER TABLE `merchants` ADD CONSTRAINT `fk_user_id_merchants` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+            f. Create Table merchant_profiles
+                CREATE TABLE `belajar_database`.`merchant_profiles` (`id` INT NOT NULL AUTO_INCREMENT , `merchant_id` INT NOT NULL , `avatar` VARCHAR(255) NOT NULL , `email` VARCHAR(255) NOT NULL , `phone` VARCHAR(100) NOT NULL , `website` VARCHAR(255) NOT NULL , `deleted_at` TIMESTAMP NOT NULL , PRIMARY KEY (`id`), INDEX `idx_merchant_id_merchant_profiles` (`merchant_id`)) ENGINE = InnoDB;
+
+            g. Make relation one to one users -> user_profiles
+                ALTER TABLE `user_profiles` ADD UNIQUE(`user_id`);
+            
+            h. Make relation one to one merchants -> merchant_profiles
+                ALTER TABLE `merchant_profiles` ADD UNIQUE(`merchant_id`);
+            
+            i. Create Table products
+                CREATE TABLE `belajar_database`.`products` (`id` INT NOT NULL AUTO_INCREMENT , `merchant_id` INT NOT NULL , `name` VARCHAR(255) NOT NULL , `image` VARCHAR(255) NOT NULL , `quantity` INT(100) UNSIGNED NOT NULL , `price` DECIMAL(11,2) UNSIGNED NOT NULL , `deleted_at` TIMESTAMP NOT NULL , PRIMARY KEY (`id`), INDEX `id_merchant_id_products` (`merchant_id`)) ENGINE = InnoDB;
+
+            j. Create relation products -> merchants
+                ALTER TABLE `products` ADD CONSTRAINT `fk_merchant_id_products` FOREIGN KEY (`merchant_id`) REFERENCES `merchants`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+            k. 
 
 </pre>
 

@@ -109,6 +109,8 @@ pre{
     background-color: rgb(22, 22, 22);
     color: rgb(0, 195, 255);
     border-radius: var(--sm-rad);
+    box-sizing: border-box;
+    position:relative
 }
 
 .mindmap{
