@@ -125,8 +125,8 @@ B. Rancangan Database:
 
         7. order_items
             a. id
-            b. order_id -> FK orders.id
-            c. product_id -> FK products.id
+            b. order_id -> FK (UNIQUE) orders.id
+            c. product_id -> FK (UNIQUE) products.id
             d. quantity
             e. total
             f. composite index (order_id, product_id)
@@ -190,7 +190,39 @@ B. Rancangan Database:
             j. Create relation products -> merchants
                 ALTER TABLE `products` ADD CONSTRAINT `fk_merchant_id_products` FOREIGN KEY (`merchant_id`) REFERENCES `merchants`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
-            k. 
+            k. Create Table orders
+                CREATE TABLE `belajar_database`.`orders` (`id` INT NOT NULL AUTO_INCREMENT , `user_id` INT NOT NULL , `merchant_id` INT NOT NULL , `order_numbers` VARCHAR(255) NOT NULL , `checkout_date` TIMESTAMP NOT NULL , `status` ENUM('paid','cancled','expired','refund') NOT NULL , `updated_at` TIMESTAMP NULL , `deleted_at` TIMESTAMP NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+            l. Create relation orders -> users & orders -> merchants
+                ALTER TABLE `orders` ADD CONSTRAINT `fk_user_id_users` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE; ALTER TABLE `orders` ADD CONSTRAINT `fk_merchant_id_merchants` FOREIGN KEY (`merchant_id`) REFERENCES `merchants`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+            m. Create composite index users_id & merchant_id -> orders
+                ALTER TABLE `belajar_database`.`orders` ADD INDEX `idx_user_id_merchant_id` (`user_id`, `merchant_id`);
+
+            n. Create Table order_items
+                CREATE TABLE `belajar_database`.`order_items` (`id` INT NOT NULL AUTO_INCREMENT , `order_id` INT NOT NULL , `product_id` INT NOT NULL , `quantity` INT NOT NULL , `total` DECIMAL NOT NULL , `deleted_at` INT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+            o. Create relation order_items -> orders & order_items -> products
+                ALTER TABLE `order_items` ADD CONSTRAINT `fk_order_id_order_items` FOREIGN KEY (`order_id`) REFERENCES `orders`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE; ALTER TABLE `order_items` ADD CONSTRAINT `fk_product_id_products` FOREIGN KEY (`product_id`) REFERENCES `products`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+            p. Create relation one to one (orders -> order_items)
+                ALTER TABLE `order_items` ADD UNIQUE(`order_id`);
+
+            q. Create table categories
+                CREATE TABLE `belajar_database`.`categories` (`id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(255) NOT NULL , `deleted_at` TIMESTAMP NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+            r. Create table pivot many to many (category_product)
+                CREATE TABLE `belajar_database`.`category_product` (`product_id` INT NOT NULL , `category_id` INT NOT NULL , `deleted_at` TIMESTAMP NULL ) ENGINE = InnoDB;
+
+            s. Create composite index pivot table (category_product)
+                ALTER TABLE `belajar_database`.`category_product` ADD INDEX `idx_product_id_category_id` (`product_id`, `category_id`)
+
+            t. Create index only at category (category_product)
+                ALTER TABLE `belajar_database`.`category_product` ADD INDEX `idx_category_id` (`product_id`)
+
+            u. Create Table audit_logs
+                CREATE TABLE `belajar_database`.`audit_logs` (`id` INT NOT NULL AUTO_INCREMENT , `table_name` VARCHAR(255) NOT NULL , `record_id` INT NOT NULL , `action` ENUM('insert','update','delete') NOT NULL , `old_data` JSON NOT NULL , `new_data` JSON NOT NULL , `created_at` TIMESTAMP NOT NULL , `deleted_at` TIMESTAMP NULL , PRIMARY KEY (`id`), INDEX `idx_record_id` (`record_id`), INDEX `idx_table_name` (`table_name`), INDEX `idx_created_at` (`created_at`)) ENGINE = InnoDB;
+
 
 </pre>
 
