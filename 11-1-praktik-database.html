@@ -118,7 +118,7 @@ B. Rancangan Database:
             c. merchant_id -> FK merchants.id
             d. order_numbers (index)
             e. checkout_date
-            f. status (index) (paid/cancled/expired/refund)
+            f. status (index) (paid/canceled/expired/refund)
             g. updated_at
             h. composite index (user_id, merchant_id)
             i. deleted_at
@@ -192,7 +192,7 @@ B. Rancangan Database:
                 ALTER TABLE `products` ADD CONSTRAINT `fk_merchant_id_products` FOREIGN KEY (`merchant_id`) REFERENCES `merchants`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
             k. Create Table orders
-                CREATE TABLE `belajar_database`.`orders` (`id` INT NOT NULL AUTO_INCREMENT , `user_id` INT NOT NULL , `merchant_id` INT NOT NULL , `order_numbers` VARCHAR(255) NOT NULL , `checkout_date` TIMESTAMP NOT NULL , `status` ENUM('paid','cancled','expired','refund') NOT NULL , `updated_at` TIMESTAMP NULL , `deleted_at` TIMESTAMP NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+                CREATE TABLE `belajar_database`.`orders` (`id` INT NOT NULL AUTO_INCREMENT , `user_id` INT NOT NULL , `merchant_id` INT NOT NULL , `order_numbers` VARCHAR(255) NOT NULL , `checkout_date` TIMESTAMP NOT NULL , `status` ENUM('paid','canceled','expired','refund') NOT NULL , `updated_at` TIMESTAMP NULL , `deleted_at` TIMESTAMP NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
 
             l. Create relation orders -> users & orders -> merchants
                 ALTER TABLE `orders` ADD CONSTRAINT `fk_user_id_users` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE; ALTER TABLE `orders` ADD CONSTRAINT `fk_merchant_id_merchants` FOREIGN KEY (`merchant_id`) REFERENCES `merchants`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -206,8 +206,8 @@ B. Rancangan Database:
             o. Create relation order_items -> orders & order_items -> products
                 ALTER TABLE `order_items` ADD CONSTRAINT `fk_order_id_order_items` FOREIGN KEY (`order_id`) REFERENCES `orders`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE; ALTER TABLE `order_items` ADD CONSTRAINT `fk_product_id_products` FOREIGN KEY (`product_id`) REFERENCES `products`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
-            p. Create relation one to one (orders -> order_items)
-                ALTER TABLE `order_items` ADD UNIQUE(`order_id`);
+            p. Create composite index(order_id -> product_id)
+                ALTER TABLE `belajar_database`.`order_items` ADD INDEX `idx_order_id_product_id` (`order_id`, `product_id`);
 
             q. Create table categories
                 CREATE TABLE `belajar_database`.`categories` (`id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(255) NOT NULL , `deleted_at` TIMESTAMP NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
@@ -247,7 +247,7 @@ B. Rancangan Database:
 
                 ALTER TABLE `products` ADD CONSTRAINT `fk_merchant_id_products` FOREIGN KEY (`merchant_id`) REFERENCES `merchants`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
-                CREATE TABLE `belajar_database`.`orders` (`id` INT NOT NULL AUTO_INCREMENT , `user_id` INT NOT NULL , `merchant_id` INT NOT NULL , `order_numbers` VARCHAR(255) NOT NULL , `checkout_date` TIMESTAMP NOT NULL , `status` ENUM('paid','cancled','expired','refund') NOT NULL , `updated_at` TIMESTAMP NULL , `deleted_at` TIMESTAMP NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+                CREATE TABLE `belajar_database`.`orders` (`id` INT NOT NULL AUTO_INCREMENT , `user_id` INT NOT NULL , `merchant_id` INT NOT NULL , `order_numbers` VARCHAR(255) NOT NULL , `checkout_date` TIMESTAMP NOT NULL , `status` ENUM('paid','canceled','expired','refund') NOT NULL , `updated_at` TIMESTAMP NULL , `deleted_at` TIMESTAMP NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
 
                 ALTER TABLE `orders` ADD CONSTRAINT `fk_user_id_users` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE; ALTER TABLE `orders` ADD CONSTRAINT `fk_merchant_id_merchants` FOREIGN KEY (`merchant_id`) REFERENCES `merchants`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -257,7 +257,6 @@ B. Rancangan Database:
 
                 ALTER TABLE `order_items` ADD CONSTRAINT `fk_order_id_order_items` FOREIGN KEY (`order_id`) REFERENCES `orders`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE; ALTER TABLE `order_items` ADD CONSTRAINT `fk_product_id_products` FOREIGN KEY (`product_id`) REFERENCES `products`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
-                ALTER TABLE `order_items` ADD UNIQUE(`order_id`);
 
                 CREATE TABLE `belajar_database`.`categories` (`id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(255) NOT NULL , `deleted_at` TIMESTAMP NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
 
@@ -383,6 +382,308 @@ B. Rancangan Database:
                 (11, '/img/avatar-merchant/tita-foodies.webp', 'titafoodies@gmail.com', '081234567899', 'titafoodies.com'),
                 (12, '/img/avatar-merchant/vivi-travel.webp', 'vivitravel@gmail.com', '081234567800', 'vivitravel.com'),
                 (13, '/img/avatar-merchant/wawan-pempek.webp', 'wawanpempek@gmail.com', '081234567801', 'wawanpempek.com');
+
+            e. Table products
+                INSERT INTO belajar_database.products (merchant_id, name, image, quantity, price) VALUES 
+                (1, 'Kaos Polos Cotton Combed 30s', '/img/products/kaos-polos.webp', 50, 45000),
+                (1, 'Kemeja Flanel Kotak-Kotak', '/img/products/kemeja-flanel.webp', 30, 125000),
+                (1, 'Celana Jeans Slim Fit', '/img/products/jeans-slim.webp', 25, 210000),
+                (1, 'Jaket Hoodie Oversize', '/img/products/hoodie-oversize.webp', 20, 175000),
+                (1, 'Rok Plisket Premium', '/img/products/rok-plisket.webp', 40, 85000),
+                (1, 'Blouse Wanita Silk', '/img/products/blouse-silk.webp', 15, 110000),
+                (1, 'Sweater Rajut Korea', '/img/products/sweater-rajut.webp', 10, 140000),
+                (1, 'Celana Chino Khaki', '/img/products/chino-khaki.webp', 35, 165000),
+                (1, 'Jaket Denim Blue Wash', '/img/products/denim-jacket.webp', 12, 250000),
+                (1, 'Kaos Polo Eksklusif', '/img/products/polo-shirt.webp', 45, 95000),
+                
+
+                INSERT INTO belajar_database.products (merchant_id, name, image, quantity, price) VALUES 
+                (2, 'Nasi Box Ayam Bakar Madu', '/img/products/nasi-ayam-madu.webp', 100, 25000),
+                (2, 'Nasi Box Rendang Daging', '/img/products/nasi-rendang.webp', 80, 35000),
+                (2, 'Nasi Box Ikan Bakar Cianjur', '/img/products/nasi-ikan-bakar.webp', 50, 30000),
+                (2, 'Nasi Kuning Paket Ultah', '/img/products/nasi-kuning-box.webp', 150, 20000),
+                (2, 'Nasi Liwet Komplit Sunda', '/img/products/nasi-liwet.webp', 40, 28000),
+                (2, 'Snack Box Arisan A (3 Kue)', '/img/products/snack-box-a.webp', 200, 12000),
+                (2, 'Snack Box Premium B (4 Kue)', '/img/products/snack-box-b.webp', 150, 18000),
+                (2, 'Tumpeng Mini Special', '/img/products/tumpeng-mini.webp', 30, 45000),
+                (2, 'Tumpeng Besar (20 Porsi)', '/img/products/tumpeng-besar.webp', 10, 550000),
+                (2, 'Ayam Kodok Spesial', '/img/products/ayam-kodok.webp', 5, 350000),
+                
+
+                -- TOKO 3: Budi Health Center (Kesehatan)
+                INSERT INTO belajar_database.products (merchant_id, name, image, quantity, price) VALUES 
+                (3, 'Masker Medis 3-Ply 50pcs', '/img/products/masker-medis.webp', 500, 35000),
+                (3, 'Hand Sanitizer 500ml', '/img/products/hand-sanitizer.webp', 100, 45000),
+                (3, 'Termometer Infrared Digital', '/img/products/termometer.webp', 30, 150000),
+                (3, 'Vitamin C 1000mg 30 Tablet', '/img/products/vit-c.webp', 200, 85000),
+                (3, 'Alat Tensi Darah Digital', '/img/products/tensi-digital.webp', 15, 350000),
+                (3, 'Oksimeter SpO2 Portable', '/img/products/oksimeter.webp', 40, 95000),
+                (3, 'Minyak Kayu Putih 120ml', '/img/products/kayu-putih.webp', 150, 42000),
+                (3, 'Kotak P3K Lengkap Tipe A', '/img/products/p3k-box.webp', 20, 120000),
+                (3, 'Kasa Steril isi 10', '/img/products/kasa-steril.webp', 300, 15000),
+                (3, 'Susu Ensure Gold 400g', '/img/products/ensure-gold.webp', 50, 160000);
+
+                -- TOKO 4: Handayani Style (Fashion/Solo Style)
+                INSERT INTO belajar_database.products (merchant_id, name, image, quantity, price) VALUES 
+                (4, 'Kemeja Batik Solo Slimfit', '/img/products/batik-solo.webp', 40, 185000),
+                (4, 'Dress Batik Cap Encim', '/img/products/dress-batik.webp', 25, 250000),
+                (4, 'Kain Batik Tulis Primissima', '/img/products/kain-batik.webp', 10, 750000),
+                (4, 'Blouse Batik Kerja', '/img/products/blouse-batik.webp', 35, 135000),
+                (4, 'Rok Batik Lilit', '/img/products/rok-batik.webp', 50, 95000),
+                (4, 'Outer Batik Kawung', '/img/products/outer-batik.webp', 20, 160000),
+                (4, 'Scarf Motif Parang', '/img/products/scarf-parang.webp', 100, 45000),
+                (4, 'Tas Clutch Batik', '/img/products/clutch-batik.webp', 15, 120000),
+                (4, 'Celana Kulot Batik', '/img/products/kulot-batik.webp', 30, 110000),
+                (4, 'Batik Couple Keluarga', '/img/products/batik-couple.webp', 12, 450000);
+
+                -- TOKO 5: Indah Beauty Store (Kecantikan)
+                INSERT INTO belajar_database.products (merchant_id, name, image, quantity, price) VALUES 
+                (5, 'Sunscreen SPF 50 PA++++', '/img/products/sunscreen.webp', 150, 75000),
+                (5, 'Serum Vitamin C Glowing', '/img/products/serum-vitc.webp', 80, 125000),
+                (5, 'Moisturizer Gel Aloe Vera', '/img/products/moisturizer.webp', 100, 55000),
+                (5, 'Micellar Water 400ml', '/img/products/micellar.webp', 120, 40000),
+                (5, 'Lip Tint Cherry Red', '/img/products/lip-tint.webp', 200, 35000),
+                (5, 'Facial Wash Gentle Skin', '/img/products/facial-wash.webp', 90, 65000),
+                (5, 'Eye Cream Anti Aging', '/img/products/eye-cream.webp', 45, 110000),
+                (5, 'Sheet Mask Bundle (5pcs)', '/img/products/sheet-mask.webp', 300, 50000),
+                (5, 'Bedak Tabur Translucent', '/img/products/loose-powder.webp', 70, 85000),
+                (5, 'Clay Mask Charcoal', '/img/products/clay-mask.webp', 55, 95000);
+
+
+                -- TOKO 6: Susilo Kitchen (Peralatan Dapur)
+                INSERT INTO belajar_database.products (merchant_id, name, image, quantity, price) VALUES 
+                (6, 'Wajan Anti Lengket 24cm', '/img/products/wajan-granit.webp', 40, 185000),
+                (6, 'Spatula Silikon Set (5pcs)', '/img/products/spatula-set.webp', 100, 75000),
+                (6, 'Pisau Dapur Stainless Steel', '/img/products/pisau-set.webp', 50, 120000),
+                (6, 'Talenan Kayu Jati', '/img/products/talenan-jati.webp', 30, 85000),
+                (6, 'Blender Juicer Portable', '/img/products/blender-port.webp', 25, 210000),
+                (6, 'Panci Presto 8 Liter', '/img/products/panci-presto.webp', 15, 350000),
+                (6, 'Rice Cooker Digital 1.8L', '/img/products/rice-cooker.webp', 20, 450000),
+                (6, 'Timbangan Dapur Digital', '/img/products/timbangan-kue.webp', 60, 55000),
+                (6, 'Kotak Makan Stainless 3 Sekat', '/img/products/lunchbox.webp', 80, 95000),
+                (6, 'Botol Minum Tumblr 1L', '/img/products/tumblr.webp', 120, 65000);
+
+                -- TOKO 7: Maya Dance Studio (Tari & Gym)
+                INSERT INTO belajar_database.products (merchant_id, name, image, quantity, price) VALUES 
+                (7, 'Sepatu Ballet Canvas', '/img/products/ballet-shoes.webp', 30, 150000),
+                (7, 'Leotard Hitam Basic', '/img/products/leotard.webp', 25, 175000),
+                (7, 'Rok Tutu Anak & Dewasa', '/img/products/rok-tutu.webp', 40, 95000),
+                (7, 'Legging Yoga High Waist', '/img/products/legging-yoga.webp', 50, 125000),
+                (7, 'Matras Yoga Anti Slip 6mm', '/img/products/yoga-mat.webp', 35, 185000),
+                (7, 'Dumbbell Set 2kg (Sepasang)', '/img/products/dumbbell.webp', 20, 110000),
+                (7, 'Resistance Band Set', '/img/products/resistance-band.webp', 100, 85000),
+                (7, 'Baju Senam Aerobik Set', '/img/products/baju-senam.webp', 15, 220000),
+                (7, 'Tas Olahraga Gym Bag', '/img/products/gym-bag.webp', 30, 140000),
+                (7, 'Headband & Wristband Set', '/img/products/headband.webp', 200, 35000);
+
+                -- TOKO 8: Onny Tech & Gadget (Gadget & Elektronik)
+                INSERT INTO belajar_database.products (merchant_id, name, image, quantity, price) VALUES 
+                (8, 'Powerbank 10.000mAh Fast Charge', '/img/products/powerbank.webp', 100, 195000),
+                (8, 'Earbuds Wireless Bluetooth 5.3', '/img/products/tws.webp', 80, 250000),
+                (8, 'Kabel Data Type-C Nylon 2M', '/img/products/kabel-data.webp', 300, 35000),
+                (8, 'Charger Adapter 20W PD', '/img/products/adapter-pd.webp', 150, 120000),
+                (8, 'Mouse Wireless Silent Click', '/img/products/mouse-wireless.webp', 60, 85000),
+                (8, 'Keyboard Mechanical RGB', '/img/products/keyboard-mech.webp', 25, 450000),
+                (8, 'Stand Holder HP Aluminium', '/img/products/holder-hp.webp', 200, 45000),
+                (8, 'Smartwatch Health Tracker', '/img/products/smartwatch.webp', 40, 350000),
+                (8, 'Speaker Bluetooth Waterproof', '/img/products/speaker.webp', 30, 220000),
+                (8, 'Webcam 1080p Full HD', '/img/products/webcam.webp', 15, 299000);
+
+                -- TOKO 9: Qori Hijab Official (Fashion Muslimah)
+                INSERT INTO belajar_database.products (merchant_id, name, image, quantity, price) VALUES 
+                (9, 'Pashmina Silk Premium', '/img/products/pashmina-silk.webp', 100, 65000),
+                (9, 'Hijab Segi Empat Syari', '/img/products/hijab-syari.webp', 80, 55000),
+                (9, 'Ciput Rajut Anti Pusing', '/img/products/ciput-rajut.webp', 200, 15000),
+                (9, 'Gamis Rayon Busui Friendly', '/img/products/gamis-rayon.webp', 30, 185000),
+                (9, 'Khimar Instan Daily', '/img/products/khimar-instan.webp', 50, 45000),
+                (9, 'Manset Baju Spandek', '/img/products/manset.webp', 120, 35000),
+                (9, 'Bros Hijab Mutiara', '/img/products/bros-hijab.webp', 300, 10000),
+                (9, 'Handsock Jempol Polos', '/img/products/handsock.webp', 150, 20000),
+                (9, 'Mukena Traveling Parasut', '/img/products/mukena-travel.webp', 40, 95000),
+                (9, 'Inner Ninja Premium', '/img/products/inner-ninja.webp', 60, 25000);
+
+                -- TOKO 10: Tita Foodies (Snack & Frozen Food)
+                INSERT INTO belajar_database.products (merchant_id, name, image, quantity, price) VALUES 
+                (10, 'Baso Aci Instan Mercon', '/img/products/baso-aci.webp', 150, 15000),
+                (10, 'Cireng Rujak Frozen', '/img/products/cireng-rujak.webp', 100, 20000),
+                (10, 'Dimsum Ayam (Isi 10)', '/img/products/dimsum-ayam.webp', 50, 35000),
+                (10, 'Keripik Kaca Pedas Daun Jeruk', '/img/products/keripik-kaca.webp', 200, 12000),
+                (10, 'Makaroni Bantet Extra Pedas', '/img/products/makaroni.webp', 250, 10000),
+                (10, 'Sambal Bawang Botolan', '/img/products/sambal-bawang.webp', 80, 25000),
+                (10, 'Sosis Solo Frozen (Isi 5)', '/img/products/sosis-solo.webp', 60, 22000),
+                (10, 'Donat Kentang Frozen', '/img/products/donat-kentang.webp', 40, 30000),
+                (10, 'Roti Maryam Original', '/img/products/roti-maryam.webp', 70, 25000),
+                (10, 'Basreng Stik Pedas', '/img/products/basreng.webp', 180, 15000);
+
+                -- TOKO 11: Vivi Travel Gear (Outdoor & Travel)
+                INSERT INTO belajar_database.products (merchant_id, name, image, quantity, price) VALUES 
+                (11, 'Carrier 60L Waterproof', '/img/products/carrier-60l.webp', 15, 650000),
+                (11, 'Sleeping Bag Polar', '/img/products/sleeping-bag.webp', 30, 125000),
+                (11, 'Matras Aluminium Foil', '/img/products/matras-foil.webp', 50, 45000),
+                (11, 'Kompor Camping Portable', '/img/products/kompor-camp.webp', 25, 110000),
+                (11, 'Nestig Cooking Set', '/img/products/nesting.webp', 20, 175000),
+                (11, 'Tenda Dome Kapasitas 4', '/img/products/tenda-dome.webp', 10, 450000),
+                (11, 'Headlamp LED Rechargeable', '/img/products/headlamp.webp', 60, 85000),
+                (11, 'Hammock Double Layer', '/img/products/hammock.webp', 45, 90000),
+                (11, 'Dry Bag 10L Anti Air', '/img/products/dry-bag.webp', 80, 55000),
+                (11, 'Sepatu Gunung Hiking', '/img/products/sepatu-gunung.webp', 12, 350000);
+
+                -- TOKO 12: Wawan Pempek Asli (Makanan Khas)
+                INSERT INTO belajar_database.products (merchant_id, name, image, quantity, price) VALUES 
+                (12, 'Paket Pempek Kapal Selam (2)', '/img/products/pempek-ks.webp', 100, 50000),
+                (12, 'Pempek Lenjer Panjang', '/img/products/pempek-lenjer.webp', 150, 25000),
+                (12, 'Pempek Adaan (Isi 10)', '/img/products/pempek-adaan.webp', 80, 45000),
+                (12, 'Pempek Kulit Crispy (Isi 10)', '/img/products/pempek-kulit.webp', 90, 40000),
+                (12, 'Tekwan Instan Lengkap', '/img/products/tekwan.webp', 120, 25000),
+                (12, 'Cuko Pempek Botol 500ml', '/img/products/cuko.webp', 200, 35000),
+                (12, 'Otak-Otak Bakar Ikan Tenggiri', '/img/products/otak-otak.webp', 300, 5000),
+                (12, 'Kerupuk Kemplang Panggang', '/img/products/kemplang.webp', 150, 30000),
+                (12, 'Lempok Durian Asli', '/img/products/lempok-durian.webp', 40, 65000),
+                (12, 'Mie Celor Instan', '/img/products/mie-celor.webp', 60, 20000);
+
+            f. Table orders
+                requirement:
+                    1. id users:
+                        1,2,5,6,9,10,12,13,16,17,19,21,23,24,26,29,30
+                    2. merchant = 12 toko
+                    3. order_number = angka acak dari tanggal dan detik sebagai id order
+                    4. status: paid, canceled, expired, refund
+                
+                INSERT INTO belajar_database.orders (user_id, merchant_id, order_numbers, checkout_date, status) VALUES 
+                (1, 1, '20250105101530', '2025-01-05 10:15:30', 'paid'),
+                (1, 3, '20250112142011', '2025-01-12 14:20:11', 'expired'),
+                (2, 2, '20250108091145', '2025-01-08 09:11:45', 'paid'),
+                (5, 4, '20250115163022', '2025-01-15 16:30:22', 'canceled'),
+                (6, 5, '20250120111201', '2025-01-20 11:12:01', 'paid'),
+                (9, 12, '20250122194533', '2025-01-22 19:45:33', 'refund'),
+                (10, 10, '20250125081015', '2025-01-25 08:10:15', 'paid'),
+                (12, 1, '20250128135540', '2025-01-28 13:55:40', 'paid'),
+                (13, 6, '20250130202020', '2025-01-30 20:20:20', 'expired'),
+                (16, 7, '20250201073010', '2025-02-01 07:30:10', 'paid'),
+                (17, 8, '20250203151545', '2025-02-03 15:15:45', 'canceled'),
+                (19, 9, '20250205121030', '2025-02-05 12:10:30', 'paid'),
+                (21, 11, '20250207184012', '2025-02-07 18:40:12', 'paid'),
+                (23, 1, '20250210100555', '2025-02-10 10:05:55', 'refund'),
+                (24, 2, '20250212143000', '2025-02-12 14:30:00', 'paid'),
+                (26, 3, '20250214211510', '2025-02-14 21:15:10', 'paid'),
+                (29, 4, '20250216094525', '2025-02-16 09:45:25', 'expired'),
+                (30, 5, '20250218115530', '2025-02-18 11:55:30', 'paid'),
+                (1, 2, '20250220131244', '2025-02-20 13:12:44', 'paid'),
+                (2, 6, '20250221154511', '2025-02-21 15:45:11', 'canceled'),
+                (5, 7, '20250222171005', '2025-02-22 17:10:05', 'paid'),
+                (6, 8, '20250223102033', '2025-02-23 10:20:33', 'paid'),
+                (9, 9, '20250224083015', '2025-02-24 08:30:15', 'refund'),
+                (10, 11, '20250225191520', '2025-02-25 19:15:20', 'paid'),
+                (12, 12, '20250225214055', '2025-02-25 21:40:55', 'expired'),
+                (13, 1, '20250110101010', '2025-01-10 10:10:10', 'paid'),
+                (16, 2, '20250111111111', '2025-01-11 11:11:11', 'paid'),
+                (17, 3, '20250112121212', '2025-01-12 12:12:12', 'canceled'),
+                (19, 4, '20250113131313', '2025-01-13 13:13:13', 'paid'),
+                (21, 5, '20250114141414', '2025-01-14 14:14:14', 'paid'),
+                (23, 6, '20250115151515', '2025-01-15 15:15:15', 'paid'),
+                (24, 7, '20250116161616', '2025-01-16 16:16:16', 'paid'),
+                (26, 8, '20250117171717', '2025-01-17 17:17:17', 'refund'),
+                (29, 9, '20250118181818', '2025-01-18 18:18:18', 'paid'),
+                (30, 10, '20250119191919', '2025-01-19 19:19:19', 'paid');
+
+
+            g. Table order_items
+                pastekan 5 kali (agar pembelian ada 5 product)
+                    INSERT INTO belajar_database.order_items (order_id, product_id, quantity, total)
+                    SELECT 
+                        -- Menghasilkan order_id 1 sampai 30 secara berurutan
+                        p.id_order, 
+                        p.rand_product_id,
+                        p.rand_qty,
+                        -- Menghitung TOTAL: harga produk x quantity
+                        (prod.price * p.rand_qty) AS total
+                    FROM (
+                        -- Subquery untuk mengacak product_id dan quantity agar variatif
+                        SELECT 
+                            seq.n AS id_order,
+                            FLOOR(1 + (RAND() * 160)) AS rand_product_id, -- Ambil id produk acak 1-160
+                            FLOOR(1 + (RAND() * 5)) AS rand_qty           -- Ambil qty acak 1-5
+                        FROM (
+                            -- Generator angka 1-30 untuk order_id
+                            SELECT a.N + b.N * 10 + 1 n
+                            FROM (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) a
+                            CROSS JOIN (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2) b
+                        ) seq
+                    ) p
+                    JOIN belajar_database.products prod ON p.rand_product_id = prod.id;
+            
+            h. Table categories
+                INSERT INTO categories (name) VALUES
+                ('fashion'),('atasan'),('bawahan'),('kesehatan'),('makanan'),('batik'),('kecantikan'),('alat'),('gym'),('sport'),('snack'),('travel');
+
+            i. Table category_product
+                -- 1. Product ID 1 sampai 10 memiliki Category ID 1
+                INSERT INTO category_product (product_id, category_id) VALUES 
+                (1, 1), (2, 1), (3, 1), (4, 1), (5, 1), (6, 1), (7, 1), (8, 1), (9, 1), (10, 1);
+
+                -- 2. Product ID spesifik memiliki Category ID 2
+                INSERT INTO category_product (product_id, category_id) VALUES 
+                (1, 2), (2, 2), (4, 2), (6, 2), (7, 2), (9, 2), (10, 2);
+
+                -- 3. Product ID spesifik memiliki Category ID 3
+                INSERT INTO category_product (product_id, category_id) VALUES 
+                (3, 3), (5, 3), (8, 3);
+
+                INSERT INTO category_product (product_id, category_id) VALUES
+                -- 1. Product ID 31-40 memiliki Category ID 5
+                (31, 5), (32, 5), (33, 5), (34, 5), (35, 5), 
+                (36, 5), (37, 5), (38, 5), (39, 5), (40, 5),
+
+                -- 2. Product ID 36-37 memiliki Category ID 11
+                (36, 11), (37, 11),
+
+                -- 3. Product ID 61-70 memiliki Category ID 4
+                (61, 4), (62, 4), (63, 4), (64, 4), (65, 4), 
+                (66, 4), (67, 4), (68, 4), (69, 4), (70, 4),
+
+                -- 4. Product ID 63, 65, 66, 68, 69 memiliki Category ID 8
+                (63, 8), (65, 8), (66, 8), (68, 8), (69, 8);
+
+                INSERT INTO category_product (product_id, category_id) VALUES
+                -- 5. Product ID 71-80 memiliki Category ID 1
+                (71, 1), (72, 1), (73, 1), (74, 1), (75, 1), 
+                (76, 1), (77, 1), (78, 1), (79, 1), (80, 1),
+
+                -- 6. Product ID 71, 73, 76, 77 memiliki Category ID 2
+                (71, 2), (73, 2), (76, 2), (77, 2),
+
+                -- 7. Product ID 75, 79 memiliki Category ID 3
+                (75, 3), (79, 3),
+
+                -- 8. Product ID 71 sampai 76 memiliki Category ID 6
+                (71, 6), (72, 6), (73, 6), (74, 6), (75, 6), (76, 6);
+
+                INSERT INTO category_product (product_id, category_id) VALUES
+                -- 9. Product ID 81-90 memiliki Category ID 7
+                (81, 7), (82, 7), (83, 7), (84, 7), (85, 7), (86, 7), (87, 7), (88, 7), (89, 7), (90, 7),
+
+                -- 10. Product ID 90-100 memiliki Category ID 8
+                (90, 8), (91, 8), (92, 8), (93, 8), (94, 8), (95, 8), (96, 8), (97, 8), (98, 8), (99, 8), (100, 8),
+
+                -- 11. Product ID 101-110 memiliki Category ID 9
+                (101, 9), (102, 9), (103, 9), (104, 9), (105, 9), (106, 9), (107, 9), (108, 9), (109, 9), (110, 9),
+
+                -- 12. Product ID 111-120 memiliki Category ID 8
+                (111, 8), (112, 8), (113, 8), (114, 8), (115, 8), (116, 8), (117, 8), (118, 8), (119, 8), (120, 8),
+
+                -- 13. Product ID 121-130 memiliki Category ID 1
+                (121, 1), (122, 1), (123, 1), (124, 1), (125, 1), (126, 1), (127, 1), (128, 1), (129, 1), (130, 1),
+
+                -- 14. Product ID 131-140 memiliki Category ID 11
+                (131, 11), (132, 11), (133, 11), (134, 11), (135, 11), (136, 11), (137, 11), (138, 11), (139, 11), (140, 11),
+
+                -- 15. Product ID 141-150 memiliki Category ID 12
+                (141, 12), (142, 12), (143, 12), (144, 12), (145, 12), (146, 12), (147, 12), (148, 12), (149, 12), (150, 12),
+
+                -- 16. Product ID 151-160 memiliki Category ID 5
+                (151, 5), (152, 5), (153, 5), (154, 5), (155, 5), (156, 5), (157, 5), (158, 5), (159, 5), (160, 5);
+
+
 
 </pre>
 

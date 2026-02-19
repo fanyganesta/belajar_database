@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Type</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+
+        <main>
+            <header>
+                
+            </header>
+
+<pre style="background-color: white; color: black; width: 100%">
+PRAKTIK DATABASE
+
+A. Task:
+    1. Buat rancangan database untuk bisa relasional tipe:
+        a. one to one
+        b. one to many
+        c. many to many
+
+    2. Buat data mentahnya masing masing 30 data.
+    3. Lakukan proses Alter Table
+    4. Berikan seuah Column memiliki aturan Unique
+    5. Coba insert 1 data dengan relasi
+    6. Coba update 1 data dengan relasi
+    7. Coba delete data dengan relasi
+    8. Coba cari data dengan AND, OR, Like, In, Between, Order By, dan Limit Offset
+    9. Coba join (inner, left, rigth dan self)
+    10. Coba Agregate (count, sum, avg, group by, dan having)
+    11. Coba softdelete dan problemnya
+    12. Coba transaction
+    13. Coba auto insert Log dengan trigger
+
+
+
+
+
+    ============================================================
+    ============================================================
+    ============================================================
+
+
+        4. INSERT DATA DUMMY
+            a. Table users
+                INSERT INTO belajar_database.users (username, name, email, role) value ('userpertama', 'User Pertama', 'userpertama@gmail.com', 'buyer');
+                
+                INSERT INTO belajar_database.users (username, name, email, role) VALUE ('userkedua', 'User Kedua', 'userkedua@gmail.com', 'buyer');
+
+                INSERT INTO belajar_database.users (username, name, email, role) VALUE ('userketiga', 'User Ketiga', 'userketiga@gmail.com', 'seller');
+                
+                INSERT INTO belajar_database.users (username, name, email, role) VALUE ('userkeempat', 'User Keempat', 'userkeempat@gamil.com', 'seller');
+                
+                INSERT INTO belajar_database.users (username, name, email, role) VALUE ('userkelima', 'User Kelima', 'userkelima@gmail.com', 'buyer');
+
+                INSERT INTO belajar_database.users (username, name, email, role) VALUES 
+                ('ahmad_z', 'Ahmad Zaki', 'ahmadzaki@gmail.com', 'buyer'),
+                ('siti_aminah', 'Siti Aminah', 'sitiaminah@gmail.com', 'seller'),
+                ('budi_santoso', 'Budi Santoso', 'budisantoso@gmail.com', 'seller'),
+                ('dewi_lestari', 'Dewi Lestari', 'dewilestari@gmail.com', 'buyer'),
+                ('eko_prasetyo', 'Eko Prasetyo', 'ekoprasetyo@gmail.com', 'buyer'),
+                ('fitri_handayani', 'Fitri Handayani', 'fitrih@gmail.com', 'seller'),
+                ('gunawan_w', 'Gunawan Wibowo', 'gunawanw@gmail.com', 'buyer'),
+                ('hanya_hadi', 'Hadi Wijaya', 'hadiwijaya@gmail.com', 'buyer'),
+                ('indah_p', 'Indah Permata', 'indahp@gmail.com', 'seller'),
+                ('joko_susilo', 'Joko Susilo', 'jokosusilo@gmail.com', 'seller'),
+                ('kartika_sari', 'Kartika Sari', 'kartikas@gmail.com', 'buyer'),
+                ('lukman_hakim', 'Lukman Hakim', 'lukmanh@gmail.com', 'buyer'),
+                ('maya_rosita', 'Maya Rosita', 'mayaros@gmail.com', 'seller'),
+                ('nanang_q', 'Nanang Qosim', 'nanangq@gmail.com', 'buyer'),
+                ('onny_indra', 'Onny Indra', 'onnyindra@gmail.com', 'seller'),
+                ('putri_ayu', 'Putri Ayu', 'putriayu@gmail.com', 'buyer'),
+                ('qori_azizah', 'Qori Azizah', 'qoriazizah@gmail.com', 'seller'),
+                ('rizky_p', 'Rizky Pratama', 'rizkyp@gmail.com', 'buyer'),
+                ('setiawan_b', 'Setiawan Budi', 'setiawanb@gmail.com', 'buyer'),
+                ('tita_amelia', 'Tita Amelia', 'titaamelia@gmail.com', 'seller'),
+                ('udin_sedunia', 'Udin Syarifuddin', 'udins@gmail.com', 'buyer'),
+                ('vivi_vov', 'Vivi Alvionita', 'vivivov@gmail.com', 'seller'),
+                ('wawan_k', 'Wawan Kurniawan', 'wawank@gmail.com', 'seller'),
+                ('xena_warrior', 'Xena Putri', 'xenaputri@gmail.com', 'buyer'),
+                ('yayan_ruhian', 'Yayan Ruhian', 'yayanr@gmail.com', 'buyer');
+
+
+            b. Table  user_profiles;
+                INSERT INTO belajar_database.user_profiles (user_id, birth_date, address, instagram, tiktok, bio) VALUE (1, 2000-10-25, 'Jalan Kaliurang, no 37', 'instapertama', 'tokpertama', 'ini adalah bio');
+
+                UPDATE belajar_database.user_profiles SET birth_date = '2000-10-25' WHERE id = 1;
+
+                INSERT INTO belajar_database.user_profiles (user_id, birth_date, address, instagram, tiktok, bio) VALUE (2, '1999-10-25', 'Jl, alamat kedua, no 2', 'instakedua', 'tokkedua', 'ini bio kedua');
+
+                INSERT INTO belajar_database.user_profiles (user_id, birth_date, address, instagram, tiktok, bio) VALUE (3, '1998-10-25', 'Jl, alamat ketiga, no 3', 'instaketiga', 'tokketiga', 'ini bio ketiga');
+
+                INSERT INTO belajar_database.user_profiles (user_id, birth_date, address, instagram, tiktok, bio) VALUE (4, '1997-10-25', 'Jl, alamat keempat, no 4', 'instakeempat', 'tokkeempat', 'ini bio keempat');
+
+                INSERT INTO belajar_database.user_profiles (user_id, birth_date, address, instagram, tiktok, bio) VALUE (5, '1996-10-25', 'Jl, alamat kelima, no 5', 'instakelima', 'tokkelima', 'ini bio kelima');
+
+                INSERT INTO belajar_database.user_profiles (user_id, birth_date, address, instagram, tiktok, bio) VALUES 
+                (6, '1995-03-12', 'Jl. Malioboro No. 10, Yogyakarta', 'ahmad_z_insta', 'ahmad_tiktok', 'Suka kopi dan koding'),
+                (7, '1998-07-21', 'Jl. Dago No. 45, Bandung', 'sitiaminah_real', 'siti_vlog', 'Pecinta kuliner nusantara'),
+                (8, '1990-12-05', 'Jl. Sudirman No. 101, Jakarta', 'budi_santoso88', 'budi_boss', 'Kesehatan adalah investasi'),
+                (9, '2001-01-15', 'Jl. Pemuda No. 22, Semarang', 'dewi_lestari_id', 'dewi_dance', 'Life is a journey, enjoy it'),
+                (10, '1997-09-30', 'Jl. Basuki Rahmat No. 7, Surabaya', 'eko_pras', 'eko_gaming', 'Fokus pada masa depan'),
+                (11, '1996-05-18', 'Jl. Slamet Riyadi No. 50, Solo', 'fitri_handa', 'fitri_style', 'Fashion enthusiast'),
+                (12, '1994-11-11', 'Jl. Ahmad Yani No. 12, Medan', 'gunawan_wib', 'gun_adventure', 'Hobi naik gunung'),
+                (13, '1999-04-02', 'Jl. Diponegoro No. 88, Denpasar', 'hadi_wijaya_bali', 'hadi_vlog', 'Santai seperti di pantai'),
+                (14, '2002-08-14', 'Jl. Gajah Mada No. 33, Pontianak', 'indah_permatasari', 'indah_beauty', 'Make up artist & skincare'),
+                (15, '1993-02-28', 'Jl. Veteran No. 5, Malang', 'joko_susilo_ok', 'joko_cook', 'Masak itu seni'),
+                (16, '2000-06-10', 'Jl. Kartini No. 15, Jepara', 'kartika_s_insta', 'kartika_daily', 'Hiduplah dengan penuh syukur'),
+                (17, '1992-10-25', 'Jl. Teuku Umar No. 9, Aceh', 'lukman_hakim_real', 'lukman_talks', 'Berbagi ilmu bermanfaat'),
+                (18, '1998-12-30', 'Jl. Sam Ratulangi No. 40, Manado', 'maya_rosita_cute', 'maya_dance', 'Stay positive and happy'),
+                (19, '1995-01-08', 'Jl. Pattimura No. 21, Ambon', 'nanang_qosim_id', 'nanang_q_vlog', 'Music is my life'),
+                (20, '1991-07-17', 'Jl. Pahlawan No. 100, Magelang', 'onny_indra_official', 'onny_tech', 'Gadget reviewer'),
+                (21, '2003-03-25', 'Jl. Imam Bonjol No. 55, Padang', 'putri_ayu_sholiha', 'putri_style', 'Penyuka kucing'),
+                (22, '1997-11-19', 'Jl. Hasanuddin No. 3, Makassar', 'qori_azizah_inst', 'qori_hijab', 'Modest fashion blogger'),
+                (23, '1994-06-04', 'Jl. Riau No. 27, Pekanbaru', 'rizky_pratama_id', 'rizky_vibe', 'Gamer sejati'),
+                (24, '1996-02-14', 'Jl. Siliwangi No. 18, Bogor', 'setiawan_budi_bgr', 'setiawan_b', 'Rain city lover'),
+                (25, '1999-10-10', 'Jl. Urip Sumoharjo No. 90, Palu', 'tita_amelia_real', 'tita_foodie', 'Makan enak setiap hari'),
+                (26, '1990-05-05', 'Jl. Jendral Sudirman No. 1, Lampung', 'udin_syarif_insta', 'udin_lucu', 'Komedian amatir'),
+                (27, '2001-12-25', 'Jl. Dr. Sutomo No. 14, Serang', 'vivi_alvionita', 'vivi_travel', 'Backpacker dunia'),
+                (28, '1993-08-08', 'Jl. Merdeka No. 45, Palembang', 'wawan_kurniawan_id', 'wawan_vlog', 'Pempek adalah koentji'),
+                (29, '1998-04-15', 'Jl. Gatot Subroto No. 30, Banjarmasin', 'xena_putri_id', 'xena_warrior', 'Gym and fitness addict'),
+                (30, '1992-01-01', 'Jl. Antasari No. 12, Samarinda', 'yayan_ruhian_real', 'yayan_fight', 'Praktisi beladiri');
+
+            c. Table merchants (13 toko, id: 3,4,7,8,11,14,15,18,20,22,25,27,28)
+                INSERT INTO belajar_database.merchants (user_id, name, username, address) VALUE (3, 'Toko Pertama', 'tokopertama', 'Jl, Toko Pertama, no 1');
+
+                INSERT INTO belajar_database.merchants (user_id, name, username, address) VALUES 
+                (4, 'Lestari Fashion', 'lestarifashion', 'Jl. Pemuda No. 22, Semarang'),
+                (7, 'Siti Catering', 'siticatering', 'Jl. Dago No. 45, Bandung'),
+                (8, 'Budi Health Center', 'budihealth', 'Jl. Sudirman No. 101, Jakarta'),
+                (11, 'Handayani Style', 'handayanistyle', 'Jl. Slamet Riyadi No. 50, Solo'),
+                (14, 'Indah Beauty Store', 'indahbeauty', 'Jl. Gajah Mada No. 33, Pontianak'),
+                (15, 'Susilo Kitchen', 'susilokitchen', 'Jl. Veteran No. 5, Malang'),
+                (18, 'Maya Dance Studio', 'mayadance', 'Jl. Sam Ratulangi No. 40, Manado'),
+                (20, 'Onny Tech & Gadget', 'onnytech', 'Jl. Pahlawan No. 100, Magelang'),
+                (22, 'Qori Hijab Official', 'qorihijab', 'Jl. Hasanuddin No. 3, Makassar'),
+                (25, 'Tita Foodies', 'titafoodies', 'Jl. Urip Sumoharjo No. 90, Palu'),
+                (27, 'Vivi Travel Gear', 'vivitravel', 'Jl. Dr. Sutomo No. 14, Serang'),
+                (28, 'Wawan Pempek Asli', 'wawanpempek', 'Jl. Merdeka No. 45, Palembang');
+
+            d. Table merchant_profiles
+                INSERT INTO belajar_database.merchant_profiles (merchant_id, avatar, email, phone, website) VALUE (1, '/img/avatar-merchant/toko-pertama.webp', 'tokopertama@gmail.com', '08223344556677', 'tokopertama.com');
+
+                INSERT INTO belajar_database.merchant_profiles (merchant_id, avatar, email, phone, website) VALUES 
+                (2, '/img/avatar-merchant/lestari-fashion.webp', 'lestarifashion@gmail.com', '081234567890', 'lestarifashion.com'),
+                (3, '/img/avatar-merchant/siti-catering.webp', 'siticatering@gmail.com', '081234567891', 'siticatering.com'),
+                (4, '/img/avatar-merchant/budi-health.webp', 'budihealth@gmail.com', '081234567892', 'budihealth.com'),
+                (5, '/img/avatar-merchant/handayani-style.webp', 'handayanistyle@gmail.com', '081234567893', 'handayanistyle.com'),
+                (6, '/img/avatar-merchant/indah-beauty.webp', 'indahbeauty@gmail.com', '081234567894', 'indahbeauty.com'),
+                (7, '/img/avatar-merchant/susilo-kitchen.webp', 'susilokitchen@gmail.com', '081234567895', 'susilokitchen.com'),
+                (8, '/img/avatar-merchant/maya-dance.webp', 'mayadance@gmail.com', '081234567896', 'mayadance.com'),
+                (9, '/img/avatar-merchant/onny-tech.webp', 'onnytech@gmail.com', '081234567897', 'onnytech.com'),
+                (10, '/img/avatar-merchant/qori-hijab.webp', 'qorihijab@gmail.com', '081234567898', 'qorihijab.com'),
+                (11, '/img/avatar-merchant/tita-foodies.webp', 'titafoodies@gmail.com', '081234567899', 'titafoodies.com'),
+                (12, '/img/avatar-merchant/vivi-travel.webp', 'vivitravel@gmail.com', '081234567800', 'vivitravel.com'),
+                (13, '/img/avatar-merchant/wawan-pempek.webp', 'wawanpempek@gmail.com', '081234567801', 'wawanpempek.com');
+
+            e. Table products
+                INSERT INTO belajar_database.products (merchant_id, name, image, quantity, price) VALUES 
+                (1, 'Kaos Polos Cotton Combed 30s', '/img/products/kaos-polos.webp', 50, 45000),
+                (1, 'Kemeja Flanel Kotak-Kotak', '/img/products/kemeja-flanel.webp', 30, 125000),
+                (1, 'Celana Jeans Slim Fit', '/img/products/jeans-slim.webp', 25, 210000),
+                (1, 'Jaket Hoodie Oversize', '/img/products/hoodie-oversize.webp', 20, 175000),
+                (1, 'Rok Plisket Premium', '/img/products/rok-plisket.webp', 40, 85000),
+                (1, 'Blouse Wanita Silk', '/img/products/blouse-silk.webp', 15, 110000),
+                (1, 'Sweater Rajut Korea', '/img/products/sweater-rajut.webp', 10, 140000),
+                (1, 'Celana Chino Khaki', '/img/products/chino-khaki.webp', 35, 165000),
+                (1, 'Jaket Denim Blue Wash', '/img/products/denim-jacket.webp', 12, 250000),
+                (1, 'Kaos Polo Eksklusif', '/img/products/polo-shirt.webp', 45, 95000),
+                
+
+                INSERT INTO belajar_database.products (merchant_id, name, image, quantity, price) VALUES 
+                (2, 'Nasi Box Ayam Bakar Madu', '/img/products/nasi-ayam-madu.webp', 100, 25000),
+                (2, 'Nasi Box Rendang Daging', '/img/products/nasi-rendang.webp', 80, 35000),
+                (2, 'Nasi Box Ikan Bakar Cianjur', '/img/products/nasi-ikan-bakar.webp', 50, 30000),
+                (2, 'Nasi Kuning Paket Ultah', '/img/products/nasi-kuning-box.webp', 150, 20000),
+                (2, 'Nasi Liwet Komplit Sunda', '/img/products/nasi-liwet.webp', 40, 28000),
+                (2, 'Snack Box Arisan A (3 Kue)', '/img/products/snack-box-a.webp', 200, 12000),
+                (2, 'Snack Box Premium B (4 Kue)', '/img/products/snack-box-b.webp', 150, 18000),
+                (2, 'Tumpeng Mini Special', '/img/products/tumpeng-mini.webp', 30, 45000),
+                (2, 'Tumpeng Besar (20 Porsi)', '/img/products/tumpeng-besar.webp', 10, 550000),
+                (2, 'Ayam Kodok Spesial', '/img/products/ayam-kodok.webp', 5, 350000),
+                
+
+                -- TOKO 3: Budi Health Center (Kesehatan)
+                INSERT INTO belajar_database.products (merchant_id, name, image, quantity, price) VALUES 
+                (3, 'Masker Medis 3-Ply 50pcs', '/img/products/masker-medis.webp', 500, 35000),
+                (3, 'Hand Sanitizer 500ml', '/img/products/hand-sanitizer.webp', 100, 45000),
+                (3, 'Termometer Infrared Digital', '/img/products/termometer.webp', 30, 150000),
+                (3, 'Vitamin C 1000mg 30 Tablet', '/img/products/vit-c.webp', 200, 85000),
+                (3, 'Alat Tensi Darah Digital', '/img/products/tensi-digital.webp', 15, 350000),
+                (3, 'Oksimeter SpO2 Portable', '/img/products/oksimeter.webp', 40, 95000),
+                (3, 'Minyak Kayu Putih 120ml', '/img/products/kayu-putih.webp', 150, 42000),
+                (3, 'Kotak P3K Lengkap Tipe A', '/img/products/p3k-box.webp', 20, 120000),
+                (3, 'Kasa Steril isi 10', '/img/products/kasa-steril.webp', 300, 15000),
+                (3, 'Susu Ensure Gold 400g', '/img/products/ensure-gold.webp', 50, 160000);
+
+                -- TOKO 4: Handayani Style (Fashion/Solo Style)
+                INSERT INTO belajar_database.products (merchant_id, name, image, quantity, price) VALUES 
+                (4, 'Kemeja Batik Solo Slimfit', '/img/products/batik-solo.webp', 40, 185000),
+                (4, 'Dress Batik Cap Encim', '/img/products/dress-batik.webp', 25, 250000),
+                (4, 'Kain Batik Tulis Primissima', '/img/products/kain-batik.webp', 10, 750000),
+                (4, 'Blouse Batik Kerja', '/img/products/blouse-batik.webp', 35, 135000),
+                (4, 'Rok Batik Lilit', '/img/products/rok-batik.webp', 50, 95000),
+                (4, 'Outer Batik Kawung', '/img/products/outer-batik.webp', 20, 160000),
+                (4, 'Scarf Motif Parang', '/img/products/scarf-parang.webp', 100, 45000),
+                (4, 'Tas Clutch Batik', '/img/products/clutch-batik.webp', 15, 120000),
+                (4, 'Celana Kulot Batik', '/img/products/kulot-batik.webp', 30, 110000),
+                (4, 'Batik Couple Keluarga', '/img/products/batik-couple.webp', 12, 450000);
+
+                -- TOKO 5: Indah Beauty Store (Kecantikan)
+                INSERT INTO belajar_database.products (merchant_id, name, image, quantity, price) VALUES 
+                (5, 'Sunscreen SPF 50 PA++++', '/img/products/sunscreen.webp', 150, 75000),
+                (5, 'Serum Vitamin C Glowing', '/img/products/serum-vitc.webp', 80, 125000),
+                (5, 'Moisturizer Gel Aloe Vera', '/img/products/moisturizer.webp', 100, 55000),
+                (5, 'Micellar Water 400ml', '/img/products/micellar.webp', 120, 40000),
+                (5, 'Lip Tint Cherry Red', '/img/products/lip-tint.webp', 200, 35000),
+                (5, 'Facial Wash Gentle Skin', '/img/products/facial-wash.webp', 90, 65000),
+                (5, 'Eye Cream Anti Aging', '/img/products/eye-cream.webp', 45, 110000),
+                (5, 'Sheet Mask Bundle (5pcs)', '/img/products/sheet-mask.webp', 300, 50000),
+                (5, 'Bedak Tabur Translucent', '/img/products/loose-powder.webp', 70, 85000),
+                (5, 'Clay Mask Charcoal', '/img/products/clay-mask.webp', 55, 95000);
+
+
+                -- TOKO 6: Susilo Kitchen (Peralatan Dapur)
+                INSERT INTO belajar_database.products (merchant_id, name, image, quantity, price) VALUES 
+                (6, 'Wajan Anti Lengket 24cm', '/img/products/wajan-granit.webp', 40, 185000),
+                (6, 'Spatula Silikon Set (5pcs)', '/img/products/spatula-set.webp', 100, 75000),
+                (6, 'Pisau Dapur Stainless Steel', '/img/products/pisau-set.webp', 50, 120000),
+                (6, 'Talenan Kayu Jati', '/img/products/talenan-jati.webp', 30, 85000),
+                (6, 'Blender Juicer Portable', '/img/products/blender-port.webp', 25, 210000),
+                (6, 'Panci Presto 8 Liter', '/img/products/panci-presto.webp', 15, 350000),
+                (6, 'Rice Cooker Digital 1.8L', '/img/products/rice-cooker.webp', 20, 450000),
+                (6, 'Timbangan Dapur Digital', '/img/products/timbangan-kue.webp', 60, 55000),
+                (6, 'Kotak Makan Stainless 3 Sekat', '/img/products/lunchbox.webp', 80, 95000),
+                (6, 'Botol Minum Tumblr 1L', '/img/products/tumblr.webp', 120, 65000);
+
+                -- TOKO 7: Maya Dance Studio (Tari & Gym)
+                INSERT INTO belajar_database.products (merchant_id, name, image, quantity, price) VALUES 
+                (7, 'Sepatu Ballet Canvas', '/img/products/ballet-shoes.webp', 30, 150000),
+                (7, 'Leotard Hitam Basic', '/img/products/leotard.webp', 25, 175000),
+                (7, 'Rok Tutu Anak & Dewasa', '/img/products/rok-tutu.webp', 40, 95000),
+                (7, 'Legging Yoga High Waist', '/img/products/legging-yoga.webp', 50, 125000),
+                (7, 'Matras Yoga Anti Slip 6mm', '/img/products/yoga-mat.webp', 35, 185000),
+                (7, 'Dumbbell Set 2kg (Sepasang)', '/img/products/dumbbell.webp', 20, 110000),
+                (7, 'Resistance Band Set', '/img/products/resistance-band.webp', 100, 85000),
+                (7, 'Baju Senam Aerobik Set', '/img/products/baju-senam.webp', 15, 220000),
+                (7, 'Tas Olahraga Gym Bag', '/img/products/gym-bag.webp', 30, 140000),
+                (7, 'Headband & Wristband Set', '/img/products/headband.webp', 200, 35000);
+
+                -- TOKO 8: Onny Tech & Gadget (Gadget & Elektronik)
+                INSERT INTO belajar_database.products (merchant_id, name, image, quantity, price) VALUES 
+                (8, 'Powerbank 10.000mAh Fast Charge', '/img/products/powerbank.webp', 100, 195000),
+                (8, 'Earbuds Wireless Bluetooth 5.3', '/img/products/tws.webp', 80, 250000),
+                (8, 'Kabel Data Type-C Nylon 2M', '/img/products/kabel-data.webp', 300, 35000),
+                (8, 'Charger Adapter 20W PD', '/img/products/adapter-pd.webp', 150, 120000),
+                (8, 'Mouse Wireless Silent Click', '/img/products/mouse-wireless.webp', 60, 85000),
+                (8, 'Keyboard Mechanical RGB', '/img/products/keyboard-mech.webp', 25, 450000),
+                (8, 'Stand Holder HP Aluminium', '/img/products/holder-hp.webp', 200, 45000),
+                (8, 'Smartwatch Health Tracker', '/img/products/smartwatch.webp', 40, 350000),
+                (8, 'Speaker Bluetooth Waterproof', '/img/products/speaker.webp', 30, 220000),
+                (8, 'Webcam 1080p Full HD', '/img/products/webcam.webp', 15, 299000);
+
+                -- TOKO 9: Qori Hijab Official (Fashion Muslimah)
+                INSERT INTO belajar_database.products (merchant_id, name, image, quantity, price) VALUES 
+                (9, 'Pashmina Silk Premium', '/img/products/pashmina-silk.webp', 100, 65000),
+                (9, 'Hijab Segi Empat Syari', '/img/products/hijab-syari.webp', 80, 55000),
+                (9, 'Ciput Rajut Anti Pusing', '/img/products/ciput-rajut.webp', 200, 15000),
+                (9, 'Gamis Rayon Busui Friendly', '/img/products/gamis-rayon.webp', 30, 185000),
+                (9, 'Khimar Instan Daily', '/img/products/khimar-instan.webp', 50, 45000),
+                (9, 'Manset Baju Spandek', '/img/products/manset.webp', 120, 35000),
+                (9, 'Bros Hijab Mutiara', '/img/products/bros-hijab.webp', 300, 10000),
+                (9, 'Handsock Jempol Polos', '/img/products/handsock.webp', 150, 20000),
+                (9, 'Mukena Traveling Parasut', '/img/products/mukena-travel.webp', 40, 95000),
+                (9, 'Inner Ninja Premium', '/img/products/inner-ninja.webp', 60, 25000);
+
+                -- TOKO 10: Tita Foodies (Snack & Frozen Food)
+                INSERT INTO belajar_database.products (merchant_id, name, image, quantity, price) VALUES 
+                (10, 'Baso Aci Instan Mercon', '/img/products/baso-aci.webp', 150, 15000),
+                (10, 'Cireng Rujak Frozen', '/img/products/cireng-rujak.webp', 100, 20000),
+                (10, 'Dimsum Ayam (Isi 10)', '/img/products/dimsum-ayam.webp', 50, 35000),
+                (10, 'Keripik Kaca Pedas Daun Jeruk', '/img/products/keripik-kaca.webp', 200, 12000),
+                (10, 'Makaroni Bantet Extra Pedas', '/img/products/makaroni.webp', 250, 10000),
+                (10, 'Sambal Bawang Botolan', '/img/products/sambal-bawang.webp', 80, 25000),
+                (10, 'Sosis Solo Frozen (Isi 5)', '/img/products/sosis-solo.webp', 60, 22000),
+                (10, 'Donat Kentang Frozen', '/img/products/donat-kentang.webp', 40, 30000),
+                (10, 'Roti Maryam Original', '/img/products/roti-maryam.webp', 70, 25000),
+                (10, 'Basreng Stik Pedas', '/img/products/basreng.webp', 180, 15000);
+
+                -- TOKO 11: Vivi Travel Gear (Outdoor & Travel)
+                INSERT INTO belajar_database.products (merchant_id, name, image, quantity, price) VALUES 
+                (11, 'Carrier 60L Waterproof', '/img/products/carrier-60l.webp', 15, 650000),
+                (11, 'Sleeping Bag Polar', '/img/products/sleeping-bag.webp', 30, 125000),
+                (11, 'Matras Aluminium Foil', '/img/products/matras-foil.webp', 50, 45000),
+                (11, 'Kompor Camping Portable', '/img/products/kompor-camp.webp', 25, 110000),
+                (11, 'Nestig Cooking Set', '/img/products/nesting.webp', 20, 175000),
+                (11, 'Tenda Dome Kapasitas 4', '/img/products/tenda-dome.webp', 10, 450000),
+                (11, 'Headlamp LED Rechargeable', '/img/products/headlamp.webp', 60, 85000),
+                (11, 'Hammock Double Layer', '/img/products/hammock.webp', 45, 90000),
+                (11, 'Dry Bag 10L Anti Air', '/img/products/dry-bag.webp', 80, 55000),
+                (11, 'Sepatu Gunung Hiking', '/img/products/sepatu-gunung.webp', 12, 350000);
+
+                -- TOKO 12: Wawan Pempek Asli (Makanan Khas)
+                INSERT INTO belajar_database.products (merchant_id, name, image, quantity, price) VALUES 
+                (12, 'Paket Pempek Kapal Selam (2)', '/img/products/pempek-ks.webp', 100, 50000),
+                (12, 'Pempek Lenjer Panjang', '/img/products/pempek-lenjer.webp', 150, 25000),
+                (12, 'Pempek Adaan (Isi 10)', '/img/products/pempek-adaan.webp', 80, 45000),
+                (12, 'Pempek Kulit Crispy (Isi 10)', '/img/products/pempek-kulit.webp', 90, 40000),
+                (12, 'Tekwan Instan Lengkap', '/img/products/tekwan.webp', 120, 25000),
+                (12, 'Cuko Pempek Botol 500ml', '/img/products/cuko.webp', 200, 35000),
+                (12, 'Otak-Otak Bakar Ikan Tenggiri', '/img/products/otak-otak.webp', 300, 5000),
+                (12, 'Kerupuk Kemplang Panggang', '/img/products/kemplang.webp', 150, 30000),
+                (12, 'Lempok Durian Asli', '/img/products/lempok-durian.webp', 40, 65000),
+                (12, 'Mie Celor Instan', '/img/products/mie-celor.webp', 60, 20000);
+
+            f. Table orders
+                requirement:
+                    1. id users:
+                        1,2,5,6,9,10,12,13,16,17,19,21,23,24,26,29,30
+                    2. merchant = 12 toko
+                    3. order_number = angka acak dari tanggal dan detik sebagai id order
+                    4. status: paid, canceled, expired, refund
+                
+                INSERT INTO belajar_database.orders (user_id, merchant_id, order_numbers, checkout_date, status) VALUES 
+                (1, 1, '20250105101530', '2025-01-05 10:15:30', 'paid'),
+                (1, 3, '20250112142011', '2025-01-12 14:20:11', 'expired'),
+                (2, 2, '20250108091145', '2025-01-08 09:11:45', 'paid'),
+                (5, 4, '20250115163022', '2025-01-15 16:30:22', 'canceled'),
+                (6, 5, '20250120111201', '2025-01-20 11:12:01', 'paid'),
+                (9, 12, '20250122194533', '2025-01-22 19:45:33', 'refund'),
+                (10, 10, '20250125081015', '2025-01-25 08:10:15', 'paid'),
+                (12, 1, '20250128135540', '2025-01-28 13:55:40', 'paid'),
+                (13, 6, '20250130202020', '2025-01-30 20:20:20', 'expired'),
+                (16, 7, '20250201073010', '2025-02-01 07:30:10', 'paid'),
+                (17, 8, '20250203151545', '2025-02-03 15:15:45', 'canceled'),
+                (19, 9, '20250205121030', '2025-02-05 12:10:30', 'paid'),
+                (21, 11, '20250207184012', '2025-02-07 18:40:12', 'paid'),
+                (23, 1, '20250210100555', '2025-02-10 10:05:55', 'refund'),
+                (24, 2, '20250212143000', '2025-02-12 14:30:00', 'paid'),
+                (26, 3, '20250214211510', '2025-02-14 21:15:10', 'paid'),
+                (29, 4, '20250216094525', '2025-02-16 09:45:25', 'expired'),
+                (30, 5, '20250218115530', '2025-02-18 11:55:30', 'paid'),
+                (1, 2, '20250220131244', '2025-02-20 13:12:44', 'paid'),
+                (2, 6, '20250221154511', '2025-02-21 15:45:11', 'canceled'),
+                (5, 7, '20250222171005', '2025-02-22 17:10:05', 'paid'),
+                (6, 8, '20250223102033', '2025-02-23 10:20:33', 'paid'),
+                (9, 9, '20250224083015', '2025-02-24 08:30:15', 'refund'),
+                (10, 11, '20250225191520', '2025-02-25 19:15:20', 'paid'),
+                (12, 12, '20250225214055', '2025-02-25 21:40:55', 'expired'),
+                (13, 1, '20250110101010', '2025-01-10 10:10:10', 'paid'),
+                (16, 2, '20250111111111', '2025-01-11 11:11:11', 'paid'),
+                (17, 3, '20250112121212', '2025-01-12 12:12:12', 'canceled'),
+                (19, 4, '20250113131313', '2025-01-13 13:13:13', 'paid'),
+                (21, 5, '20250114141414', '2025-01-14 14:14:14', 'paid'),
+                (23, 6, '20250115151515', '2025-01-15 15:15:15', 'paid'),
+                (24, 7, '20250116161616', '2025-01-16 16:16:16', 'paid'),
+                (26, 8, '20250117171717', '2025-01-17 17:17:17', 'refund'),
+                (29, 9, '20250118181818', '2025-01-18 18:18:18', 'paid'),
+                (30, 10, '20250119191919', '2025-01-19 19:19:19', 'paid');
+
+
+            g. Table order_items
+                pastekan 5 kali (agar pembelian ada 5 product)
+                    INSERT INTO belajar_database.order_items (order_id, product_id, quantity, total)
+                    SELECT 
+                        -- Menghasilkan order_id 1 sampai 30 secara berurutan
+                        p.id_order, 
+                        p.rand_product_id,
+                        p.rand_qty,
+                        -- Menghitung TOTAL: harga produk x quantity
+                        (prod.price * p.rand_qty) AS total
+                    FROM (
+                        -- Subquery untuk mengacak product_id dan quantity agar variatif
+                        SELECT 
+                            seq.n AS id_order,
+                            FLOOR(1 + (RAND() * 160)) AS rand_product_id, -- Ambil id produk acak 1-160
+                            FLOOR(1 + (RAND() * 5)) AS rand_qty           -- Ambil qty acak 1-5
+                        FROM (
+                            -- Generator angka 1-30 untuk order_id
+                            SELECT a.N + b.N * 10 + 1 n
+                            FROM (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) a
+                            CROSS JOIN (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2) b
+                        ) seq
+                    ) p
+                    JOIN belajar_database.products prod ON p.rand_product_id = prod.id;
+            
+            h. Table categories
+                INSERT INTO categories (name) VALUES
+                ('fashion'),('atasan'),('bawahan'),('kesehatan'),('makanan'),('batik'),('kecantikan'),('alat'),('gym'),('sport'),('snack'),('travel');
+
+            i. Table category_product
+                -- 1. Product ID 1 sampai 10 memiliki Category ID 1
+                INSERT INTO category_product (product_id, category_id) VALUES 
+                (1, 1), (2, 1), (3, 1), (4, 1), (5, 1), (6, 1), (7, 1), (8, 1), (9, 1), (10, 1);
+
+                -- 2. Product ID spesifik memiliki Category ID 2
+                INSERT INTO category_product (product_id, category_id) VALUES 
+                (1, 2), (2, 2), (4, 2), (6, 2), (7, 2), (9, 2), (10, 2);
+
+                -- 3. Product ID spesifik memiliki Category ID 3
+                INSERT INTO category_product (product_id, category_id) VALUES 
+                (3, 3), (5, 3), (8, 3);
+
+                INSERT INTO category_product (product_id, category_id) VALUES
+                -- 1. Product ID 31-40 memiliki Category ID 5
+                (31, 5), (32, 5), (33, 5), (34, 5), (35, 5), 
+                (36, 5), (37, 5), (38, 5), (39, 5), (40, 5),
+
+                -- 2. Product ID 36-37 memiliki Category ID 11
+                (36, 11), (37, 11),
+
+                -- 3. Product ID 61-70 memiliki Category ID 4
+                (61, 4), (62, 4), (63, 4), (64, 4), (65, 4), 
+                (66, 4), (67, 4), (68, 4), (69, 4), (70, 4),
+
+                -- 4. Product ID 63, 65, 66, 68, 69 memiliki Category ID 8
+                (63, 8), (65, 8), (66, 8), (68, 8), (69, 8);
+
+                INSERT INTO category_product (product_id, category_id) VALUES
+                -- 5. Product ID 71-80 memiliki Category ID 1
+                (71, 1), (72, 1), (73, 1), (74, 1), (75, 1), 
+                (76, 1), (77, 1), (78, 1), (79, 1), (80, 1),
+
+                -- 6. Product ID 71, 73, 76, 77 memiliki Category ID 2
+                (71, 2), (73, 2), (76, 2), (77, 2),
+
+                -- 7. Product ID 75, 79 memiliki Category ID 3
+                (75, 3), (79, 3),
+
+                -- 8. Product ID 71 sampai 76 memiliki Category ID 6
+                (71, 6), (72, 6), (73, 6), (74, 6), (75, 6), (76, 6);
+
+                INSERT INTO category_product (product_id, category_id) VALUES
+                -- 9. Product ID 81-90 memiliki Category ID 7
+                (81, 7), (82, 7), (83, 7), (84, 7), (85, 7), (86, 7), (87, 7), (88, 7), (89, 7), (90, 7),
+
+                -- 10. Product ID 90-100 memiliki Category ID 8
+                (90, 8), (91, 8), (92, 8), (93, 8), (94, 8), (95, 8), (96, 8), (97, 8), (98, 8), (99, 8), (100, 8),
+
+                -- 11. Product ID 101-110 memiliki Category ID 9
+                (101, 9), (102, 9), (103, 9), (104, 9), (105, 9), (106, 9), (107, 9), (108, 9), (109, 9), (110, 9),
+
+                -- 12. Product ID 111-120 memiliki Category ID 8
+                (111, 8), (112, 8), (113, 8), (114, 8), (115, 8), (116, 8), (117, 8), (118, 8), (119, 8), (120, 8),
+
+                -- 13. Product ID 121-130 memiliki Category ID 1
+                (121, 1), (122, 1), (123, 1), (124, 1), (125, 1), (126, 1), (127, 1), (128, 1), (129, 1), (130, 1),
+
+                -- 14. Product ID 131-140 memiliki Category ID 11
+                (131, 11), (132, 11), (133, 11), (134, 11), (135, 11), (136, 11), (137, 11), (138, 11), (139, 11), (140, 11),
+
+                -- 15. Product ID 141-150 memiliki Category ID 12
+                (141, 12), (142, 12), (143, 12), (144, 12), (145, 12), (146, 12), (147, 12), (148, 12), (149, 12), (150, 12),
+
+                -- 16. Product ID 151-160 memiliki Category ID 5
+                (151, 5), (152, 5), (153, 5), (154, 5), (155, 5), (156, 5), (157, 5), (158, 5), (159, 5), (160, 5);
+
+
+
+</pre>
+
+        </main>
+    </div>
+
+    <script>
+        fetch('layout/aside.html').then(response => response.text()).then(data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop();
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
