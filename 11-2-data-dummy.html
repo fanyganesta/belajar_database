@@ -463,7 +463,26 @@ A. Task:
                 (151, 5), (152, 5), (153, 5), (154, 5), (155, 5), (156, 5), (157, 5), (158, 5), (159, 5), (160, 5);
 
 
+        TEST QUERY SEDIKIT MEMBINGUNGKAN
+            BERHASIL
+                SELECT m.name, COUNT(DISTINCT o.id) AS jumlah_transaksi, SUM(oi.total) AS omzet
+                FROM merchants m 
+                JOIN orders o 
+                    ON m.id = o.merchant_id
+                JOIN order_items oi
+                    ON o.id = oi.order_id
+                WHERE m.id = 1
+                GROUP BY m.name;
 
+            FAILED
+                SELECT m.name, COUNT(o.merchant_id) AS jumlah_transaksi, SUM(oi.total)
+                FROM merchants m 
+                JOIN orders o 
+                    ON m.id = o.merchant_id
+                JOIN order_items oi
+                    ON o.id = oi.order_id
+                WHERE m.id = 1
+                GROUP BY m.name;
 </pre>
 
         </main>
